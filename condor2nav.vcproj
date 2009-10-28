@@ -254,7 +254,11 @@
 			>
 		</Filter>
 		<File
-			RelativePath=".\README.txt"
+			RelativePath=".\COPYING"
+			>
+		</File>
+		<File
+			RelativePath=".\README"
 			>
 		</File>
 	</Files>
