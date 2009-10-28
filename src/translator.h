@@ -33,11 +33,16 @@
 
 namespace condor2nav {
 
+  /**
+   * @brief Translators hierarchy base class.
+   *
+   * condor2nav::CTranslator is a base abstract class for all translations.
+   */
   class CTranslator {
-    const std::string _outputPath;
+    const std::string _outputPath;                        ///< @brief Translation output directory
 
-    CTranslator(const CTranslator &);                     // disallowed
-    const CTranslator &operator=(const CTranslator &);    // disallowed
+    CTranslator(const CTranslator &);                     ///< @brief Disallowed
+    const CTranslator &operator=(const CTranslator &);    ///< @brief Disallowed
 
   protected:
     const std::string &OutputPath() const;
@@ -46,11 +51,60 @@ namespace condor2nav {
     explicit CTranslator(const std::string &outputPath);
     virtual ~CTranslator();
 
+    /**
+     * @brief Sets scenery map. 
+     *
+     * Method sets scenery map data. 
+     *
+     * @param sceneryData Information describing the scenery. 
+    **/
     virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData) = 0;
+
+    /**
+     * @brief Sets time for scenery time zone. 
+     *
+     * Method sets time for scenery time zone.
+     *
+     * @param sceneryData Information describing the scenery. 
+    **/
     virtual void SceneryTime(const CFileParserCSV::CStringArray &sceneryData) = 0;
+
+    /**
+     * @brief Set glider data. 
+     *
+     * Method sets all the data related to the glider.
+     *
+     * @param gliderData Information describing the glider. 
+    **/
     virtual void Glider(const CFileParserCSV::CStringArray &gliderData) = 0;
+
+    /**
+     * @brief Sets task information. 
+     *
+     * Method sets task information.
+     *
+     * @param taskParser Condor task parser. 
+     * @param coordConv  Condor coordinates converter.
+    **/
     virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
+
+    /**
+     * @brief Sets task airspaces. 
+     *
+     * Method sets airspaces used in the task.
+     *
+     * @param taskParser Condor task parser. 
+     * @param coordConv  Condor coordinates converter.
+     **/
     virtual void Airspaces(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
+
+    /**
+     * @brief Sets weather data. 
+     *
+     * Method sets task weather data (e.g wind).
+     *
+     * @param taskParser Condor task parser. 
+    **/
     virtual void Weather(const CFileParserINI &taskParser) = 0;
   };
 

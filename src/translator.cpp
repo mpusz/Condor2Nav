@@ -29,6 +29,13 @@
 #include "tools.h"
 
 
+/**
+ * @brief Class constructor.
+ *
+ * condor2nav::CTranslator class constructor.
+ *
+ * @param outputPath Translation output directory.
+**/
 condor2nav::CTranslator::CTranslator(const std::string &outputPath):
 _outputPath(outputPath)
 {
@@ -36,11 +43,23 @@ _outputPath(outputPath)
 }
 
 
+/**
+ * @brief Class destructor.
+ *
+ * condor2nav::CTranslator class destructor.
+**/
 condor2nav::CTranslator::~CTranslator()
 {
 }
 
 
+/**
+ * @brief Returns translation output directory.
+ *
+ * Method returns translation output directory.
+ *
+ * @return Translation output directory. 
+**/
 const std::string &condor2nav::CTranslator::OutputPath() const
 {
   return _outputPath;

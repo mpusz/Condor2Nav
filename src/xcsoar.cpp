@@ -40,6 +40,9 @@ const char *condor2nav::CTranslatorXCSoar::WP_FILE_NAME = "WP_CondorTask.dat";
 const char *condor2nav::CTranslatorXCSoar::POLAR_FILE_NAME = "Polar_Condor.plr";
 
 
+/**
+ * @brief Data imported from XCSoar project.
+**/
 namespace xcsoar {
 
   const unsigned BINFILEMAGICNUMBER = 0x5c378fcf;
@@ -139,6 +142,14 @@ namespace xcsoar {
 }
 
 
+/**
+ * @brief Class constructor.
+ *
+ * condor2nav::CTranslatorXCSoar class constructor.
+ *
+ * @param outputPath     Translation output directory. 
+ * @param xcsoarDataPath The destination directory path (in XCSoar format) on the target device that runs XCSoar.
+**/
 condor2nav::CTranslatorXCSoar::CTranslatorXCSoar(const std::string &outputPath, const std::string &xcsoarDataPath):
 CTranslator(outputPath),
 _xcsoarDataPath(xcsoarDataPath),
@@ -147,18 +158,37 @@ _profileParser(CCondor2Nav::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME)
 }
 
 
+/**
+ * @brief Class destructor.
+ *
+ * condor2nav::CTranslatorXCSoar class destructor.
+**/
 condor2nav::CTranslatorXCSoar::~CTranslatorXCSoar()
 {
   _profileParser.Dump(OutputPath() + std::string("\\") + OUTPUT_PROFILE_NAME);
 }
 
 
+/**
+* @brief Sets scenery map. 
+*
+* Method sets scenery map XCM data file according to the Condor landscape name. 
+*
+* @param sceneryData Information describing the scenery. 
+**/
 void condor2nav::CTranslatorXCSoar::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
   _profileParser.Value("", "MapFile", "\"" + _xcsoarDataPath + "\\" + sceneryData.at(CCondor2Nav::SCENERY_FILE) + "\"");
 }
 
 
+/**
+* @brief Sets time for scenery time zone. 
+*
+* Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.
+*
+* @param sceneryData Information describing the scenery. 
+**/
 void condor2nav::CTranslatorXCSoar::SceneryTime(const CFileParserCSV::CStringArray &sceneryData)
 {
   _profileParser.Value("", "UTCOffset", sceneryData.at(CCondor2Nav::SCENERY_UTC_OFFSET));
@@ -166,6 +196,14 @@ void condor2nav::CTranslatorXCSoar::SceneryTime(const CFileParserCSV::CStringArr
 }
 
 
+/**
+* @brief Set glider data. 
+*
+* Method created and sets glider polar file, handicap, safety speed, the time to empty the water
+* ballast and glider name for the logger.
+*
+* @param gliderData Information describing the glider. 
+**/
 void condor2nav::CTranslatorXCSoar::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
   // set WinPilot Polar
@@ -195,6 +233,14 @@ void condor2nav::CTranslatorXCSoar::Glider(const CFileParserCSV::CStringArray &g
 }
 
 
+/**
+* @brief Sets task information. 
+*
+* Method sets task information.
+*
+* @param taskParser Condor task parser. 
+* @param coordConv  Condor coordinates converter.
+**/
 void condor2nav::CTranslatorXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
   using namespace xcsoar;
@@ -350,6 +396,14 @@ void condor2nav::CTranslatorXCSoar::Task(const CFileParserINI &taskParser, const
 //}
  
 
+/**
+* @brief Sets task airspaces. 
+*
+* Method sets airspaces used in the task.
+*
+* @param taskParser Condor task parser. 
+* @param coordConv  Condor coordinates converter.
+**/
 void condor2nav::CTranslatorXCSoar::Airspaces(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
   // AirspaceFile
@@ -357,6 +411,13 @@ void condor2nav::CTranslatorXCSoar::Airspaces(const CFileParserINI &taskParser, 
 }
 
 
+/**
+* @brief Sets weather data. 
+*
+* Method sets the wind data.
+*
+* @param taskParser Condor task parser. 
+**/
 void condor2nav::CTranslatorXCSoar::Weather(const CFileParserINI &taskParser)
 {
   unsigned dir = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindDir")) + 0.5);

@@ -36,17 +36,23 @@
 
 namespace condor2nav {
 
+  /**
+   * @brief Translator to XCSoar data format.
+   *
+   * condor2nav::CTranslatorXCSoar class is responsible for Condor data translation
+   * to XCSoar (http://www.xcsoar.org) format.
+  **/
   class CTranslatorXCSoar : public CTranslator {
     // inputs
-    static const char *XCSOAR_PROFILE_NAME;
+    static const char *XCSOAR_PROFILE_NAME;	    ///< @brief XCSoar profile file name to use for input. 
 
     // outputs
-    static const char *OUTPUT_PROFILE_NAME;
-    static const char *WP_FILE_NAME;
-    static const char *POLAR_FILE_NAME;
+    static const char *OUTPUT_PROFILE_NAME;     ///< @brief The name of XCSoar profile file to generate. 
+    static const char *WP_FILE_NAME;           	///< @brief The name of XCSoar waypoints file to generate. 
+    static const char *POLAR_FILE_NAME;         ///< @brief The name of XCSoar glider polar file to generate.
 
-    const std::string _xcsoarDataPath;
-    CFileParserINI _profileParser;
+    const std::string _xcsoarDataPath;     ///< @brief The destination directory path (in XCSoar format) on the target device that runs XCSoar. 
+    CFileParserINI _profileParser;         ///< @brief XCSoar profile file parser. 
     
   public:
     explicit CTranslatorXCSoar(const std::string &outputPath, const std::string &xcsoarDataPath);
