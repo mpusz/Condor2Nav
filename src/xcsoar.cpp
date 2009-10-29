@@ -29,6 +29,7 @@
 #include "condor2nav.h"
 #include "condor.h"
 #include "tools.h"
+#include "imports/xcsoarTypes.h"
 #include <fstream>
 #include <iostream>
 
@@ -38,108 +39,6 @@ const char *condor2nav::CTranslatorXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registr
 const char *condor2nav::CTranslatorXCSoar::OUTPUT_PROFILE_NAME = "Condor.prf";
 const char *condor2nav::CTranslatorXCSoar::WP_FILE_NAME = "WP_CondorTask.dat";
 const char *condor2nav::CTranslatorXCSoar::POLAR_FILE_NAME = "Polar_Condor.plr";
-
-
-/**
- * @brief Data imported from XCSoar project.
-**/
-namespace xcsoar {
-
-  const unsigned BINFILEMAGICNUMBER = 0x5c378fcf;
-  const unsigned MAXTASKPOINTS = 10;
-  const unsigned MAXSTARTPOINTS = 10;
-  const unsigned MAXISOLINES = 32;
-
-  struct GEOPOINT {
-    double Longitude;
-    double Latitude;
-  };
-
-  enum AATSectorType_t {
-    AAT_CIRCLE=0,
-    AAT_SECTOR
-  };
-
-  struct TASK_POINT {
-    int Index;
-    double InBound;
-    double OutBound;
-    double Bisector;
-    double LegDistance;
-    double LegBearing;
-    GEOPOINT SectorStart;
-    GEOPOINT SectorEnd;
-    AATSectorType_t AATType;
-    double AATCircleRadius;
-    double AATSectorRadius;
-    double AATStartRadial;
-    double AATFinishRadial;
-    GEOPOINT AATStart;
-    GEOPOINT AATFinish;
-
-    // from stats
-    double AATTargetOffsetRadius;
-    double AATTargetOffsetRadial;
-    GEOPOINT AATTargetLocation;
-    bool   AATTargetLocked;
-    double LengthPercent;
-    GEOPOINT IsoLine_Location[MAXISOLINES];
-    bool IsoLine_valid[MAXISOLINES];
-  };
-
-  enum AutoAdvanceMode_t {
-    AUTOADVANCE_MANUAL=0,
-    AUTOADVANCE_AUTO,
-    AUTOADVANCE_ARM,
-    AUTOADVANCE_ARMSTART
-  };
-
-  enum ASTSectorType_t {
-    AST_CIRCLE=0,
-    AST_FAI,
-    AST_DAE
-  };
-
-  enum StartSectorType_t {
-    START_CIRCLE=0,
-    START_LINE,
-    START_SECTOR
-  };
-
-  enum FinishSectorType_t {
-    FINISH_CIRCLE=0,
-    FINISH_LINE,
-    FINISH_SECTOR
-  };
-
-  struct SETTINGS_TASK {
-    AutoAdvanceMode_t AutoAdvance;
-    ASTSectorType_t SectorType;
-    unsigned int SectorRadius;
-    StartSectorType_t StartType;
-    unsigned StartRadius;
-    FinishSectorType_t FinishType;
-    unsigned FinishRadius;
-    double AATTaskLength;
-    bool AATEnabled;
-    bool EnableMultipleStartPoints;
-    bool EnableFAIFinishHeight;
-    unsigned FinishMinHeight;
-    unsigned StartMaxHeight;
-    unsigned StartMaxHeightMargin;
-    unsigned StartMaxSpeed;
-    unsigned StartMaxSpeedMargin;
-    int StartHeightRef;
-  };
-
-  struct START_POINT {
-    int Index;
-    double OutBound;
-    GEOPOINT SectorStart;
-    GEOPOINT SectorEnd;
-  };
-
-}
 
 
 /**
