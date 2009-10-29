@@ -61,13 +61,11 @@ _taskName((argc > 1) ? argv[1] : _configParser.Value("Condor", "DefaultTaskName"
  * @note For now only XCSoar is supported but later on that method will return
  *       data translator required by configuration INI file.
  *
- * @param outputPath The path of the translation output directory.
- *
  * @return Condor data translator.
 **/
-std::auto_ptr<condor2nav::CTranslator> condor2nav::CCondor2Nav::Translator(const std::string &outputPath) const
+std::auto_ptr<condor2nav::CTranslator> condor2nav::CCondor2Nav::Translator() const
 {
-  return std::auto_ptr<condor2nav::CTranslator>(new CTranslatorXCSoar(outputPath, _configParser.Value("XCSoar", "DataPath")));
+  return std::auto_ptr<condor2nav::CTranslator>(new CTranslatorXCSoar(_configParser));
 }
 
 
@@ -85,7 +83,7 @@ int condor2nav::CCondor2Nav::Run()
   condor2nav::CCondor condor(_configParser.Value("Condor", "Path"), _taskName);
 
   // create translator
-  std::auto_ptr<condor2nav::CTranslator> translator(Translator(_configParser.Value("Condor2Nav", "OutputPath")));
+  std::auto_ptr<condor2nav::CTranslator> translator(Translator());
 
   // translate scenery data
   {

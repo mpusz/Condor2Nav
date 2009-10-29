@@ -44,18 +44,20 @@ namespace condor2nav {
   **/
   class CTranslatorXCSoar : public CTranslator {
     // inputs
-    static const char *XCSOAR_PROFILE_NAME;	    ///< @brief XCSoar profile file name to use for input. 
+    static const char *XCSOAR_PROFILE_NAME;	     ///< @brief XCSoar profile file name to use for input. 
 
     // outputs
-    static const char *OUTPUT_PROFILE_NAME;     ///< @brief The name of XCSoar profile file to generate. 
-    static const char *WP_FILE_NAME;           	///< @brief The name of XCSoar waypoints file to generate. 
-    static const char *POLAR_FILE_NAME;         ///< @brief The name of XCSoar glider polar file to generate.
+    static const char *OUTPUT_PROFILE_NAME;      ///< @brief The name of XCSoar profile file to generate. 
+    static const char *WP_FILE_NAME;           	 ///< @brief The name of XCSoar waypoints file to generate. 
+    static const char *POLAR_FILE_NAME;          ///< @brief The name of XCSoar glider polar file to generate.
 
-    const std::string _xcsoarDataPath;     ///< @brief The destination directory path (in XCSoar format) on the target device that runs XCSoar. 
-    CFileParserINI _profileParser;         ///< @brief XCSoar profile file parser. 
+    CFileParserINI _profileParser;               ///< @brief XCSoar profile file parser. 
+    const std::string _outputXCSoarDataPath;     ///< @brief The path to the output XCSoarData directory.
+    std::string _outputCondor2NavDataPath;       ///< @brief The path to the output Condor2Nav directory.
+    std::string _condor2navDataPath;             ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar. 
     
   public:
-    explicit CTranslatorXCSoar(const std::string &outputPath, const std::string &xcsoarDataPath);
+    explicit CTranslatorXCSoar(const CFileParserINI &configParser);
     virtual ~CTranslatorXCSoar();
 
     virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData);

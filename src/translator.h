@@ -39,16 +39,17 @@ namespace condor2nav {
    * condor2nav::CTranslator is a base abstract class for all translations.
    */
   class CTranslator {
-    const std::string _outputPath;                        ///< @brief Translation output directory
-
+    const CFileParserINI &_configParser;                  ///< @brief Configuration INI file parser.
+    const std::string _outputPath;                        ///< @brief Translation output directory
     CTranslator(const CTranslator &);                     ///< @brief Disallowed
     const CTranslator &operator=(const CTranslator &);    ///< @brief Disallowed
 
   protected:
     const std::string &OutputPath() const;
+    const CFileParserINI &ConfigParser() const;
 
   public:
-    explicit CTranslator(const std::string &outputPath);
+    explicit CTranslator(const CFileParserINI &configParser);
     virtual ~CTranslator();
 
     /**

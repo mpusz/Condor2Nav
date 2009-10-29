@@ -53,7 +53,7 @@ namespace condor2nav {
     
     const std::string _taskName;                  ///< @brief The name of the Condor task to parse.
 
-    std::auto_ptr<CTranslator> Translator(const std::string &outputPath) const;
+    std::auto_ptr<CTranslator> Translator() const;
 
   public:
     /**
@@ -61,7 +61,7 @@ namespace condor2nav {
     **/
     enum TSceneriesDataColumns {
       SCENERY_NAME,
-      SCENERY_FILE,
+      SCENERY_XCSOAR_FILE,
       SCENERY_UTC_OFFSET
     };
 

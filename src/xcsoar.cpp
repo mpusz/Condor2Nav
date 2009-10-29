@@ -147,14 +147,20 @@ namespace xcsoar {
  *
  * condor2nav::CTranslatorXCSoar class constructor.
  *
- * @param outputPath     Translation output directory. 
- * @param xcsoarDataPath The destination directory path (in XCSoar format) on the target device that runs XCSoar.
+ * @param configParser Configuration INI file parser.
 **/
-condor2nav::CTranslatorXCSoar::CTranslatorXCSoar(const std::string &outputPath, const std::string &xcsoarDataPath):
-CTranslator(outputPath),
-_xcsoarDataPath(xcsoarDataPath),
-_profileParser(CCondor2Nav::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME)
+condor2nav::CTranslatorXCSoar::CTranslatorXCSoar(const CFileParserINI &configParser):
+CTranslator(configParser),
+_profileParser(CCondor2Nav::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME),
+_outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
 {
+  std::string subDir = configParser.Value("XCSoar", "Condor2NavDataSubDir");
+  if(subDir != "")
+    subDir = "\\" + subDir;
+  _outputCondor2NavDataPath = _outputXCSoarDataPath + subDir;
+  _condor2navDataPath = configParser.Value("XCSoar", "XCSoarDataPath") + subDir;
+  
+  DirectoryCreate(_outputCondor2NavDataPath);
 }
 
 
@@ -165,7 +171,7 @@ _profileParser(CCondor2Nav::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME)
 **/
 condor2nav::CTranslatorXCSoar::~CTranslatorXCSoar()
 {
-  _profileParser.Dump(OutputPath() + std::string("\\") + OUTPUT_PROFILE_NAME);
+  _profileParser.Dump(_outputCondor2NavDataPath + std::string("\\") + OUTPUT_PROFILE_NAME);
 }
 
 
@@ -178,7 +184,7 @@ condor2nav::CTranslatorXCSoar::~CTranslatorXCSoar()
 **/
 void condor2nav::CTranslatorXCSoar::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  _profileParser.Value("", "MapFile", "\"" + _xcsoarDataPath + "\\" + sceneryData.at(CCondor2Nav::SCENERY_FILE) + "\"");
+  _profileParser.Value("", "MapFile", "\"" + _condor2navDataPath + "\\" + sceneryData.at(CCondor2Nav::SCENERY_XCSOAR_FILE) + "\"");
 }
 
 
@@ -208,7 +214,7 @@ void condor2nav::CTranslatorXCSoar::Glider(const CFileParserCSV::CStringArray &g
 {
   // set WinPilot Polar
   _profileParser.Value("", "Polar", "6");
-  _profileParser.Value("", "PolarFile", "\"" + _xcsoarDataPath + std::string("\\") + POLAR_FILE_NAME + std::string("\""));
+  _profileParser.Value("", "PolarFile", "\"" + _condor2navDataPath + std::string("\\") + POLAR_FILE_NAME + std::string("\""));
 
   _profileParser.Value("", "AircraftType", "\"" + gliderData.at(CCondor2Nav::GLIDER_NAME) + "\"");
   _profileParser.Value("", "SafteySpeed", Convert(KmH2MS(Convert<unsigned>(gliderData.at(CCondor2Nav::GLIDER_SPEED_MAX)))));
@@ -216,7 +222,7 @@ void condor2nav::CTranslatorXCSoar::Glider(const CFileParserCSV::CStringArray &g
   _profileParser.Value("", "BallastSecsToEmpty", gliderData.at(CCondor2Nav::GLIDER_WATER_BALLAST_EMPTY_TIME));
 
   // create polar file
-  std::string polarFileName = OutputPath() + std::string("\\") + POLAR_FILE_NAME;
+  std::string polarFileName = _outputCondor2NavDataPath + std::string("\\") + POLAR_FILE_NAME;
   std::ofstream polarFile(polarFileName.c_str());
   if(!polarFile)
     throw std::runtime_error("ERROR: Couldn't open Polar file '" + polarFileName + "' for writing!!!");
@@ -265,8 +271,8 @@ void condor2nav::CTranslatorXCSoar::Task(const CFileParserINI &taskParser, const
     taskPointArray[i].Index = -1;
 
 
-  _profileParser.Value("", "AdditionalWPFile", "\"" + _xcsoarDataPath + std::string("\\") + WP_FILE_NAME + std::string("\""));
-  std::string wpFileName = OutputPath() + std::string("\\") + WP_FILE_NAME;
+  _profileParser.Value("", "AdditionalWPFile", "\"" + _condor2navDataPath + std::string("\\") + WP_FILE_NAME + std::string("\""));
+  std::string wpFileName = _outputCondor2NavDataPath + std::string("\\") + WP_FILE_NAME;
   std::ofstream wpFile(wpFileName.c_str());
   if(!wpFile)
     throw std::runtime_error("ERROR: Couldn't open file '" + wpFileName + "' for writing!!!");

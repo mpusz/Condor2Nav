@@ -34,10 +34,10 @@
  *
  * condor2nav::CTranslator class constructor.
  *
- * @param outputPath Translation output directory.
+ * @param configParser Configuration INI file parser.
 **/
-condor2nav::CTranslator::CTranslator(const std::string &outputPath):
-_outputPath(outputPath)
+condor2nav::CTranslator::CTranslator(const CFileParserINI &configParser):
+_configParser(configParser), _outputPath(_configParser.Value("Condor2Nav", "OutputPath"))
 {
   DirectoryCreate(_outputPath);
 }
@@ -63,4 +63,17 @@ condor2nav::CTranslator::~CTranslator()
 const std::string &condor2nav::CTranslator::OutputPath() const
 {
   return _outputPath;
+}
+
+
+/**
+ * @brief Returns configuration INI file parser.
+ *
+ * Method returns configuration INI file parser.
+ *
+ * @return Configuration INI file parser. 
+**/
+const condor2nav::CFileParserINI &condor2nav::CTranslator::ConfigParser() const
+{
+  return _configParser;
 }
