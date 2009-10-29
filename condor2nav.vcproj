@@ -85,7 +85,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README.txt dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
+				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -160,7 +160,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README.txt dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
+				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
