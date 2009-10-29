@@ -8,8 +8,8 @@ http://sf.net/projects/condor2nav
 1. Description
 --------------
 Condor2Nav is intended to make Condor (The Competition Soaring Simulator) and
-gliding navigation applications synchronization easier. It will be a fully
-automated translator between Condor and navigation applications files formats.
+gliding navigation applications synchronization easier. When it is finished it will be
+a fully automated translator between Condor and navigation applications files formats.
 
 The main idea of the application is based on the XCondor application made by
 Simon Taylor (thanks Simon for providing me the sources), however Condor2Nav
@@ -25,3 +25,28 @@ will support XCSoar (www.xcsoar.org) only.
 The project is still in Alpha phase so use it on your own responsibility.
 Please report all the problems you encounter to the forum on the project 
 webpage.
+
+
+3. Installation
+---------------
+Obtain latest release package from the project website and extract it anywhere on
+the hard drive.
+
+The package contains:
+- condor2nav.exe - application executable
+- condor2nav.ini - project configuration
+- data/GliderData.csv - CSV file with gliders information
+- data/SceneryData.csv - CSV file with supported sceneries information
+
+
+4. Additional software
+----------------------
+To run the translation you will need to have Condor (The Competition Soaring Simulator)
+on your local computer. 
+
+In case of XCSoar translation following steps must be completed:
+1. Obtain Greg Nuspell's Condor XCM Sceneries from http://surfnet.dl.sourceforge.net/sourceforge/xcsoar/XCM_files.zip.
+2. Have XCSoar installed and configured on the target platform (e.g. PDA, PNA, PC).
+
+5. Configuration
+----------------
