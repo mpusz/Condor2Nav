@@ -40,7 +40,8 @@ namespace condor2nav {
    */
   class CTranslator {
     const CFileParserINI &_configParser;                  ///< @brief Configuration INI file parser.
-    const std::string _outputPath;                        ///< @brief Translation output directory
+    const std::string _outputPath;                        ///< @brief Translation output directory
+
     CTranslator(const CTranslator &);                     ///< @brief Disallowed
     const CTranslator &operator=(const CTranslator &);    ///< @brief Disallowed
 
