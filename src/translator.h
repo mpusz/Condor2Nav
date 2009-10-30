@@ -91,14 +91,14 @@ namespace condor2nav {
     virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
 
     /**
-     * @brief Sets task airspaces. 
+     * @brief Sets task penalty zones. 
      *
-     * Method sets airspaces used in the task.
+     * Method sets penalty zones used in the task.
      *
      * @param taskParser Condor task parser. 
      * @param coordConv  Condor coordinates converter.
      **/
-    virtual void Airspaces(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
+    virtual void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
 
     /**
      * @brief Sets weather data. 

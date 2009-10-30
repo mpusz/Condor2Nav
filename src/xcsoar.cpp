@@ -302,17 +302,33 @@ void condor2nav::CTranslatorXCSoar::Task(const CFileParserINI &taskParser, const
  
 
 /**
-* @brief Sets task airspaces. 
+* @brief Sets task penalty zones. 
 *
-* Method sets airspaces used in the task.
+* Method sets penalty zones used in the task.
 *
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
 **/
-void condor2nav::CTranslatorXCSoar::Airspaces(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
+void condor2nav::CTranslatorXCSoar::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  // AirspaceFile
-  // AdditionalAirspaceFile
+  unsigned pzNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "PZCount"));
+  for(unsigned i=0; i<pzNum; i++){
+  }
+
+  //_profileParser.Value("", "AdditionalAirspaceFile", "\"" + _condor2navDataPath + std::string("\\") + WP_FILE_NAME + std::string("\""));
+  //std::string wpFileName = _outputCondor2NavDataPath + std::string("\\") + WP_FILE_NAME;
+  //std::ofstream wpFile(wpFileName.c_str());
+  //if(!wpFile)
+  //  throw std::runtime_error("ERROR: Couldn't open file '" + wpFileName + "' for writing!!!");
+
+  //unsigned tpNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "Count"));
+  //// skip takeoff waypoint
+  //for(unsigned i=1; i<tpNum; i++){
+  //  // dump WP file line
+  //  std::string tpIdxStr(Convert(i));
+  //  std::string x(taskParser.Value("Task", "TPPosX" + tpIdxStr));
+  //  std::string y(taskParser.Value("Task", "TPPosY" + tpIdxStr));
+  //  std::string name;
 }
 
 

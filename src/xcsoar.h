@@ -64,7 +64,7 @@ namespace condor2nav {
     virtual void SceneryTime(const CFileParserCSV::CStringArray &sceneryData);
     virtual void Glider(const CFileParserCSV::CStringArray &gliderData);
     virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv);
-    virtual void Airspaces(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv);
+    virtual void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv);
     virtual void Weather(const CFileParserINI &taskParser);
   };
 

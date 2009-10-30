@@ -107,9 +107,9 @@ int condor2nav::CCondor2Nav::Run()
   if(_configParser.Value("Condor2Nav", "SetTask") == "1")
     translator->Task(condor.TaskParser(), condor.CoordConverter());
 
-  // translate airspaces
-  if(_configParser.Value("Condor2Nav", "SetAirspaces") == "1")
-    translator->Airspaces(condor.TaskParser(), condor.CoordConverter());
+  // translate penalty zones
+  if(_configParser.Value("Condor2Nav", "SetPenaltyZones") == "1")
+    translator->PenaltyZones(condor.TaskParser(), condor.CoordConverter());
 
   // translate weather
   if(_configParser.Value("Condor2Nav", "SetWeather") == "1")
