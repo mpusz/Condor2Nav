@@ -65,7 +65,7 @@ and at the same time require as small effort for every Condor task
 translation as possible. When using default configuration, below steps marked
 as [OPTIONAL] may be skipped.
 However it is possible to configure it in the other way maybe to better
-suite user's needs. In that case [OPTIONAL] points may be usefull.
+suite user's needs. In that case [OPTIONAL] points may be useful.
 
 Open condor2nav.ini file and change the following:
 1. Set [Condor] "Path" value to the main Condor directory.
@@ -89,10 +89,10 @@ Open condor2nav.ini file and change the following:
 2. [OPTIONAL] In case of any other Condor task name, condor2nav.ini file 
    should be updated or task name should be provided from the Command
    Line Interface (see "condor2nav.exe -h" for more info).
-3. Run condor2nav.exe (it is handfull to create a shortcut to application 
+3. Run condor2nav.exe (it is handful to create a shortcut to application 
    executable on the Windows desktop).
 4. In case of XCSoar translation and if [Condor2Nav] "OutputPath" is
-   different than the [XCSoar] "XCSoarDataPath" copy output data manualy
+   different than the [XCSoar] "XCSoarDataPath" copy output data manually
    to the target directory.
   
    
