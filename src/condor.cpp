@@ -160,7 +160,7 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
  * @exception std Thrown when not supported Condor version.
 **/
 condor2nav::CCondor::CCondor(const std::string &condorPath, const std::string &taskName):
-_taskParser(condorPath + "\\FlightPlans\\User\\" + taskName), _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
+_taskParser(condorPath + "\\FlightPlans\\User\\" + taskName + ".fpl"), _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
 {
   if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) != CONDOR_VERSION_SUPPORTED)
     throw std::out_of_range("Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!");

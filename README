@@ -84,8 +84,8 @@ Open condor2nav.ini file and change the following:
 
 6. Translation
 --------------
-1. Open Condor and save the task for translation. By default "A.fpl" task
-   name is used for translation.
+1. Open Condor and save the task for translation. By default "A" task name
+   is used for translation.
 2. [OPTIONAL] In case of any other Condor task name, condor2nav.ini file 
    should be updated or task name should be provided from the Command
    Line Interface (see "condor2nav.exe -h" for more info).

@@ -40,6 +40,22 @@
 int main(int argc, const char *argv[])
 {
   try {
+    if(argc > 1 && std::string(argv[1]) == "-h") {
+      std::cout << "Condor2Nav 0.1 Copyright (C) 2009 Mateusz Pusz" << std::endl;
+      std::cout << std::endl;
+      std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software," << std::endl;
+      std::cout << "and you are welcome to redistribute it under GNU GPL conditions." << std::endl;
+      std::cout << std::endl;
+      std::cout << "Usage:" << std::endl;
+      std::cout << "  condor2nav.exe [-h|<CONDOR_TASK_NAME>]" << std::endl;
+      std::cout << std::endl;
+      std::cout << "  -h                 - that help message" << std::endl;
+      std::cout << "  <CONDOR_TASK_NAME> - Task name as seen in the Condor GUI" << std::endl;
+      std::cout << "                       (without file extension)" << std::endl;
+  
+      return EXIT_SUCCESS;
+    }
+
     condor2nav::CCondor2Nav app(argc, argv);
     return app.Run();
   }
