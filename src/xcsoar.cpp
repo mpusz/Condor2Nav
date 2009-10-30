@@ -39,6 +39,7 @@ const char *condor2nav::CTranslatorXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registr
 const char *condor2nav::CTranslatorXCSoar::OUTPUT_PROFILE_NAME = "Condor.prf";
 const char *condor2nav::CTranslatorXCSoar::WP_FILE_NAME = "WP_CondorTask.dat";
 const char *condor2nav::CTranslatorXCSoar::POLAR_FILE_NAME = "Polar_Condor.plr";
+const char *condor2nav::CTranslatorXCSoar::AIRSPACES_FILE_NAME = "A_Condor.txt";
 
 
 /**
@@ -126,9 +127,11 @@ void condor2nav::CTranslatorXCSoar::Glider(const CFileParserCSV::CStringArray &g
   if(!polarFile)
     throw std::runtime_error("ERROR: Couldn't open Polar file '" + polarFileName + "' for writing!!!");
 
-  polarFile << "* " << gliderData.at(CCondor2Nav::GLIDER_NAME) << " WinPilot POLAR file" << std::endl;
+  polarFile << "***************************************************************************************************" << std::endl;
+  polarFile << "* " << gliderData.at(CCondor2Nav::GLIDER_NAME) << " WinPilot POLAR file generated with Condor2Nav" << std::endl;
   polarFile << "*" << std::endl;
   polarFile << "* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3" << std::endl;
+  polarFile << "***************************************************************************************************" << std::endl;
   for(unsigned i=CCondor2Nav::GLIDER_MASS_DRY_GROSS; i<=CCondor2Nav::GLIDER_SINK_3; i++) {
     if(i > CCondor2Nav::GLIDER_MASS_DRY_GROSS)
       polarFile << ",";
@@ -190,7 +193,10 @@ void condor2nav::CTranslatorXCSoar::Task(const CFileParserINI &taskParser, const
       name = "FINISH";
     else
       name = "TP" + Convert(i - 1);
-    wpFile << i << "," << coordConv.Latitude(x, y) << "," << coordConv.Longitude(x, y) << "," << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M,T," << name << "," << taskParser.Value("Task", "TPName" + tpIdxStr) << std::endl;
+    wpFile << i << "," << coordConv.Latitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMFF) << "," 
+      << coordConv.Longitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMFF) << ","
+      << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M,T," << name << ","
+      << taskParser.Value("Task", "TPName" + tpIdxStr) << std::endl;
 
     // dump Task File data
     std::string sectorTypeStr(taskParser.Value("Task", "TPSectorType" + tpIdxStr));
@@ -312,23 +318,38 @@ void condor2nav::CTranslatorXCSoar::Task(const CFileParserINI &taskParser, const
 void condor2nav::CTranslatorXCSoar::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
   unsigned pzNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "PZCount"));
-  for(unsigned i=0; i<pzNum; i++){
+  if(pzNum == 0)
+    return;
+
+  _profileParser.Value("", "AirspaceFile", "\"" + _condor2navDataPath + std::string("\\") + AIRSPACES_FILE_NAME + std::string("\""));
+  std::string airspacesFileName = _outputCondor2NavDataPath + std::string("\\") + AIRSPACES_FILE_NAME;
+  std::ofstream airspacesFile(airspacesFileName.c_str());
+  if(!airspacesFile)
+    throw std::runtime_error("ERROR: Couldn't open file '" + airspacesFileName + "' for writing!!!");
+
+  airspacesFile << "*******************************************************" << std::endl;
+  airspacesFile << "* Condor Task Penalty Zones generated with Condor2Nav *" << std::endl;
+  airspacesFile << "*******************************************************" << std::endl;
+  for(unsigned i=0; i<pzNum; i++) {
+    std::string tpIdxStr(Convert(i));
+    airspacesFile << std::endl;
+    airspacesFile << "AC P" << std::endl;
+    airspacesFile << "AN Penalty Zone " << i + 1 << std::endl;
+    airspacesFile << "AH " << taskParser.Value("Task", "PZTop" + tpIdxStr) << "m AMSL" << std::endl;
+    unsigned base(Convert<unsigned>(taskParser.Value("Task", "PZBase" + tpIdxStr)));
+    if(base == 0)
+      airspacesFile << "AL 0" << std::endl;
+    else
+      airspacesFile << "AL " << base << "m AMSL" << std::endl;
+    
+    for(unsigned j=0; j<4; j++) {
+      std::string tpCornerIdxStr(Convert(j));
+      std::string x(taskParser.Value("Task", "PZPos" + tpCornerIdxStr + "X" + tpIdxStr));
+      std::string y(taskParser.Value("Task", "PZPos" + tpCornerIdxStr + "Y" + tpIdxStr));
+      airspacesFile << "DP " << coordConv.Latitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMSS) <<
+        " " << coordConv.Longitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMSS) << std::endl;
+    }
   }
-
-  //_profileParser.Value("", "AdditionalAirspaceFile", "\"" + _condor2navDataPath + std::string("\\") + WP_FILE_NAME + std::string("\""));
-  //std::string wpFileName = _outputCondor2NavDataPath + std::string("\\") + WP_FILE_NAME;
-  //std::ofstream wpFile(wpFileName.c_str());
-  //if(!wpFile)
-  //  throw std::runtime_error("ERROR: Couldn't open file '" + wpFileName + "' for writing!!!");
-
-  //unsigned tpNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "Count"));
-  //// skip takeoff waypoint
-  //for(unsigned i=1; i<tpNum; i++){
-  //  // dump WP file line
-  //  std::string tpIdxStr(Convert(i));
-  //  std::string x(taskParser.Value("Task", "TPPosX" + tpIdxStr));
-  //  std::string y(taskParser.Value("Task", "TPPosY" + tpIdxStr));
-  //  std::string name;
 }
 
 

@@ -50,6 +50,7 @@ namespace condor2nav {
     static const char *OUTPUT_PROFILE_NAME;      ///< @brief The name of XCSoar profile file to generate. 
     static const char *WP_FILE_NAME;           	 ///< @brief The name of XCSoar waypoints file to generate. 
     static const char *POLAR_FILE_NAME;          ///< @brief The name of XCSoar glider polar file to generate.
+    static const char *AIRSPACES_FILE_NAME;      ///< @brief The name of XCSoar airspaces file to generate. 
 
     CFileParserINI _profileParser;               ///< @brief XCSoar profile file parser. 
     const std::string _outputXCSoarDataPath;     ///< @brief The path to the output XCSoarData directory.

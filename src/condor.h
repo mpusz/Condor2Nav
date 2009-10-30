@@ -78,12 +78,21 @@ namespace condor2nav {
       TDLLIface _iface;	      ///< @brief DLL interface.
 
       std::string DDFFToDDMMFF(float value, bool longitude) const;
+      std::string DDFFToDDMMSS(float value, bool longitude) const;
 
     public:
+      /**
+       * @brief Coordinate output string format.
+      **/
+      enum TOutputFormat {
+//        FORMAT_DDFF,          ///< @brief Format in form 23.3545645N
+        FORMAT_DDMMFF,        ///< @brief Format in form 23:35.454N
+        FORMAT_DDMMSS         ///< @brief Format in form 23:35:23N
+      };
       CCoordConverter(const std::string &condorPath, const std::string &trnName);
       ~CCoordConverter();
-      std::string Longitude(const std::string &x, const std::string &y) const;
-      std::string Latitude(const std::string &x, const std::string &y) const;
+      std::string Longitude(const std::string &x, const std::string &y, TOutputFormat format) const;
+      std::string Latitude(const std::string &x, const std::string &y, TOutputFormat format) const;
     };
 
   private:

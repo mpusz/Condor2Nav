@@ -112,20 +112,53 @@ std::string condor2nav::CCondor::CCoordConverter::DDFFToDDMMFF(float value, bool
 
 
 /**
+ * @brief Converts longitude and latitude coordinates.
+ *
+ * Method converts longitude and latitude coordinates from DD.FF
+ * to DD:MM::SS format.
+ *
+ * @param value     The coordinate value to convert. 
+ * @param longitude @c true - longitude; @c false - latitude. 
+ *
+ * @return Converted coordinate string.
+**/
+std::string condor2nav::CCondor::CCoordConverter::DDFFToDDMMSS(float value, bool longitude) const
+{
+  int deg = static_cast<int>(value);
+  if(deg < 0)
+    deg = -deg;
+  unsigned min = static_cast<unsigned>((value - deg) * 60);
+  unsigned sec = static_cast<unsigned>(((value - deg) * 60 - min) * 60);
+  std::stringstream stream;
+  stream << std::setfill('0') << std::setw(longitude ? 3 : 2) << deg << ":" << std::setw(2) << min << ":" << std::setw(2) << sec << (longitude ? (value > 0 ? "E" : "W") : (value > 0 ? "N" : "S"));
+  return stream.str();
+}
+
+
+/**
  * @brief Converts Condor coordinates to longitude.
  *
  * Method converts Condor coordinates to longitude.
  * 
  * @param x The x coordinate.
  * @param y The y coordinate. 
+ * @param format Coordinate output string format.
  *
  * @return Converted coordinate string.
 **/
-std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y) const
+std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
   float xVal(condor2nav::Convert<float>(x));
   float yVal(condor2nav::Convert<float>(y));
-  return DDFFToDDMMFF(_iface.xyToLon(xVal, yVal), true);
+  float longitude(_iface.xyToLon(xVal, yVal));
+  switch(format) {
+  case FORMAT_DDMMFF:
+    return DDFFToDDMMFF(longitude, true);
+  case FORMAT_DDMMSS:
+    return DDFFToDDMMSS(longitude, true);
+  default:
+    throw std::out_of_range("Not supported longitude format specified!!!");
+  }
 }
 
 
@@ -136,14 +169,23 @@ std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x
  * 
  * @param x The x coordinate.
  * @param y The y coordinate. 
+ * @param format Coordinate output string format.
  *
  * @return Converted coordinate string.
 **/
-std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y) const
+std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
   float xVal(condor2nav::Convert<float>(x));
   float yVal(condor2nav::Convert<float>(y));
-  return DDFFToDDMMFF(_iface.xyToLat(xVal, yVal), false);
+  float latitude(_iface.xyToLat(xVal, yVal));
+  switch(format) {
+  case FORMAT_DDMMFF:
+    return DDFFToDDMMFF(latitude, false);
+  case FORMAT_DDMMSS:
+    return DDFFToDDMMSS(latitude, false);
+  default:
+    throw std::out_of_range("Not supported latitude format specified!!!");
+  }
 }
 
 
