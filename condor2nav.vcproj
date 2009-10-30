@@ -246,10 +246,14 @@
 				RelativePath=".\src\xcsoar.h"
 				>
 			</File>
-			<File
-				RelativePath=".\src\imports\xcsoarTypes.h"
+			<Filter
+				Name="Imports"
 				>
-			</File>
+				<File
+					RelativePath=".\src\imports\xcsoarTypes.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
