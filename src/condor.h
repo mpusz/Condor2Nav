@@ -77,9 +77,6 @@ namespace condor2nav {
       HINSTANCE _hInstLib;	  ///< @brief DLL instance. 
       TDLLIface _iface;	      ///< @brief DLL interface.
 
-      std::string DDFFToDDMMFF(float value, bool longitude) const;
-      std::string DDFFToDDMMSS(float value, bool longitude) const;
-
     public:
       /**
        * @brief Coordinate output string format.
@@ -98,7 +95,7 @@ namespace condor2nav {
   private:
     static const unsigned CONDOR_VERSION_SUPPORTED = 1120;	  ///< @brief Supported Condor version. 
 
-    const CFileParserINI _taskParser;	             ///< @brief Condor task file parser. 
+    const CFileParserINI _taskParser;	           ///< @brief Condor task file parser. 
     const CCoordConverter _coordConverter;	       ///< @brief Condor map coordinates converter. 
 
   public:

@@ -20,18 +20,15 @@
 //
 
 /**
- * @file xcsoar.h
+ * @file targetXCSoar.h
  *
- * @brief Declares the condor2nav::CTranslatorXCSoar class. 
+ * @brief Declares the condor2nav::CTargetXCSoar class. 
 **/
 
-#ifndef __XCSOAR_H__
-#define __XCSOAR_H__
+#ifndef __TARGET_XCSOAR_H__
+#define __TARGET_XCSOAR_H__
 
 #include "translator.h"
-#include "fileParserCSV.h"
-#include "fileParserINI.h"
-#include <string>
 
 
 namespace condor2nav {
@@ -42,7 +39,7 @@ namespace condor2nav {
    * condor2nav::CTranslatorXCSoar class is responsible for Condor data translation
    * to XCSoar (http://www.xcsoar.org) format.
   **/
-  class CTranslatorXCSoar : public CTranslator {
+  class CTargetXCSoar : public CTranslator::CTarget {
     // inputs
     static const char *XCSOAR_PROFILE_NAME;	     ///< @brief XCSoar profile file name to use for input. 
 
@@ -58,8 +55,8 @@ namespace condor2nav {
     std::string _condor2navDataPath;             ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar. 
     
   public:
-    explicit CTranslatorXCSoar(const CFileParserINI &configParser);
-    virtual ~CTranslatorXCSoar();
+    explicit CTargetXCSoar(const CTranslator &translator);
+    virtual ~CTargetXCSoar();
 
     virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData);
     virtual void SceneryTime(const CFileParserCSV::CStringArray &sceneryData);
@@ -71,4 +68,4 @@ namespace condor2nav {
 
 }
 
-#endif /* __XCSOAR_H__ */
+#endif /* __TARGET_XCSOAR_H__ */

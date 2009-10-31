@@ -20,45 +20,42 @@
 //
 
 /**
- * @file xcsoar.cpp
+ * @file targetXCSoar.cpp
  *
- * @brief Implements the condor2nav::CTranslatorXCSoar class. 
+ * @brief Implements the condor2nav::CTargetXCSoar class. 
 **/
 
-#include "xcsoar.h"
-#include "condor2nav.h"
-#include "condor.h"
-#include "tools.h"
+#include "targetXCSoar.h"
 #include "imports/xcsoarTypes.h"
 #include <fstream>
 #include <iostream>
 
 
-const char *condor2nav::CTranslatorXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registry.prf";
+const char *condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registry.prf";
 
-const char *condor2nav::CTranslatorXCSoar::OUTPUT_PROFILE_NAME = "Condor.prf";
-const char *condor2nav::CTranslatorXCSoar::WP_FILE_NAME = "WP_CondorTask.dat";
-const char *condor2nav::CTranslatorXCSoar::POLAR_FILE_NAME = "Polar_Condor.plr";
-const char *condor2nav::CTranslatorXCSoar::AIRSPACES_FILE_NAME = "A_Condor.txt";
+const char *condor2nav::CTargetXCSoar::OUTPUT_PROFILE_NAME = "Condor.prf";
+const char *condor2nav::CTargetXCSoar::WP_FILE_NAME = "WP_CondorTask.dat";
+const char *condor2nav::CTargetXCSoar::POLAR_FILE_NAME = "Polar_Condor.plr";
+const char *condor2nav::CTargetXCSoar::AIRSPACES_FILE_NAME = "A_Condor.txt";
 
 
 /**
  * @brief Class constructor.
  *
- * condor2nav::CTranslatorXCSoar class constructor.
+ * condor2nav::CTargetXCSoar class constructor.
  *
- * @param configParser Configuration INI file parser.
+ * @param translator Configuration INI file parser.
 **/
-condor2nav::CTranslatorXCSoar::CTranslatorXCSoar(const CFileParserINI &configParser):
-CTranslator(configParser),
-_profileParser(CCondor2Nav::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME),
+condor2nav::CTargetXCSoar::CTargetXCSoar(const CTranslator &translator):
+CTranslator::CTarget(translator),
+_profileParser(CTranslator::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME),
 _outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
 {
-  std::string subDir = configParser.Value("XCSoar", "Condor2NavDataSubDir");
+  std::string subDir = ConfigParser().Value("XCSoar", "Condor2NavDataSubDir");
   if(subDir != "")
     subDir = "\\" + subDir;
   _outputCondor2NavDataPath = _outputXCSoarDataPath + subDir;
-  _condor2navDataPath = configParser.Value("XCSoar", "XCSoarDataPath") + subDir;
+  _condor2navDataPath = ConfigParser().Value("XCSoar", "XCSoarDataPath") + subDir;
   
   DirectoryCreate(_outputCondor2NavDataPath);
 }
@@ -67,9 +64,9 @@ _outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
 /**
  * @brief Class destructor.
  *
- * condor2nav::CTranslatorXCSoar class destructor.
+ * condor2nav::CTargetXCSoar class destructor.
 **/
-condor2nav::CTranslatorXCSoar::~CTranslatorXCSoar()
+condor2nav::CTargetXCSoar::~CTargetXCSoar()
 {
   _profileParser.Dump(_outputCondor2NavDataPath + std::string("\\") + OUTPUT_PROFILE_NAME);
 }
@@ -82,9 +79,9 @@ condor2nav::CTranslatorXCSoar::~CTranslatorXCSoar()
 *
 * @param sceneryData Information describing the scenery. 
 **/
-void condor2nav::CTranslatorXCSoar::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
+void condor2nav::CTargetXCSoar::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  _profileParser.Value("", "MapFile", "\"" + _condor2navDataPath + "\\" + sceneryData.at(CCondor2Nav::SCENERY_XCSOAR_FILE) + "\"");
+  _profileParser.Value("", "MapFile", "\"" + _condor2navDataPath + "\\" + sceneryData.at(SCENERY_XCSOAR_FILE) + "\"");
 }
 
 
@@ -95,9 +92,9 @@ void condor2nav::CTranslatorXCSoar::SceneryMap(const CFileParserCSV::CStringArra
 *
 * @param sceneryData Information describing the scenery. 
 **/
-void condor2nav::CTranslatorXCSoar::SceneryTime(const CFileParserCSV::CStringArray &sceneryData)
+void condor2nav::CTargetXCSoar::SceneryTime(const CFileParserCSV::CStringArray &sceneryData)
 {
-  _profileParser.Value("", "UTCOffset", sceneryData.at(CCondor2Nav::SCENERY_UTC_OFFSET));
+  _profileParser.Value("", "UTCOffset", sceneryData.at(SCENERY_UTC_OFFSET));
   _profileParser.Value("", "SetSystemTimeFromGPS", "1");
 }
 
@@ -110,16 +107,16 @@ void condor2nav::CTranslatorXCSoar::SceneryTime(const CFileParserCSV::CStringArr
 *
 * @param gliderData Information describing the glider. 
 **/
-void condor2nav::CTranslatorXCSoar::Glider(const CFileParserCSV::CStringArray &gliderData)
+void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
   // set WinPilot Polar
   _profileParser.Value("", "Polar", "6");
   _profileParser.Value("", "PolarFile", "\"" + _condor2navDataPath + std::string("\\") + POLAR_FILE_NAME + std::string("\""));
 
-  _profileParser.Value("", "AircraftType", "\"" + gliderData.at(CCondor2Nav::GLIDER_NAME) + "\"");
-  _profileParser.Value("", "SafteySpeed", Convert(KmH2MS(Convert<unsigned>(gliderData.at(CCondor2Nav::GLIDER_SPEED_MAX)))));
-  _profileParser.Value("", "Handicap", gliderData.at(CCondor2Nav::GLIDER_DAEC_INDEX));
-  _profileParser.Value("", "BallastSecsToEmpty", gliderData.at(CCondor2Nav::GLIDER_WATER_BALLAST_EMPTY_TIME));
+  _profileParser.Value("", "AircraftType", "\"" + gliderData.at(GLIDER_NAME) + "\"");
+  _profileParser.Value("", "SafteySpeed", Convert(KmH2MS(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)))));
+  _profileParser.Value("", "Handicap", gliderData.at(GLIDER_DAEC_INDEX));
+  _profileParser.Value("", "BallastSecsToEmpty", gliderData.at(GLIDER_WATER_BALLAST_EMPTY_TIME));
 
   // create polar file
   std::string polarFileName = _outputCondor2NavDataPath + std::string("\\") + POLAR_FILE_NAME;
@@ -128,12 +125,12 @@ void condor2nav::CTranslatorXCSoar::Glider(const CFileParserCSV::CStringArray &g
     throw std::runtime_error("ERROR: Couldn't open Polar file '" + polarFileName + "' for writing!!!");
 
   polarFile << "***************************************************************************************************" << std::endl;
-  polarFile << "* " << gliderData.at(CCondor2Nav::GLIDER_NAME) << " WinPilot POLAR file generated with Condor2Nav" << std::endl;
+  polarFile << "* " << gliderData.at(GLIDER_NAME) << " WinPilot POLAR file generated with Condor2Nav" << std::endl;
   polarFile << "*" << std::endl;
   polarFile << "* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3" << std::endl;
   polarFile << "***************************************************************************************************" << std::endl;
-  for(unsigned i=CCondor2Nav::GLIDER_MASS_DRY_GROSS; i<=CCondor2Nav::GLIDER_SINK_3; i++) {
-    if(i > CCondor2Nav::GLIDER_MASS_DRY_GROSS)
+  for(unsigned i=GLIDER_MASS_DRY_GROSS; i<=GLIDER_SINK_3; i++) {
+    if(i > GLIDER_MASS_DRY_GROSS)
       polarFile << ",";
     polarFile << gliderData.at(i);
   }
@@ -149,7 +146,7 @@ void condor2nav::CTranslatorXCSoar::Glider(const CFileParserCSV::CStringArray &g
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
 **/
-void condor2nav::CTranslatorXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
+void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
   using namespace xcsoar;
 
@@ -315,7 +312,7 @@ void condor2nav::CTranslatorXCSoar::Task(const CFileParserINI &taskParser, const
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
 **/
-void condor2nav::CTranslatorXCSoar::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
+void condor2nav::CTargetXCSoar::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
   unsigned pzNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "PZCount"));
   if(pzNum == 0)
@@ -360,7 +357,7 @@ void condor2nav::CTranslatorXCSoar::PenaltyZones(const CFileParserINI &taskParse
 *
 * @param taskParser Condor task parser. 
 **/
-void condor2nav::CTranslatorXCSoar::Weather(const CFileParserINI &taskParser)
+void condor2nav::CTargetXCSoar::Weather(const CFileParserINI &taskParser)
 {
   unsigned dir = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindDir")) + 0.5);
   unsigned speed = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindSpeed")) + 0.5);

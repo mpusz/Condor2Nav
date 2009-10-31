@@ -32,6 +32,7 @@
 
 namespace condor2nav {
 
+  // usefull templates
   /**
    * @brief Pointer version of std::less
    *
@@ -44,13 +45,15 @@ namespace condor2nav {
       return *v1 < *v2;
     }
   };
-
   template<class Seq> void Purge(Seq &container);
   template<class Map> void PurgeMap(Map &container);
 
   // conversions
   template<class T> T Convert(const std::string &str);
   template<class T> std::string Convert(const T &val);
+
+  std::string DDFF2DDMMFF(float value, bool longitude);
+  std::string DDFF2DDMMSS(float value, bool longitude);
 
   unsigned KmH2MS(unsigned value);
 

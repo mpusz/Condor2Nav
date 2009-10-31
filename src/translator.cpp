@@ -26,19 +26,31 @@
 **/
 
 #include "translator.h"
-#include "tools.h"
+#include "condor.h"
+#include "targetXCSoar.h"
+#include <iostream>
+
+
+const char *condor2nav::CTranslator::CONFIG_FILE_NAME = "condor2nav.ini";
+const char *condor2nav::CTranslator::DATA_PATH = "data";
+const char *condor2nav::CTranslator::SCENERIES_DATA_FILE_NAME = "SceneryData.csv";
+const char *condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME = "GliderData.csv";
+
+
+
+/* ************************* T R A N S L A T O R   -   T A R G E T ************************** */
 
 
 /**
  * @brief Class constructor.
  *
- * condor2nav::CTranslator class constructor.
+ * condor2nav::CTranslator::CTarget class constructor.
  *
- * @param configParser Configuration INI file parser.
+ * @param translator Translator class.
 **/
-condor2nav::CTranslator::CTranslator(const CFileParserINI &configParser):
-_configParser(configParser), _outputPath(_configParser.Value("Condor2Nav", "OutputPath"))
-{
+condor2nav::CTranslator::CTarget::CTarget(const CTranslator &translator):
+_translator(translator),
+_outputPath(_translator._configParser.Value("Condor2Nav", "OutputPath")){
   DirectoryCreate(_outputPath);
 }
 
@@ -46,10 +58,53 @@ _configParser(configParser), _outputPath(_configParser.Value("Condor2Nav", "Outp
 /**
  * @brief Class destructor.
  *
- * condor2nav::CTranslator class destructor.
+ * condor2nav::CTranslator::CTarget class destructor.
 **/
-condor2nav::CTranslator::~CTranslator()
+condor2nav::CTranslator::CTarget::~CTarget()
 {
+}
+
+
+/**
+ * @brief Returns translator class.
+ *
+ * Method returns translator class. Should be used by the translation target
+ * if directly provided information is not enough for the translation.
+ *
+ * @return Translator class. 
+**/
+const condor2nav::CTranslator &condor2nav::CTranslator::CTarget::Translator() const
+{
+  return _translator;
+}
+
+
+/**
+ * @brief Returns configuration INI file parser.
+ *
+ * Method returns configuration INI file parser. Should be used by the
+ * translation targets if directly provided information is not enough
+ * for the translation.
+ *
+ * @return Configuration INI file parser. 
+**/
+const condor2nav::CFileParserINI &condor2nav::CTranslator::CTarget::ConfigParser() const
+{
+  return _translator._configParser;
+}
+
+
+/**
+ * @brief Returns Condor data.
+ *
+ * Method returns Condor data. Should be used by the translation targets 
+ * if directly provided information is not enough for the translation.
+ *
+ * @return Condor data. 
+**/
+const condor2nav::CCondor &condor2nav::CTranslator::CTarget::Condor() const
+{
+  return _translator._condor;
 }
 
 
@@ -60,20 +115,97 @@ condor2nav::CTranslator::~CTranslator()
  *
  * @return Translation output directory. 
 **/
-const std::string &condor2nav::CTranslator::OutputPath() const
+const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
 {
   return _outputPath;
 }
 
 
+
+
+
+/* ********************************** T R A N S L A T O R *********************************** */
+
 /**
- * @brief Returns configuration INI file parser.
+ * @brief Class constructor.
  *
- * Method returns configuration INI file parser.
+ * condor2nav::CTranslator class constructor.
  *
- * @return Configuration INI file parser. 
+ * @param cliTaskName Condor task name provided in application Command Line
+ *                    ("" if nothing provided - default should be used).
 **/
-const condor2nav::CFileParserINI &condor2nav::CTranslator::ConfigParser() const
+condor2nav::CTranslator::CTranslator(const std::string &cliTaskName):
+_configParser(CONFIG_FILE_NAME),
+_condor(_configParser.Value("Condor", "Path"), (cliTaskName != "") ? cliTaskName : _configParser.Value("Condor", "DefaultTaskName"))
 {
-  return _configParser;
+}
+
+
+/**
+ * @brief Creates Condor data translator target. 
+ *
+ * Method creates Condor data translator target.
+ *
+ * @note For now only XCSoar translation target is supported but later on
+ *       that method will return translator targets specified by the
+ *       configuration INI file.
+ *
+ * @return Condor data translator target.
+**/
+std::auto_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target() const
+{
+  return std::auto_ptr<CTarget>(new CTargetXCSoar(*this));
+}
+
+
+/**
+ * @brief Runs translation.
+ *
+ * Method is responsible for Condor data translation. Several
+ * translate actions are configured through configuration INI file.
+**/
+void condor2nav::CTranslator::Run()
+{
+  // create translation target
+  std::auto_ptr<CTarget> target(Target());
+
+  // translate scenery data
+  {
+    const CFileParserCSV sceneriesParser(DATA_PATH + std::string("\\") + SCENERIES_DATA_FILE_NAME);
+    const CFileParserCSV::CStringArray &sceneryData = sceneriesParser.Row(_condor.TaskParser().Value("Task", "Landscape"));
+
+    if(_configParser.Value("Condor2Nav", "SetSceneryMap") == "1") {
+      std::cout << "Setting scenery map data..." << std::endl;
+      target->SceneryMap(sceneryData);
+    }
+    if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1") {
+      std::cout << "Setting scenery time..." << std::endl;
+      target->SceneryTime(sceneryData);
+    }
+  }
+  
+  // translate glider data
+  if(_configParser.Value("Condor2Nav", "SetGlider") == "1") {
+    std::cout << "Setting glider data..." << std::endl;
+    const CFileParserCSV glidersParser(DATA_PATH + std::string("\\") + GLIDERS_DATA_FILE_NAME);
+    target->Glider(glidersParser.Row(_condor.TaskParser().Value("Plane", "Name")));
+  }
+
+  // translate task
+  if(_configParser.Value("Condor2Nav", "SetTask") == "1") {
+    std::cout << "Setting task data..." << std::endl;
+    target->Task(_condor.TaskParser(), _condor.CoordConverter());
+  }
+
+  // translate penalty zones
+  if(_configParser.Value("Condor2Nav", "SetPenaltyZones") == "1") {
+    std::cout << "Setting penalty zones..." << std::endl;
+    target->PenaltyZones(_condor.TaskParser(), _condor.CoordConverter());
+  }
+
+  // translate weather
+  if(_configParser.Value("Condor2Nav", "SetWeather") == "1") {
+    std::cout << "Setting wheater data..." << std::endl;
+    target->Weather(_condor.TaskParser());
+  }
 }

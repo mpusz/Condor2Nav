@@ -26,105 +26,46 @@
 **/
 
 #include "condor2nav.h"
-#include "condor.h"
-#include "xcsoar.h"
+#include "translator.h"
 #include <iostream>
 
 
-const char *condor2nav::CCondor2Nav::CONFIG_FILE_NAME = "condor2nav.ini";
-const char *condor2nav::CCondor2Nav::DATA_PATH = "data";
-const char *condor2nav::CCondor2Nav::SCENERIES_DATA_FILE_NAME = "SceneryData.csv";
-const char *condor2nav::CCondor2Nav::GLIDERS_DATA_FILE_NAME = "GliderData.csv";
-
-
-
-/**
- * @brief Class constructor. 
- *
- * condor2nav::CCondor2Nav class constructor that parses application configuration
- * INI file.
- *
- * @param argc   Number of command-line arguments. 
- * @param argv   Array of command-line argument strings. 
-**/
-condor2nav::CCondor2Nav::CCondor2Nav(int argc, const char *argv[]):
-_configParser(CONFIG_FILE_NAME),
-_taskName((argc > 1) ? argv[1] : _configParser.Value("Condor", "DefaultTaskName"))
+void condor2nav::CCondor2Nav::Usage() const
 {
-}
-
-
-/**
- * @brief Creates Condor data translator. 
- *
- * Method creates Condor data translator.
- *
- * @note For now only XCSoar is supported but later on that method will return
- *       data translator required by configuration INI file.
- *
- * @return Condor data translator.
-**/
-std::auto_ptr<condor2nav::CTranslator> condor2nav::CCondor2Nav::Translator() const
-{
-  return std::auto_ptr<condor2nav::CTranslator>(new CTranslatorXCSoar(_configParser));
+  std::cout << "Condor2Nav 0.1 Copyright (C) 2009 Mateusz Pusz" << std::endl;
+  std::cout << std::endl;
+  std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software," << std::endl;
+  std::cout << "and you are welcome to redistribute it under GNU GPL conditions." << std::endl;
+  std::cout << std::endl;
+  std::cout << "Usage:" << std::endl;
+  std::cout << "  condor2nav.exe [-h|<CONDOR_TASK_NAME>]" << std::endl;
+  std::cout << std::endl;
+  std::cout << "  -h                 - that help message" << std::endl;
+  std::cout << "  <CONDOR_TASK_NAME> - Task name as seen in the Condor GUI" << std::endl;
+  std::cout << "                       (without file extension)" << std::endl;
 }
 
 
 /**
  * @brief Runs translation.
  *
- * Method is responsible for Condor data translation. Several
- * translate actions are configured through configuration INI file.
+ * Method is responsible for command line handling and running the translation.
+ *
+ * @param argc   Number of command-line arguments. 
+ * @param argv   Array of command-line argument strings. 
  * 
  * @return Application execution result.
 **/
-int condor2nav::CCondor2Nav::Run()
+int condor2nav::CCondor2Nav::Run(int argc, const char *argv[]) const
 {
-  // create Condor data
-  condor2nav::CCondor condor(_configParser.Value("Condor", "Path"), _taskName);
-
-  // create translator
-  std::auto_ptr<condor2nav::CTranslator> translator(Translator());
-
-  // translate scenery data
-  {
-    const CFileParserCSV sceneriesParser(DATA_PATH + std::string("\\") + SCENERIES_DATA_FILE_NAME);
-    const CFileParserCSV::CStringArray &sceneryData = sceneriesParser.Row(condor.TaskParser().Value("Task", "Landscape"));
-
-    if(_configParser.Value("Condor2Nav", "SetSceneryMap") == "1") {
-      std::cout << "Setting scenery map data..." << std::endl;
-      translator->SceneryMap(sceneryData);
-    }
-    if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1") {
-      std::cout << "Setting scenery time..." << std::endl;
-      translator->SceneryTime(sceneryData);
-    }
-  }
-  
-  // translate glider data
-  if(_configParser.Value("Condor2Nav", "SetGlider") == "1") {
-    std::cout << "Setting glider data..." << std::endl;
-    const CFileParserCSV glidersParser(DATA_PATH + std::string("\\") + GLIDERS_DATA_FILE_NAME);
-    translator->Glider(glidersParser.Row(condor.TaskParser().Value("Plane", "Name")));
+  if(argc > 1 && std::string(argv[1]) == "-h") {
+    Usage();
+    return EXIT_SUCCESS;
   }
 
-  // translate task
-  if(_configParser.Value("Condor2Nav", "SetTask") == "1") {
-    std::cout << "Setting task data..." << std::endl;
-    translator->Task(condor.TaskParser(), condor.CoordConverter());
-  }
-
-  // translate penalty zones
-  if(_configParser.Value("Condor2Nav", "SetPenaltyZones") == "1") {
-    std::cout << "Setting penalty zones..." << std::endl;
-    translator->PenaltyZones(condor.TaskParser(), condor.CoordConverter());
-  }
-
-  // translate weather
-  if(_configParser.Value("Condor2Nav", "SetWeather") == "1") {
-    std::cout << "Setting wheater data..." << std::endl;
-    translator->Weather(condor.TaskParser());
-  }
+  std::string taskName((argc > 1) ? argv[1] : "");
+  CTranslator translator(taskName);
+  translator.Run();
   
   return EXIT_SUCCESS;
 }

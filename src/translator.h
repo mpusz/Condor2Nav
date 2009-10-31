@@ -29,85 +29,145 @@
 #define __TRANSLATOR_H__
 
 #include "condor.h"
+#include "fileParserINI.h"
 #include "fileParserCSV.h"
+
 
 namespace condor2nav {
 
   /**
-   * @brief Translators hierarchy base class.
+   * @brief Translator class.
    *
-   * condor2nav::CTranslator is a base abstract class for all translations.
+   * condor2nav::CTranslator is a class responsible for translation management.
    */
   class CTranslator {
-    const CFileParserINI &_configParser;                  ///< @brief Configuration INI file parser.
-    const std::string _outputPath;                        ///< @brief Translation output directory
+  public:
+
+    /**
+     * @brief Translation targets hierarchy base class.
+     *
+     * condor2nav::CTranslator::CTarget is a base abstract class for all translation targets.
+     */
+    class CTarget {
+      const CTranslator &_translator;               ///< @brief Translator class
+      const std::string _outputPath;                ///< @brief Translation output directory
+
+      CTarget(const CTarget &);                     ///< @brief Disallowed
+      const CTarget &operator=(const CTarget &);    ///< @brief Disallowed
+
+    protected:
+      /**
+       * @brief Sceneries data CSV file column names.
+      **/
+      enum TSceneriesDataColumns {
+        SCENERY_NAME,
+        SCENERY_XCSOAR_FILE,
+        SCENERY_UTC_OFFSET
+      };
+
+      /**
+       * @brief Gliders data CSV file column names.
+      **/
+      enum TGlidersDataColumns {
+        GLIDER_NAME,
+        GLIDER_SPEED_MAX,
+        GLIDER_DAEC_INDEX,
+        GLIDER_WATER_BALLAST_EMPTY_TIME,
+        GLIDER_MASS_DRY_GROSS,
+        GLIDER_MAX_WATER_BALLAST,
+        GLIDER_SPPED_1,
+        GLIDER_SINK_1,
+        GLIDER_SPPED_2,
+        GLIDER_SINK_2,
+        GLIDER_SPPED_3,
+        GLIDER_SINK_3
+      };
+
+      const CTranslator &Translator() const;
+      const CFileParserINI &ConfigParser() const;
+      const CCondor &Condor() const;
+      const std::string &OutputPath() const;
+
+    public:
+      explicit CTarget(const CTranslator &translator);
+      virtual ~CTarget();
+
+      /**
+       * @brief Sets scenery map. 
+       *
+       * Method sets scenery map data. 
+       *
+       * @param sceneryData Information describing the scenery. 
+      **/
+      virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData) = 0;
+
+      /**
+       * @brief Sets time for scenery time zone. 
+       *
+       * Method sets time for scenery time zone.
+       *
+       * @param sceneryData Information describing the scenery. 
+      **/
+      virtual void SceneryTime(const CFileParserCSV::CStringArray &sceneryData) = 0;
+
+      /**
+       * @brief Set glider data. 
+       *
+       * Method sets all the data related to the glider.
+       *
+       * @param gliderData Information describing the glider. 
+      **/
+      virtual void Glider(const CFileParserCSV::CStringArray &gliderData) = 0;
+
+      /**
+       * @brief Sets task information. 
+       *
+       * Method sets task information.
+       *
+       * @param taskParser Condor task parser. 
+       * @param coordConv  Condor coordinates converter.
+      **/
+      virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
+
+      /**
+       * @brief Sets task penalty zones. 
+       *
+       * Method sets penalty zones used in the task.
+       *
+       * @param taskParser Condor task parser. 
+       * @param coordConv  Condor coordinates converter.
+      **/
+      virtual void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
+
+      /**
+       * @brief Sets weather data. 
+       *
+       * Method sets task weather data (e.g wind).
+       *
+       * @param taskParser Condor task parser. 
+      **/
+      virtual void Weather(const CFileParserINI &taskParser) = 0;
+    };
+
+  private:
+    // inputs
+    static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file. 
+    static const char *SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
+    static const char *GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
+
+    const CFileParserINI _configParser;           ///< @brief Configuration INI file parser.
+    const CCondor _condor;                        ///< @brief Condor data.
 
     CTranslator(const CTranslator &);                     ///< @brief Disallowed
     const CTranslator &operator=(const CTranslator &);    ///< @brief Disallowed
 
-  protected:
-    const std::string &OutputPath() const;
-    const CFileParserINI &ConfigParser() const;
+    std::auto_ptr<CTarget> Target() const;
 
   public:
-    explicit CTranslator(const CFileParserINI &configParser);
-    virtual ~CTranslator();
+    static const char *DATA_PATH;                 ///< @brief Application data directory path. 
 
-    /**
-     * @brief Sets scenery map. 
-     *
-     * Method sets scenery map data. 
-     *
-     * @param sceneryData Information describing the scenery. 
-    **/
-    virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData) = 0;
-
-    /**
-     * @brief Sets time for scenery time zone. 
-     *
-     * Method sets time for scenery time zone.
-     *
-     * @param sceneryData Information describing the scenery. 
-    **/
-    virtual void SceneryTime(const CFileParserCSV::CStringArray &sceneryData) = 0;
-
-    /**
-     * @brief Set glider data. 
-     *
-     * Method sets all the data related to the glider.
-     *
-     * @param gliderData Information describing the glider. 
-    **/
-    virtual void Glider(const CFileParserCSV::CStringArray &gliderData) = 0;
-
-    /**
-     * @brief Sets task information. 
-     *
-     * Method sets task information.
-     *
-     * @param taskParser Condor task parser. 
-     * @param coordConv  Condor coordinates converter.
-    **/
-    virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
-
-    /**
-     * @brief Sets task penalty zones. 
-     *
-     * Method sets penalty zones used in the task.
-     *
-     * @param taskParser Condor task parser. 
-     * @param coordConv  Condor coordinates converter.
-     **/
-    virtual void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
-
-    /**
-     * @brief Sets weather data. 
-     *
-     * Method sets task weather data (e.g wind).
-     *
-     * @param taskParser Condor task parser. 
-    **/
-    virtual void Weather(const CFileParserINI &taskParser) = 0;
+    explicit CTranslator(const std::string &cliTaskName);
+    void Run();
   };
 
 }

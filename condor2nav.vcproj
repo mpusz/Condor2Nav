@@ -197,15 +197,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\targetXCSoar.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tools.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\translator.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\xcsoar.cpp"
 				>
 			</File>
 		</Filter>
@@ -235,15 +235,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\targetXCSoar.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tools.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\translator.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\xcsoar.h"
 				>
 			</File>
 			<Filter

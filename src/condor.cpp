@@ -31,6 +31,8 @@
 #include <iomanip>
 
 
+/* ******************** C O N D O R   -   C O O R D   C O N V E R T E R ********************* */
+
 /**
  * @brief Class constructor
  *
@@ -85,57 +87,6 @@ condor2nav::CCondor::CCoordConverter::~CCoordConverter()
 
 
 /**
- * @brief Converts longitude and latitude coordinates.
- *
- * Method converts longitude and latitude coordinates from DD.FF
- * to DD:MM.FF format.
- *
- * @param value     The coordinate value to convert. 
- * @param longitude @c true - longitude; @c false - latitude. 
- *
- * @return Converted coordinate string.
-**/
-std::string condor2nav::CCondor::CCoordConverter::DDFFToDDMMFF(float value, bool longitude) const
-{
-  int deg = static_cast<int>(value);
-  if(deg < 0)
-    deg = -deg;
-  float min = (value - deg) * 60;
-
-  std::stringstream stream;
-  stream.setf(std::ios::fixed, std::ios::floatfield);
-  stream.setf(std::ios::showpoint);
-  stream.precision(3);
-  stream << deg << ":" << min << (longitude ? (value > 0 ? "E" : "W") : (value > 0 ? "N" : "S"));
-  return stream.str();
-}
-
-
-/**
- * @brief Converts longitude and latitude coordinates.
- *
- * Method converts longitude and latitude coordinates from DD.FF
- * to DD:MM::SS format.
- *
- * @param value     The coordinate value to convert. 
- * @param longitude @c true - longitude; @c false - latitude. 
- *
- * @return Converted coordinate string.
-**/
-std::string condor2nav::CCondor::CCoordConverter::DDFFToDDMMSS(float value, bool longitude) const
-{
-  int deg = static_cast<int>(value);
-  if(deg < 0)
-    deg = -deg;
-  unsigned min = static_cast<unsigned>((value - deg) * 60);
-  unsigned sec = static_cast<unsigned>(((value - deg) * 60 - min) * 60);
-  std::stringstream stream;
-  stream << std::setfill('0') << std::setw(longitude ? 3 : 2) << deg << ":" << std::setw(2) << min << ":" << std::setw(2) << sec << (longitude ? (value > 0 ? "E" : "W") : (value > 0 ? "N" : "S"));
-  return stream.str();
-}
-
-
-/**
  * @brief Converts Condor coordinates to longitude.
  *
  * Method converts Condor coordinates to longitude.
@@ -153,9 +104,9 @@ std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x
   float longitude(_iface.xyToLon(xVal, yVal));
   switch(format) {
   case FORMAT_DDMMFF:
-    return DDFFToDDMMFF(longitude, true);
+    return DDFF2DDMMFF(longitude, true);
   case FORMAT_DDMMSS:
-    return DDFFToDDMMSS(longitude, true);
+    return DDFF2DDMMSS(longitude, true);
   default:
     throw std::out_of_range("Not supported longitude format specified!!!");
   }
@@ -180,9 +131,9 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
   float latitude(_iface.xyToLat(xVal, yVal));
   switch(format) {
   case FORMAT_DDMMFF:
-    return DDFFToDDMMFF(latitude, false);
+    return DDFF2DDMMFF(latitude, false);
   case FORMAT_DDMMSS:
-    return DDFFToDDMMSS(latitude, false);
+    return DDFF2DDMMSS(latitude, false);
   default:
     throw std::out_of_range("Not supported latitude format specified!!!");
   }
@@ -190,6 +141,8 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
 
 
 
+
+/* ************************************* C O N D O R **************************************** */
 
 /**
  * @brief Class constructor. 
