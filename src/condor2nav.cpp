@@ -28,6 +28,7 @@
 #include "condor2nav.h"
 #include "condor.h"
 #include "xcsoar.h"
+#include <iostream>
 
 
 const char *condor2nav::CCondor2Nav::CONFIG_FILE_NAME = "condor2nav.ini";
@@ -90,30 +91,40 @@ int condor2nav::CCondor2Nav::Run()
     const CFileParserCSV sceneriesParser(DATA_PATH + std::string("\\") + SCENERIES_DATA_FILE_NAME);
     const CFileParserCSV::CStringArray &sceneryData = sceneriesParser.Row(condor.TaskParser().Value("Task", "Landscape"));
 
-    if(_configParser.Value("Condor2Nav", "SetSceneryMap") == "1")
+    if(_configParser.Value("Condor2Nav", "SetSceneryMap") == "1") {
+      std::cout << "Setting scenery map data..." << std::endl;
       translator->SceneryMap(sceneryData);
-    if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1")
+    }
+    if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1") {
+      std::cout << "Setting scenery time..." << std::endl;
       translator->SceneryTime(sceneryData);
+    }
   }
   
   // translate glider data
-  if(_configParser.Value("Condor2Nav", "SetGlider") == "1")
-  {
+  if(_configParser.Value("Condor2Nav", "SetGlider") == "1") {
+    std::cout << "Setting glider data..." << std::endl;
     const CFileParserCSV glidersParser(DATA_PATH + std::string("\\") + GLIDERS_DATA_FILE_NAME);
     translator->Glider(glidersParser.Row(condor.TaskParser().Value("Plane", "Name")));
   }
 
   // translate task
-  if(_configParser.Value("Condor2Nav", "SetTask") == "1")
+  if(_configParser.Value("Condor2Nav", "SetTask") == "1") {
+    std::cout << "Setting task data..." << std::endl;
     translator->Task(condor.TaskParser(), condor.CoordConverter());
+  }
 
   // translate penalty zones
-  if(_configParser.Value("Condor2Nav", "SetPenaltyZones") == "1")
+  if(_configParser.Value("Condor2Nav", "SetPenaltyZones") == "1") {
+    std::cout << "Setting penalty zones..." << std::endl;
     translator->PenaltyZones(condor.TaskParser(), condor.CoordConverter());
+  }
 
   // translate weather
-  if(_configParser.Value("Condor2Nav", "SetWeather") == "1")
+  if(_configParser.Value("Condor2Nav", "SetWeather") == "1") {
+    std::cout << "Setting wheater data..." << std::endl;
     translator->Weather(condor.TaskParser());
+  }
   
   return EXIT_SUCCESS;
 }
