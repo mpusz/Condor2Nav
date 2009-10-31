@@ -150,11 +150,6 @@ namespace condor2nav {
     };
 
   private:
-    // inputs
-    static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file. 
-    static const char *SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
-    static const char *GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
-
     const CFileParserINI _configParser;           ///< @brief Configuration INI file parser.
     const CCondor _condor;                        ///< @brief Condor data.
 
@@ -164,7 +159,11 @@ namespace condor2nav {
     std::auto_ptr<CTarget> Target() const;
 
   public:
+    // inputs
     static const char *DATA_PATH;                 ///< @brief Application data directory path. 
+    static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file. 
+    static const char *SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
+    static const char *GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
 
     explicit CTranslator(const std::string &cliTaskName);
     void Run();
