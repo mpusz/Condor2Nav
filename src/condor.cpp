@@ -89,6 +89,42 @@ condor2nav::CCondor::CCoordConverter::~CCoordConverter()
 /**
  * @brief Converts Condor coordinates to longitude.
  *
+ * Method converts Condor coordinates to a float longitude value.
+ * 
+ * @param x The x coordinate.
+ * @param y The y coordinate. 
+ *
+ * @return Converted float longitude value.
+**/
+float condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y) const
+{
+  float xVal(condor2nav::Convert<float>(x));
+  float yVal(condor2nav::Convert<float>(y));
+  return _iface.xyToLon(xVal, yVal);
+}
+
+
+/**
+ * @brief Converts Condor coordinates to float latitude value.
+ *
+ * Method converts Condor coordinates to latitude.
+ * 
+ * @param x The x coordinate.
+ * @param y The y coordinate. 
+ *
+ * @return Converted float latitude value.
+**/
+float condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y) const
+{
+  float xVal(condor2nav::Convert<float>(x));
+  float yVal(condor2nav::Convert<float>(y));
+  return _iface.xyToLat(xVal, yVal);
+}
+
+
+/**
+ * @brief Converts Condor coordinates to longitude.
+ *
  * Method converts Condor coordinates to longitude.
  * 
  * @param x The x coordinate.
@@ -99,9 +135,7 @@ condor2nav::CCondor::CCoordConverter::~CCoordConverter()
 **/
 std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
-  float xVal(condor2nav::Convert<float>(x));
-  float yVal(condor2nav::Convert<float>(y));
-  float longitude(_iface.xyToLon(xVal, yVal));
+  float longitude(Longitude(x, y));
   switch(format) {
   case FORMAT_DDMMFF:
     return DDFF2DDMMFF(longitude, true);
@@ -126,9 +160,7 @@ std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x
 **/
 std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
-  float xVal(condor2nav::Convert<float>(x));
-  float yVal(condor2nav::Convert<float>(y));
-  float latitude(_iface.xyToLat(xVal, yVal));
+  float latitude(Latitude(x, y));
   switch(format) {
   case FORMAT_DDMMFF:
     return DDFF2DDMMFF(latitude, false);

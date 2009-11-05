@@ -45,14 +45,17 @@ namespace condor2nav {
 
     // outputs
     static const char *OUTPUT_PROFILE_NAME;      ///< @brief The name of XCSoar profile file to generate. 
-    static const char *WP_FILE_NAME;           	 ///< @brief The name of XCSoar waypoints file to generate. 
+    static const char *TASK_FILE_NAME;           ///< @brief The name of XCSoar task file to generate. 
+    static const char *DEFAULT_TASK_FILE_NAME;   ///< @brief The name of the default XCSoar task file. 
     static const char *POLAR_FILE_NAME;          ///< @brief The name of XCSoar glider polar file to generate.
     static const char *AIRSPACES_FILE_NAME;      ///< @brief The name of XCSoar airspaces file to generate. 
+    static const unsigned WAYPOINT_INDEX_OFFSET = 100000; ///< @brief A big value that should point behind all the waypoints
 
     CFileParserINI _profileParser;               ///< @brief XCSoar profile file parser. 
     const std::string _outputXCSoarDataPath;     ///< @brief The path to the output XCSoarData directory.
     std::string _outputCondor2NavDataPath;       ///< @brief The path to the output Condor2Nav directory.
-    std::string _condor2navDataPath;             ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar. 
+    std::string _condor2navDataPath;             ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar.
+    std::string _outputTaskFilePath;             ///< @brief The path where output XCSoar task file should be located
     
   public:
     explicit CTargetXCSoar(const CTranslator &translator);

@@ -50,7 +50,8 @@ const char *condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME = "GliderData.csv";
 **/
 condor2nav::CTranslator::CTarget::CTarget(const CTranslator &translator):
 _translator(translator),
-_outputPath(_translator._configParser.Value("Condor2Nav", "OutputPath")){
+_outputPath(_translator._configParser.Value("Condor2Nav", "OutputPath"))
+{
   DirectoryCreate(_outputPath);
 }
 

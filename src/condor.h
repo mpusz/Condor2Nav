@@ -88,6 +88,8 @@ namespace condor2nav {
       };
       CCoordConverter(const std::string &condorPath, const std::string &trnName);
       ~CCoordConverter();
+      float Longitude(const std::string &x, const std::string &y) const;
+      float Latitude(const std::string &x, const std::string &y) const;
       std::string Longitude(const std::string &x, const std::string &y, TOutputFormat format) const;
       std::string Latitude(const std::string &x, const std::string &y, TOutputFormat format) const;
     };

@@ -48,52 +48,86 @@ Copyright_License {
 #ifndef __XCSOARTYPES_H__
 #define __XCSOARTYPES_H__
 
+#include <windows.h>
+
 /**
  * @brief Data imported from XCSoar project.
 **/
 namespace xcsoar {
 
-  const unsigned BINFILEMAGICNUMBER = 0x5c378fcf;
   const unsigned MAXTASKPOINTS = 10;
   const unsigned MAXSTARTPOINTS = 10;
-  const unsigned MAXISOLINES = 32;
+  const unsigned NAME_SIZE = 50;
+  const unsigned COMMENT_SIZE = 50;
 
-  struct GEOPOINT {
-    double Longitude;
-    double Latitude;
-  };
-
-  enum AATSectorType_t {
-    AAT_CIRCLE=0,
-    AAT_SECTOR
-  };
-
-  struct TASK_POINT {
+  struct TASK_POINT
+  {
     int Index;
     double InBound;
     double OutBound;
     double Bisector;
-    double LegDistance;
-    double LegBearing;
-    GEOPOINT SectorStart;
-    GEOPOINT SectorEnd;
-    AATSectorType_t AATType;
+    double Leg;
+    double SectorStartLat;
+    double SectorStartLon;
+    double SectorEndLat;
+    double SectorEndLon;
+    POINT	 Start;
+    POINT	 End;
+    int	 AATType;
     double AATCircleRadius;
     double AATSectorRadius;
     double AATStartRadial;
     double AATFinishRadial;
-    GEOPOINT AATStart;
-    GEOPOINT AATFinish;
-
-    // from stats
+    double AATStartLat;
+    double AATStartLon;
+    double AATFinishLat;
+    double AATFinishLon;
+    POINT	 AATStart;
+    POINT	 AATFinish;
     double AATTargetOffsetRadius;
     double AATTargetOffsetRadial;
-    GEOPOINT AATTargetLocation;
+    double AATTargetLat;
+    double AATTargetLon;
+    POINT	 Target;
     bool   AATTargetLocked;
-    double LengthPercent;
-    GEOPOINT IsoLine_Location[MAXISOLINES];
-    bool IsoLine_valid[MAXISOLINES];
   };
+
+
+  struct START_POINT
+  {
+    int Index;
+    double OutBound;
+    double SectorStartLat;
+    double SectorStartLon;
+    double SectorEndLat;
+    double SectorEndLon;
+    POINT Start;
+    POINT End;
+    bool Active;
+    bool InSector;
+  };
+
+
+  struct WAYPOINT
+  {
+    int Number;
+    double Latitude;
+    double Longitude;
+    double Altitude;
+    int Flags;
+    wchar_t Name[NAME_SIZE + 1];
+    wchar_t Comment[COMMENT_SIZE + 1];
+    POINT Screen;
+    int Zoom;
+    BOOL Reachable;
+    double AltArivalAGL;
+    BOOL Visible;
+    bool InTask;
+    wchar_t *Details;
+    bool FarVisible;
+    int FileNum;
+  };
+
 
   enum AutoAdvanceMode_t {
     AUTOADVANCE_MANUAL=0,
@@ -121,30 +155,20 @@ namespace xcsoar {
   };
 
   struct SETTINGS_TASK {
-    AutoAdvanceMode_t AutoAdvance;
-    ASTSectorType_t SectorType;
-    unsigned int SectorRadius;
-    StartSectorType_t StartType;
-    unsigned StartRadius;
-    FinishSectorType_t FinishType;
-    unsigned FinishRadius;
+    BOOL AATEnabled;
     double AATTaskLength;
-    bool AATEnabled;
+    DWORD FinishRadius;
+    FinishSectorType_t FinishType;
+    DWORD StartRadius;
+    StartSectorType_t StartType;
+    ASTSectorType_t SectorType;
+    DWORD SectorRadius;
+    AutoAdvanceMode_t AutoAdvance;
     bool EnableMultipleStartPoints;
-    bool EnableFAIFinishHeight;
+
+    // additional data
     unsigned FinishMinHeight;
     unsigned StartMaxHeight;
-    unsigned StartMaxHeightMargin;
-    unsigned StartMaxSpeed;
-    unsigned StartMaxSpeedMargin;
-    int StartHeightRef;
-  };
-
-  struct START_POINT {
-    int Index;
-    double OutBound;
-    GEOPOINT SectorStart;
-    GEOPOINT SectorEnd;
   };
 
 }

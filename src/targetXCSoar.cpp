@@ -34,7 +34,8 @@
 const char *condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registry.prf";
 
 const char *condor2nav::CTargetXCSoar::OUTPUT_PROFILE_NAME = "Condor.prf";
-const char *condor2nav::CTargetXCSoar::WP_FILE_NAME = "WP_CondorTask.dat";
+const char *condor2nav::CTargetXCSoar::TASK_FILE_NAME = "Condor.tsk";
+const char *condor2nav::CTargetXCSoar::DEFAULT_TASK_FILE_NAME = "Default.tsk";
 const char *condor2nav::CTargetXCSoar::POLAR_FILE_NAME = "Polar_Condor.plr";
 const char *condor2nav::CTargetXCSoar::AIRSPACES_FILE_NAME = "A_Condor.txt";
 
@@ -56,8 +57,13 @@ _outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
     subDir = "\\" + subDir;
   _outputCondor2NavDataPath = _outputXCSoarDataPath + subDir;
   _condor2navDataPath = ConfigParser().Value("XCSoar", "XCSoarDataPath") + subDir;
-  
+
   DirectoryCreate(_outputCondor2NavDataPath);
+
+  if(Convert<unsigned>(ConfigParser().Value("XCSoar", "DefaultTaskOverwrite")))
+    _outputTaskFilePath = _outputXCSoarDataPath + std::string("\\") + DEFAULT_TASK_FILE_NAME;
+  else
+    _outputTaskFilePath = _outputCondor2NavDataPath + std::string("\\") + TASK_FILE_NAME;
 }
 
 
@@ -135,6 +141,15 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
     polarFile << gliderData.at(i);
   }
   polarFile << std::endl;
+
+  unsigned ballast(Convert<unsigned>(Condor().TaskParser().Value("Plane", "Water")));
+  unsigned maxBallast(Convert<unsigned>(gliderData.at(GLIDER_MAX_WATER_BALLAST)));
+  if(maxBallast > 0 && ballast > 0) {
+    unsigned xcsoarPercent = ballast * 100 / maxBallast;
+    // round it to 5% increment steps
+    xcsoarPercent = static_cast<unsigned>((static_cast<float>(xcsoarPercent) + 2.5) / 5) * 5;
+    std::cerr << "WARNING: Cannot set initial glider ballast in XCSoar automatically. Please open 'Config'->'Setup Basic' and set '" << xcsoarPercent << "%' for the glider ballast." << std::endl;
+  }
 }
 
 
@@ -151,38 +166,29 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
   using namespace xcsoar;
 
   // set task settings
-  SETTINGS_TASK settingsTask;
-  settingsTask.AutoAdvance           = static_cast<AutoAdvanceMode_t>(Convert<unsigned>(_profileParser.Value("", "AutoAdvance")));
-  settingsTask.AATTaskLength         = 0;
-  settingsTask.AATEnabled            = false;
+  SETTINGS_TASK settingsTask = { 0 };
+  settingsTask.AATEnabled       = false;
+  settingsTask.AATTaskLength    = 0;
+  settingsTask.AutoAdvance      = static_cast<AutoAdvanceMode_t>(Convert<unsigned>(_profileParser.Value("", "AutoAdvance")));
   settingsTask.EnableMultipleStartPoints = false;
-  settingsTask.EnableFAIFinishHeight = false;
-  settingsTask.StartMaxHeightMargin  = 0;
-  settingsTask.StartMaxSpeed         = 0;
-  settingsTask.StartMaxSpeedMargin   = 0;
-  settingsTask.StartHeightRef        = 0;
 
-  TASK_POINT taskPointArray[MAXTASKPOINTS];
-//  START_POINT startPointArray[MAXSTARTPOINTS];
-
-  // reset all tasks
+  // reset data
+  TASK_POINT taskPointArray[MAXTASKPOINTS] = { 0 };
+  START_POINT startPointArray[MAXSTARTPOINTS] = { 0 };
+  WAYPOINT taskWaypointArray[MAXTASKPOINTS] = { 0 };
+  WAYPOINT startWaypointArray[MAXSTARTPOINTS] = { 0 };
   for(unsigned i=0; i<MAXTASKPOINTS; i++)
     taskPointArray[i].Index = -1;
-
-
-  _profileParser.Value("", "AdditionalWPFile", "\"" + _condor2navDataPath + std::string("\\") + WP_FILE_NAME + std::string("\""));
-  std::string wpFileName = _outputCondor2NavDataPath + std::string("\\") + WP_FILE_NAME;
-  std::ofstream wpFile(wpFileName.c_str());
-  if(!wpFile)
-    throw std::runtime_error("ERROR: Couldn't open file '" + wpFileName + "' for writing!!!");
-
+  for(unsigned i=0; i<MAXSTARTPOINTS; i++)
+    startPointArray[i].Index = -1;
+  
+  bool tpsValid(true);
   unsigned tpNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "Count"));
+
   // skip takeoff waypoint
-  for(unsigned i=1; i<tpNum; i++){
+  for(unsigned i=1; i<tpNum; i++) {
     // dump WP file line
     std::string tpIdxStr(Convert(i));
-    std::string x(taskParser.Value("Task", "TPPosX" + tpIdxStr));
-    std::string y(taskParser.Value("Task", "TPPosY" + tpIdxStr));
     std::string name;
     if(i == 1)
       name = "START";
@@ -190,24 +196,45 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
       name = "FINISH";
     else
       name = "TP" + Convert(i - 1);
-    wpFile << i << "," << coordConv.Latitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMFF) << "," 
-      << coordConv.Longitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMFF) << ","
-      << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M,T," << name << ","
-      << taskParser.Value("Task", "TPName" + tpIdxStr) << std::endl;
+
+    std::string x(taskParser.Value("Task", "TPPosX" + tpIdxStr));
+    std::string y(taskParser.Value("Task", "TPPosY" + tpIdxStr));
+
+    taskPointArray[i - 1].Index = taskWaypointArray[i - 1].Number = WAYPOINT_INDEX_OFFSET + i;
+    taskWaypointArray[i - 1].Latitude = coordConv.Latitude(x, y);
+    taskWaypointArray[i - 1].Longitude = coordConv.Longitude(x, y);
+    taskWaypointArray[i - 1].Altitude = Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
+    taskWaypointArray[i - 1].Flags = 2;  // Turnpoint
+    mbstowcs(taskWaypointArray[i - 1].Name, taskParser.Value("Task", "TPName" + tpIdxStr).c_str(), NAME_SIZE);
+    mbstowcs(taskWaypointArray[i - 1].Comment, taskParser.Value("Description", "Text").c_str(), COMMENT_SIZE);
+    taskWaypointArray[i - 1].InTask = 1;
 
     // dump Task File data
     std::string sectorTypeStr(taskParser.Value("Task", "TPSectorType" + tpIdxStr));
     unsigned sectorType(Convert<unsigned>(sectorTypeStr));
     if(sectorType == CCondor::SECTOR_CLASSIC) {
+      unsigned radius(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
       unsigned angle(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr)));
+
       switch(angle) {
       case 90:
         if(i == 1)
           settingsTask.StartType = xcsoar::START_SECTOR;
         else if(i == tpNum - 1)
           settingsTask.FinishType = xcsoar::FINISH_SECTOR;
-        else
+        else {
+          if(i > 2 && settingsTask.SectorType != xcsoar::AST_FAI) {
+            tpsValid = false;
+            settingsTask.SectorRadius = radius;
+          }
           settingsTask.SectorType = xcsoar::AST_FAI;
+          if(i > 2 && settingsTask.SectorRadius != radius) {
+            std::cerr << "WARNING: " << name << ": XCSoar does not support different TPs types. The smallest radius will be used for all FAI sectors. If you advance a sector in XCSoar you will advance it in Condor." << std::endl;
+            settingsTask.SectorRadius = min(settingsTask.SectorRadius, radius);
+          }
+          else
+            settingsTask.SectorRadius = radius;
+        }
         break;
 
       case 180:
@@ -216,8 +243,13 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
         else if(i == tpNum - 1)
           settingsTask.FinishType = xcsoar::FINISH_LINE;
         else {
-          std::cerr << "WARNING: " << name << ": XCSoar does not support line TP type. FAI Sector will be used instead. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
-          settingsTask.SectorType = xcsoar::AST_FAI;
+          if(i > 2 && settingsTask.SectorType == xcsoar::AST_FAI)
+            tpsValid = false;
+          else {
+            std::cerr << "WARNING: " << name << ": XCSoar does not support line TP type. FAI Sector will be used instead. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
+            settingsTask.SectorType = xcsoar::AST_FAI;
+            settingsTask.SectorRadius = radius;
+          }
         }
         break;
 
@@ -228,15 +260,25 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
           settingsTask.StartType = xcsoar::START_CIRCLE;
         else if(i == tpNum - 1)
           settingsTask.FinishType = xcsoar::FINISH_CIRCLE;
-        else
-          settingsTask.SectorType = xcsoar::AST_CIRCLE;
+        else {
+          if(i > 2 && settingsTask.SectorType != xcsoar::AST_CIRCLE)
+            tpsValid = false;
+          else {
+            settingsTask.SectorType = xcsoar::AST_CIRCLE;
+            if(i > 2 && settingsTask.SectorRadius != radius) {
+              std::cerr << "WARNING: " << name << ": XCSoar does not support different TPs types. The smallest radius will be used for all circle sectors. If you advance a sector in XCSoar you will advance it in Condor." << std::endl;
+              settingsTask.SectorRadius = min(settingsTask.SectorRadius, radius);
+            }
+            else
+              settingsTask.SectorRadius = radius;
+          }
+        }
         break;
 
       default:
         ;
       }
       
-      unsigned radius(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
       if(i == 1) {
         settingsTask.StartRadius = radius;
         settingsTask.StartMaxHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPHeight" + tpIdxStr));
@@ -245,8 +287,6 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
         settingsTask.FinishRadius = radius;
         settingsTask.FinishMinHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
       }
-      else
-        settingsTask.SectorRadius = radius;
     }
     else if(sectorType == CCondor::SECTOR_WINDOW) {
       std::cerr << "WARNING: " << name << ": XCSoar does not support window TP type. Circle TP will be used and you are responsible for reaching it on correct height and with correct heading." << std::endl;
@@ -254,6 +294,9 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
     else
       throw std::range_error("ERROR: Unsupported sector type '" + sectorTypeStr + "' specified for TP '" + name + "'!!!");
   }
+
+  if(!tpsValid)
+    std::cerr << "WARNING: XCSoar does not support different TPs types. FAI Sector will be used for all sectors. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
 
   // set profile parameters
   // HomeWaypoint
@@ -268,7 +311,30 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
   _profileParser.Value("", "FinishLine", Convert(settingsTask.FinishType));
   _profileParser.Value("", "FinishMinHeight", Convert(settingsTask.FinishMinHeight));
   _profileParser.Value("", "FinishRadius", Convert(settingsTask.FinishRadius));
+
+  // dump Task file
+  std::ofstream tskFile(_outputTaskFilePath.c_str(), std::ios::out | std::ios::binary);
+  if(!tskFile)
+    throw std::runtime_error("ERROR: Couldn't open file '" + _outputTaskFilePath + "' for writing!!!");
+
+  tskFile.write(reinterpret_cast<const char *>(taskPointArray), sizeof(taskPointArray));
+
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.AATEnabled), sizeof(settingsTask.AATEnabled));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.AATTaskLength), sizeof(settingsTask.AATTaskLength));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.FinishRadius), sizeof(settingsTask.FinishRadius));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.FinishType), sizeof(settingsTask.FinishType));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.StartRadius), sizeof(settingsTask.StartRadius));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.StartType), sizeof(settingsTask.StartType));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.SectorType), sizeof(settingsTask.SectorType));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.SectorRadius), sizeof(settingsTask.SectorRadius));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.AutoAdvance), sizeof(settingsTask.AutoAdvance));
+  tskFile.write(reinterpret_cast<const char *>(&settingsTask.EnableMultipleStartPoints), sizeof(settingsTask.EnableMultipleStartPoints));
+
+  tskFile.write(reinterpret_cast<const char *>(startPointArray), sizeof(startPointArray));
+  tskFile.write(reinterpret_cast<const char *>(taskWaypointArray), sizeof(taskWaypointArray));
+  tskFile.write(reinterpret_cast<const char *>(startWaypointArray), sizeof(startWaypointArray));
 }
+
   // set units
   // Speed
 //  switch(Speed)
@@ -364,3 +430,8 @@ void condor2nav::CTargetXCSoar::Weather(const CFileParserINI &taskParser)
   _profileParser.Value("", "WindBearing", Convert(dir));
   _profileParser.Value("", "WindSpeed", Convert(speed));
 }
+
+
+//
+//Print info about:
+//1. Copy
