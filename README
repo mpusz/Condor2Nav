@@ -26,6 +26,9 @@ And will support XCSoar (www.xcsoar.org) only.
 The project is still in Alpha phase so use it on your own responsibility.
 Please report all the problems you encounter to the forum on the project
 webpage.
+At the current development stage aplication should be stable and ready to
+be tested. Data provided in CSV file (gliders, sceneries) may be invalid
+and need some review and update.
 
 
 3. Installation
