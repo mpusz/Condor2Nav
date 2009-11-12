@@ -1,0 +1,14 @@
+============
+ Condor2Nav
+============
+
+
+Version: 0.2
+============
+- Support for LK8000 added
+- Support for INI files comment added
+- Not existing "AutoAdvance" PRF parameter problem fixed
+
+Version: 0.1
+============
+- Initial version with XCSoar support
