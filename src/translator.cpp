@@ -28,6 +28,7 @@
 #include "translator.h"
 #include "condor.h"
 #include "targetXCSoar.h"
+#include "targetLK8000.h"
 #include <iostream>
 
 
@@ -147,15 +148,17 @@ _condor(_configParser.Value("Condor", "Path"), (cliTaskName != "") ? cliTaskName
  *
  * Method creates Condor data translator target.
  *
- * @note For now only XCSoar translation target is supported but later on
- *       that method will return translator targets specified by the
- *       configuration INI file.
- *
  * @return Condor data translator target.
 **/
 std::auto_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target() const
 {
-  return std::auto_ptr<CTarget>(new CTargetXCSoar(*this));
+  std::string target = _configParser.Value("Condor2Nav", "Target");
+  if(target == "XCSoar")
+    return std::auto_ptr<CTarget>(new CTargetXCSoar(*this));
+  else if(target == "LK8000")
+    return std::auto_ptr<CTarget>(new CTargetLK8000(*this));
+  else
+    throw std::out_of_range("ERROR: Unknown translation target '" + target + "'!!!");
 }
 
 

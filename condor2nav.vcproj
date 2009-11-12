@@ -197,7 +197,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\targetLK8000.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\targetXCSoar.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\targetXCSoarCommon.cpp"
 				>
 			</File>
 			<File
@@ -235,7 +243,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\targetLK8000.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\targetXCSoar.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\targetXCSoarCommon.h"
 				>
 			</File>
 			<File
