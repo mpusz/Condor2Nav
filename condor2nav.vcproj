@@ -85,7 +85,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
+				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y CHANGELOG dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -160,7 +160,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
+				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y CHANGELOG dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -277,6 +277,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath=".\CHANGELOG"
+			>
+		</File>
 		<File
 			RelativePath=".\COPYING"
 			>
