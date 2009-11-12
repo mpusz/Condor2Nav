@@ -150,7 +150,12 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   SETTINGS_TASK settingsTask = { 0 };
   settingsTask.AATEnabled       = false;
   settingsTask.AATTaskLength    = 0;
-  settingsTask.AutoAdvance      = static_cast<AutoAdvanceMode_t>(Convert<unsigned>(profileParser.Value("", "AutoAdvance")));
+  try {
+    settingsTask.AutoAdvance      = static_cast<AutoAdvanceMode_t>(Convert<unsigned>(profileParser.Value("", "AutoAdvance")));
+  }
+  catch(const std::range_error &) {
+    settingsTask.AutoAdvance    = AUTOADVANCE_AUTO;
+  }
   settingsTask.EnableMultipleStartPoints = false;
 
   // reset data
