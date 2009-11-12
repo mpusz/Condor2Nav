@@ -90,7 +90,7 @@ void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profile
 * @param profileParser XCSoar profile file parser.
 * @param gliderData Information describing the glider. 
 * @param pathPrefix Polar file subdirectory prefix (in XCSoar format).
-* @param outpuPathPrefix Polar file subdirectory prefix (in filesystem format).
+* @param outputPathPrefix Polar file subdirectory prefix (in filesystem format).
 **/
 void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, const std::string &pathPrefix, const std::string &outputPathPrefix) const
 {
@@ -365,7 +365,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
 * @param pathPrefix Polar file subdirectory prefix (in XCSoar format).
-* @param outpuPathPrefix Polar file subdirectory prefix (in filesystem format).
+* @param outputPathPrefix Polar file subdirectory prefix (in filesystem format).
 **/
 void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const
 {
