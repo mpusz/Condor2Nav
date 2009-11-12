@@ -49,10 +49,7 @@ CTargetXCSoarCommon(translator),
 _profileParser(CTranslator::DATA_PATH + std::string("\\") + LK8000_PROFILE_NAME),
 _outputLK8000DataPath(OutputPath() + "\\LK8000")
 {
-  std::string subDir = ConfigParser().Value("LK8000", "Condor2NavDataSubDir");
-  if(subDir != "")
-    subDir = "\\" + subDir;
-
+  std::string subDir = "\\condor2nav";
   _condor2navDataPath = ConfigParser().Value("LK8000", "LK8000Path");
 
   _outputAirspacesSubDir = std::string("\\") + AIRSPACES_SUBDIR + subDir;
