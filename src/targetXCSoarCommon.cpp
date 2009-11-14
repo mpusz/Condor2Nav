@@ -191,8 +191,8 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     taskWaypointArray[i - 1].Longitude = coordConv.Longitude(x, y);
     taskWaypointArray[i - 1].Altitude = Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
     taskWaypointArray[i - 1].Flags = 2;  // Turnpoint
-    mbstowcs(taskWaypointArray[i - 1].Name, taskParser.Value("Task", "TPName" + tpIdxStr).c_str(), NAME_SIZE);
-    mbstowcs(taskWaypointArray[i - 1].Comment, taskParser.Value("Description", "Text").c_str(), COMMENT_SIZE);
+    mbstowcs(taskWaypointArray[i - 1].Name, name.c_str(), NAME_SIZE);
+    mbstowcs(taskWaypointArray[i - 1].Comment, taskParser.Value("Task", "TPName" + tpIdxStr).c_str(), COMMENT_SIZE);
     taskWaypointArray[i - 1].InTask = 1;
 
     // dump Task File data
