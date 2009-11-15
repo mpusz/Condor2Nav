@@ -28,20 +28,35 @@
 #ifndef __ACTIVESYNC_H__
 #define __ACTIVESYNC_H__
 
+#include "tools.h"
 
 namespace condor2nav {
 
   /**
-   * @brief 
+   * @brief ActiveSync interface wrapper
    *
-   * 
+   * condor2nav::CActiveSync class is a wrapper around ActiveSync interface.
+   * It uses RAPI interface to communicate with remote device.
+   *
+   * @note Singleton design pattern
    */
   class CActiveSync {
-  public:
+    static const unsigned TIMEOUT = 5000;        ///< @brief Timeout in ms for ActiveSync initialization. 
+
+    friend class CDelayedPtr<CActiveSync>;
+    static CDelayedPtr<CActiveSync> _instance;   ///< @brief Singleton instance. 
+
+    CActiveSync();
+    CActiveSync(const CActiveSync &);            ///< @brief Disallowed. 
+    CActiveSync &operator=(const CActiveSync &); ///< @brief Disallowed. 
 
   public:
-    CActiveSync();
+    static CActiveSync &Instance();
+    
     ~CActiveSync();
+
+    void Write(const std::string &dest, const std::string &buffer) const;
+    void DirectoryCreate(const std::string &name) const;
   };
 
 }

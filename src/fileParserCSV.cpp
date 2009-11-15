@@ -26,6 +26,7 @@
 **/
 
 #include "fileParserCSV.h"
+#include "ostream.h"
 #include "tools.h"
 #include <fstream>
 #include <string>
@@ -107,9 +108,7 @@ const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(con
 void condor2nav::CFileParserCSV::Dump(const std::string &filePath /* = "" */) const
 {
   std::string path = filePath != "" ? filePath.c_str() : Path().c_str();
-  std::ofstream outputStream(path.c_str());
-  if(!outputStream)
-    throw std::invalid_argument("ERROR: Couldn't open CSV file '" + path + "' for writing!!!");
+  COStream outputStream(path);
 
   for(CRowsList::const_iterator it=_rowsList.begin(); it!=_rowsList.end(); ++it) {
     for(unsigned i=0; i<(*it)->size(); i++) {

@@ -26,6 +26,7 @@
 **/
 
 #include "fileParserINI.h"
+#include "ostream.h"
 #include <fstream>
 
 
@@ -212,9 +213,7 @@ void condor2nav::CFileParserINI::Dump(const std::string &filePath /* = "" */) co
 {
   // open output file
   std::string path = filePath != "" ? filePath.c_str() : Path().c_str();
-  std::ofstream outputStream(path.c_str());
-  if(!outputStream)
-    throw std::invalid_argument("ERROR: Couldn't open INI file '" + path + "' for writing!!!");
+  COStream outputStream(path);
 
   // dump global scope
   for(CValuesMap::const_iterator it=_valuesMap.begin(); it!=_valuesMap.end(); ++it)

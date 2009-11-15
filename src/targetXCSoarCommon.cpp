@@ -27,7 +27,7 @@
 
 #include "targetXCSoarCommon.h"
 #include "imports/xcsoarTypes.h"
-#include <fstream>
+#include "ostream.h"
 #include <iostream>
 
 
@@ -105,9 +105,7 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
 
   // create polar file
   std::string polarFileName = outputPathPrefix + std::string("\\") + POLAR_FILE_NAME;
-  std::ofstream polarFile(polarFileName.c_str());
-  if(!polarFile)
-    throw std::runtime_error("ERROR: Couldn't open Polar file '" + polarFileName + "' for writing!!!");
+  COStream polarFile(polarFileName);
 
   polarFile << "***************************************************************************************************" << std::endl;
   polarFile << "* " << gliderData.at(GLIDER_NAME) << " WinPilot POLAR file generated with Condor2Nav" << std::endl;
@@ -299,26 +297,24 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   profileParser.Value("", "FinishRadius", Convert(settingsTask.FinishRadius));
 
   // dump Task file
-  std::ofstream tskFile(outputTaskFilePath.c_str(), std::ios::out | std::ios::binary);
-  if(!tskFile)
-    throw std::runtime_error("ERROR: Couldn't open file '" + outputTaskFilePath + "' for writing!!!");
+  COStream tskFile(outputTaskFilePath, std::ios::out | std::ios::binary);
 
-  tskFile.write(reinterpret_cast<const char *>(taskPointArray), sizeof(taskPointArray));
+  tskFile.Write(reinterpret_cast<const char *>(taskPointArray), sizeof(taskPointArray));
 
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.AATEnabled), sizeof(settingsTask.AATEnabled));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.AATTaskLength), sizeof(settingsTask.AATTaskLength));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.FinishRadius), sizeof(settingsTask.FinishRadius));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.FinishType), sizeof(settingsTask.FinishType));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.StartRadius), sizeof(settingsTask.StartRadius));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.StartType), sizeof(settingsTask.StartType));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.SectorType), sizeof(settingsTask.SectorType));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.SectorRadius), sizeof(settingsTask.SectorRadius));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.AutoAdvance), sizeof(settingsTask.AutoAdvance));
-  tskFile.write(reinterpret_cast<const char *>(&settingsTask.EnableMultipleStartPoints), sizeof(settingsTask.EnableMultipleStartPoints));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATEnabled), sizeof(settingsTask.AATEnabled));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATTaskLength), sizeof(settingsTask.AATTaskLength));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishRadius), sizeof(settingsTask.FinishRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishType), sizeof(settingsTask.FinishType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartRadius), sizeof(settingsTask.StartRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartType), sizeof(settingsTask.StartType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorType), sizeof(settingsTask.SectorType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorRadius), sizeof(settingsTask.SectorRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AutoAdvance), sizeof(settingsTask.AutoAdvance));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.EnableMultipleStartPoints), sizeof(settingsTask.EnableMultipleStartPoints));
 
-  tskFile.write(reinterpret_cast<const char *>(startPointArray), sizeof(startPointArray));
-  tskFile.write(reinterpret_cast<const char *>(taskWaypointArray), sizeof(taskWaypointArray));
-  tskFile.write(reinterpret_cast<const char *>(startWaypointArray), sizeof(startWaypointArray));
+  tskFile.Write(reinterpret_cast<const char *>(startPointArray), sizeof(startPointArray));
+  tskFile.Write(reinterpret_cast<const char *>(taskWaypointArray), sizeof(taskWaypointArray));
+  tskFile.Write(reinterpret_cast<const char *>(startWaypointArray), sizeof(startWaypointArray));
 }
 
   // set units
@@ -375,9 +371,7 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
 
   profileParser.Value("", "AirspaceFile", "\"" + pathPrefix + std::string("\\") + AIRSPACES_FILE_NAME + std::string("\""));
   std::string airspacesFileName = outputPathPrefix + std::string("\\") + AIRSPACES_FILE_NAME;
-  std::ofstream airspacesFile(airspacesFileName.c_str());
-  if(!airspacesFile)
-    throw std::runtime_error("ERROR: Couldn't open file '" + airspacesFileName + "' for writing!!!");
+  COStream airspacesFile(airspacesFileName);
 
   airspacesFile << "*******************************************************" << std::endl;
   airspacesFile << "* Condor Task Penalty Zones generated with Condor2Nav *" << std::endl;

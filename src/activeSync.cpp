@@ -27,18 +27,41 @@
 
 #include "activeSync.h"
 #include "rapi.h"
+#include <fstream>
 
 
-condor2nav::CActiveSync::CActiveSync(double timeout)
+condor2nav::CDelayedPtr<condor2nav::CActiveSync> condor2nav::CActiveSync::_instance;
+
+
+
+/**
+ * @brief Returns singleton instance.
+ *
+ * Method returns singleton instance.
+ *
+ * @return Singleton instance.
+**/
+condor2nav::CActiveSync &condor2nav::CActiveSync::Instance()
+{
+  return *_instance;
+}
+
+
+/**
+ * @brief Class constructor.
+ *
+ * condor2nav::CActiveSync class constructor.
+**/
+condor2nav::CActiveSync::CActiveSync()
 {
   RAPIINIT initData = { 0 };
   initData.cbSize = sizeof(initData);
 
   HRESULT hr = CeRapiInitEx(&initData);
   if(FAILED(hr))
-    throw std::run_time_error("Cannot initialize ActiveSync connection!!!");
+    throw std::runtime_error("Cannot initialize ActiveSync connection!!!");
 
-  DWORD status = WaitForSingleObject(initData.heRapiInit, timeout);
+  DWORD status = WaitForSingleObject(initData.heRapiInit, TIMEOUT);
   if(status == WAIT_OBJECT_0) {
     // heRapiInit signaled:
     // set return error code to return value of RAPI Init function
@@ -56,49 +79,55 @@ condor2nav::CActiveSync::CActiveSync(double timeout)
     }
 
     CeRapiUninit();
+    throw std::runtime_error("ERROR: Cannot initialize ActiveSync interface!!!");
   }
 }
 
-HRESULT TryRapiConnect(DWORD dwTimeOut)
+
+/**
+ * @brief Class destructor.
+ *
+ * condor2nav::CActiveSync class destructor.
+**/
+condor2nav::CActiveSync::~CActiveSync()
 {
-    HRESULT            hr = E_FAIL;
-    RAPIINIT           riCopy;
-    bool          fInitialized = false;
+  CeRapiUninit();
+}
 
-    ZeroMemory(&riCopy, sizeof(riCopy));
-    riCopy.cbSize = sizeof(riCopy);
 
-    hr = CeRapiInitEx(&riCopy);
-    if (SUCCEEDED(hr))
-    {
-        DWORD dwRapiInit = 0;
-        fInitialized = true;
+/**
+ * @brief Writes buffer to a file on the target device.
+ *
+ * Method writes buffer to a file on the target device.
+ *
+ * @param dest Target file path. 
+ * @param buffer Buffer with file content. 
+**/
+void condor2nav::CActiveSync::Write(const std::string &dest, const std::string &buffer) const
+{
+  std::wstring destName(dest.begin(), dest.end());
+  HANDLE hDest = CeCreateFile(destName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+  if(hDest == INVALID_HANDLE_VALUE)
+    throw std::runtime_error("ERROR: Unable to open ActiveSync file '" + dest + "'!!!");
 
-        dwRapiInit = WaitForSingleObject(
-                    riCopy.heRapiInit,
-                    dwTimeOut);
-        if (WAIT_OBJECT_0 == dwRapiInit)
-        {
-            //  heRapiInit signaled:
-            // set return error code to return value of RAPI Init function
-            hr = riCopy.hrRapiInit;  
-        }
-        else if (WAIT_TIMEOUT == dwRapiInit)
-        {
-            // timed out: device is probably not connected
-            // or not responding
-            hr = HRESULT_FROM_WIN32(ERROR_TIMEOUT);
-        }
-        else
-        {
-            // WaitForSingleObject failed
-            hr = HRESULT_FROM_WIN32(GetLastError());
-        }
-    }
+  DWORD numBytes;
+  if(!CeWriteFile(hDest, buffer.c_str(), buffer.size(), &numBytes, NULL))
+    throw std::runtime_error("ERROR: Writing ActiveSync file '" + dest + "'!!!");
 
-   if (fInitialized && FAILED(hr))
-   {
-        CeRapiUninit();
-   }
-    return hr;
+  CeCloseHandle(hDest);
+}
+
+
+/**
+ * @brief Creates direcotry on the target device.
+ *
+ * Method creates direcotry on the target device.
+ *
+ * @param name Target directory path. 
+**/
+void condor2nav::CActiveSync::DirectoryCreate(const std::string &name) const
+{
+  std::wstring dirName(name.begin(), name.end());
+  if(!CeCreateDirectory(dirName.c_str(), NULL) && CeGetLastError() != ERROR_ALREADY_EXISTS)
+    throw std::runtime_error("ERROR: Creating ActiveSync directory '" + name + "'!!!");
 }

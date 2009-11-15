@@ -45,6 +45,40 @@ namespace condor2nav {
       return *v1 < *v2;
     }
   };
+
+
+  /**
+   * @brief Pointer allocated on first access
+   *
+   * condor2nav::CDelayedPtr class is a pointer wrapper. Pointer is allocated
+   * on first access.
+   */
+  template <class T>
+  class CDelayedPtr {
+    T *_obj;                      ///< @brief Pointer that is stored inside the class. 
+
+    /**
+     * @brief Returns stored pointer.
+     *
+     * Method returns stored pointer. If this is the first access new object
+     * is allocated.
+     *
+     * @return Stored pointer.
+    **/
+    T *Get()
+    {
+      if(!_obj)
+        _obj = new T;
+      return _obj;
+    }
+  public:
+    CDelayedPtr(): _obj(0) {};
+    ~CDelayedPtr() { delete _obj; }
+    T &operator*() { return *Get(); }
+    T *operator->() { return *Get(); }
+  };
+
+
   template<class Seq> void Purge(Seq &container);
   template<class Map> void PurgeMap(Map &container);
 
