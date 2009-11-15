@@ -1,5 +1,5 @@
 ================
- Condor2Nav 0.1
+ Condor2Nav 0.2
 ================
 
 http://sf.net/projects/condor2nav
@@ -17,8 +17,7 @@ By Simon Taylor (thanks Simon for providing me the sources), however
 Condor2Nav C++ code is written from the scratch and it has (and will have
 more) new features to make the integration more accurate.
 
-At the very beginning it will be a command line based application (no GUI)
-And will support XCSoar (www.xcsoar.org) only.
+At the very beginning it will be a command line based application (no GUI).
 
 
 2. Project state
@@ -26,6 +25,9 @@ And will support XCSoar (www.xcsoar.org) only.
 The project is still in Alpha phase so use it on your own responsibility.
 Please report all the problems you encounter to the forum on the project
 webpage.
+At the current development stage aplication should be stable and ready to
+be tested. Data provided in CSV file (gliders, sceneries) may be invalid
+and need some review and update.
 
 
 3. Installation
@@ -35,6 +37,7 @@ anywhere on the hard drive.
 
 The package contains:
 - README - that readme file
+- CHANGELOG - changes introduced in subsequent releases
 - condor2nav.exe - application executable
 - condor2nav.ini - project configuration
 - data/GliderData.csv - CSV file with gliders information
@@ -46,6 +49,8 @@ The package contains:
 To run the translation you will need to have Condor (The Competition
 Soaring Simulator) on your local computer.
 
+4.1. XCSoar
+-----------
 In case of XCSoar translation following steps must be completed:
 1. Have XCSoar installed and configured on the target device
    (e.g. PDA, PNA, PC).
@@ -55,6 +60,18 @@ In case of XCSoar translation following steps must be completed:
    XCM scenery files to the [XCSoar] "Condor2NavDataSubDir" subdirectory
    on the target device.
 4. Copy "[XCSOAR_DATA_PATH]/xcsoar-registry.prf" file to the
+   "[CONDOR_2_NAV_PATH]/data" directory.
+
+4.2. LK8000
+-----------
+In case of LK8000 translation following steps must be completed:
+1. Have LK8000 installed and configured on the target device
+   (e.g. PDA, PNA, PC).
+2. Obtain Greg Nuspell's Condor XCM Sceneries from
+   http://surfnet.dl.sourceforge.net/sourceforge/xcsoar/XCM_files.zip.
+3. Copy all XCM scenery files to the "LK8000/_Maps/condor2nav" subdirectory
+   on the target device.
+4. Copy "[LK8000_DATA_PATH]/_Configuration/DEFAULT_PROFILE.prf" file to the
    "[CONDOR_2_NAV_PATH]/data" directory.
 
 
@@ -91,15 +108,34 @@ Open condor2nav.ini file and change the following:
    Line Interface (see "condor2nav.exe -h" for more info).
 3. Run condor2nav.exe (it is handful to create a shortcut to application 
    executable on the Windows desktop).
-4. In case of XCSoar translation and if [Condor2Nav] "OutputPath" is
-   different than the [XCSoar] "XCSoarDataPath" copy output data manually
-   to the target directory.
+
+6.1. XCSoar
+-----------
+1. If [Condor2Nav] "OutputPath" is different than the
+   [XCSoar] "XCSoarDataPath" copy output data manually to the target directory.
+
+6.2. LK8000
+-----------
+1. If [Condor2Nav] "OutputPath" is different than the [LK8000] "LK8000Path"
+   copy output data manually to the target directory.
   
    
-7. Run XCSoar
--------------
+7. Run Navigation Software
+--------------------------
+
+7.1. XCSoar
+-----------
 1. Start XCSoar application and select "Condor" profile when asked.
 2. [OPTIONAL] If [XCSoar] "DefaultTaskOverwrite=1" XCSoar will load Condor
+   task automatically. Otherwise open "Nav"->"Nav"->"Task Edit",
+   choose "Advanced.."->"File", select "Condor.tsk" and choose "Load".
+3. Open "Config"->"Setup Basic" and choose proper "Ballast" value.
+4. You are ready to fly.
+   
+7.2. LK8000
+-----------
+1. Start LK8000 application and select "Condor" profile when asked.
+2. [OPTIONAL] If [XCSoar] "DefaultTaskOverwrite=1" LK8000 will load Condor
    task automatically. Otherwise open "Nav"->"Nav"->"Task Edit",
    choose "Advanced.."->"File", select "Condor.tsk" and choose "Load".
 3. Open "Config"->"Setup Basic" and choose proper "Ballast" value.

@@ -51,7 +51,15 @@ CFileParser(filePath)
     if(line.empty())
       continue;
 
-    if(line[0] == '[') {
+    size_t pos = line.find_first_not_of(" ");
+    if(pos == std::string::npos)
+      continue;
+
+    if(line[pos] == ';')
+      // skip comment
+      continue;
+
+    if(line[pos] == '[') {
       // new chapter
       size_t pos = line.find_first_of("]");
       if(pos == std::string::npos)

@@ -28,7 +28,7 @@
 #ifndef __TARGET_XCSOAR_H__
 #define __TARGET_XCSOAR_H__
 
-#include "translator.h"
+#include "targetXCSoarCommon.h"
 
 
 namespace condor2nav {
@@ -39,17 +39,9 @@ namespace condor2nav {
    * condor2nav::CTranslatorXCSoar class is responsible for Condor data translation
    * to XCSoar (http://www.xcsoar.org) format.
   **/
-  class CTargetXCSoar : public CTranslator::CTarget {
+  class CTargetXCSoar : public CTargetXCSoarCommon {
     // inputs
     static const char *XCSOAR_PROFILE_NAME;	     ///< @brief XCSoar profile file name to use for input. 
-
-    // outputs
-    static const char *OUTPUT_PROFILE_NAME;      ///< @brief The name of XCSoar profile file to generate. 
-    static const char *TASK_FILE_NAME;           ///< @brief The name of XCSoar task file to generate. 
-    static const char *DEFAULT_TASK_FILE_NAME;   ///< @brief The name of the default XCSoar task file. 
-    static const char *POLAR_FILE_NAME;          ///< @brief The name of XCSoar glider polar file to generate.
-    static const char *AIRSPACES_FILE_NAME;      ///< @brief The name of XCSoar airspaces file to generate. 
-    static const unsigned WAYPOINT_INDEX_OFFSET = 100000; ///< @brief A big value that should point behind all the waypoints
 
     CFileParserINI _profileParser;               ///< @brief XCSoar profile file parser. 
     const std::string _outputXCSoarDataPath;     ///< @brief The path to the output XCSoarData directory.
