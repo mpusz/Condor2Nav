@@ -104,12 +104,10 @@ void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &s
 * @brief Sets time for scenery time zone. 
 *
 * Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.
-*
-* @param sceneryData Information describing the scenery. 
 **/
-void condor2nav::CTargetLK8000::SceneryTime(const CFileParserCSV::CStringArray &sceneryData)
+void condor2nav::CTargetLK8000::SceneryTime()
 {
-  SceneryTimeProcess(_profileParser, sceneryData);
+  SceneryTimeProcess(_profileParser);
 }
 
 

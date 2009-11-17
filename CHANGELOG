@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version: 0.4
+============
+- Sceneries UTC Offset support removed
+
 Version: 0.3
 ============
 - Fixed bug for duplicated TP names in a scenery for XCSoar and LK8000 targets

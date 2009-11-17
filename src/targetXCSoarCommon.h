@@ -50,7 +50,7 @@ namespace condor2nav {
     static const unsigned WAYPOINT_INDEX_OFFSET = 100000; ///< @brief A big value that should point behind all the waypoints
 
     void SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const;
-    void SceneryTimeProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData) const;
+    void SceneryTimeProcess(CFileParserINI &profileParser) const;
     void GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
     void TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &outputTaskFilePath) const;
     void PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const;

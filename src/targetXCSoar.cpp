@@ -86,12 +86,10 @@ void condor2nav::CTargetXCSoar::SceneryMap(const CFileParserCSV::CStringArray &s
 * @brief Sets time for scenery time zone. 
 *
 * Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.
-*
-* @param sceneryData Information describing the scenery. 
 **/
-void condor2nav::CTargetXCSoar::SceneryTime(const CFileParserCSV::CStringArray &sceneryData)
+void condor2nav::CTargetXCSoar::SceneryTime()
 {
-  SceneryTimeProcess(_profileParser, sceneryData);
+  SceneryTimeProcess(_profileParser);
 }
 
 

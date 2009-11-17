@@ -72,11 +72,10 @@ void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileP
 * Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.
 *
 * @param profileParser XCSoar profile file parser.
-* @param sceneryData Information describing the scenery. 
 **/
-void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData) const
+void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profileParser) const
 {
-  profileParser.Value("", "UTCOffset", sceneryData.at(SCENERY_UTC_OFFSET));
+  profileParser.Value("", "UTCOffset", "0");
   profileParser.Value("", "SetSystemTimeFromGPS", "1");
 }
 

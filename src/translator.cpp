@@ -182,10 +182,11 @@ void condor2nav::CTranslator::Run()
       std::cout << "Setting scenery map data..." << std::endl;
       target->SceneryMap(sceneryData);
     }
-    if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1") {
-      std::cout << "Setting scenery time..." << std::endl;
-      target->SceneryTime(sceneryData);
-    }
+  }
+
+  if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1") {
+    std::cout << "Setting scenery time..." << std::endl;
+    target->SceneryTime();
   }
   
   // translate glider data

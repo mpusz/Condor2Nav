@@ -61,8 +61,7 @@ namespace condor2nav {
       **/
       enum TSceneriesDataColumns {
         SCENERY_NAME,
-        SCENERY_XCSOAR_FILE,
-        SCENERY_UTC_OFFSET
+        SCENERY_XCSOAR_FILE
       };
 
       /**
@@ -105,10 +104,8 @@ namespace condor2nav {
        * @brief Sets time for scenery time zone. 
        *
        * Method sets time for scenery time zone.
-       *
-       * @param sceneryData Information describing the scenery. 
       **/
-      virtual void SceneryTime(const CFileParserCSV::CStringArray &sceneryData) = 0;
+      virtual void SceneryTime() = 0;
 
       /**
        * @brief Set glider data. 
