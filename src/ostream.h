@@ -28,7 +28,7 @@
 #ifndef __OSTREAM_H__
 #define __OSTREAM_H__
 
-#include <sstream>
+#include "stream.h"
 
 namespace condor2nav {
 
@@ -37,20 +37,9 @@ namespace condor2nav {
    *
    * condor2nav::COStream class is a wrapper for different stream types.
    */
-  class COStream {
-    /*
-     * @brief Stream types
-    **/
-    enum TType {
-      TYPE_LOCAL,            ///< @brief Local path. 
-      TYPE_ACTIVE_SYNC       ///< @brief ActiveSync (remote device) path. 
-    };
-    const std::string &_fileName;  ///< @brief File name.
-    TType _type;                   ///< @brief Stream type. 
-    std::stringstream _buffer;     ///< @brief Buffer with file data. 
-    
+  class COStream : public CStream {
   public:
-    COStream(const std::string &fileName, std::ios_base::openmode mode = std::ios::out);
+    COStream(const std::string &fileName);
     ~COStream();
     COStream &Write(const char *buffer, std::streamsize num);
 
@@ -67,7 +56,7 @@ namespace condor2nav {
     template<class T>
     friend COStream &operator<<(COStream &stream, const T &obj)
     {
-      stream._buffer << obj;
+      stream.Buffer() << obj;
       return stream;
     }
 
@@ -83,7 +72,7 @@ namespace condor2nav {
     **/
     friend COStream &operator<<(COStream &stream, std::ostream &(*f)(std::ostream &))
     {
-      stream._buffer << f;
+      stream.Buffer() << f;
       return stream;
     }
   };
@@ -103,7 +92,7 @@ namespace condor2nav {
 **/
 inline condor2nav::COStream &condor2nav::COStream::Write(const char *buffer, std::streamsize num)
 {
-  _buffer.write(buffer, num);
+  Buffer().write(buffer, num);
   return *this;
 }
 

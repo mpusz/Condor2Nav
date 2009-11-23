@@ -296,7 +296,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   profileParser.Value("", "FinishRadius", Convert(settingsTask.FinishRadius));
 
   // dump Task file
-  COStream tskFile(outputTaskFilePath, std::ios::out | std::ios::binary);
+  COStream tskFile(outputTaskFilePath);
 
   tskFile.Write(reinterpret_cast<const char *>(taskPointArray), sizeof(taskPointArray));
 

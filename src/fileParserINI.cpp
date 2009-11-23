@@ -26,6 +26,7 @@
 **/
 
 #include "fileParserINI.h"
+#include "istream.h"
 #include "ostream.h"
 #include <fstream>
 
@@ -41,14 +42,12 @@ condor2nav::CFileParserINI::CFileParserINI(const std::string &filePath):
 CFileParser(filePath)
 {
   // open input INI file
-  std::ifstream inputStream(filePath.c_str());
-  if(!inputStream)
-    throw std::invalid_argument("ERROR: Couldn't open INI file '" + filePath + "'!!!");
+  CIStream inputStream(filePath);
 
   // parse all lines
   std::string line;
   CValuesMap *currentMap = &_valuesMap;
-  while(getline(inputStream, line)) {
+  while(inputStream.GetLine(line)) {
     if(line.empty())
       continue;
 

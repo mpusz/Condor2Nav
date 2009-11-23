@@ -26,9 +26,9 @@
 **/
 
 #include "fileParserCSV.h"
+#include "istream.h"
 #include "ostream.h"
 #include "tools.h"
-#include <fstream>
 #include <string>
 
 
@@ -43,13 +43,11 @@ condor2nav::CFileParserCSV::CFileParserCSV(const std::string &filePath):
 CFileParser(filePath)
 {
   // open CSV file
-  std::ifstream inputStream(filePath.c_str());
-  if(!inputStream)
-    throw std::invalid_argument("ERROR: Couldn't open CSV file '" + filePath + "'!!!");
+  CIStream inputStream(filePath);
 
   // parse all lines
   std::string line;
-  while(getline(inputStream, line)) {
+  while(inputStream.GetLine(line)) {
     if(line.empty())
       continue;
 

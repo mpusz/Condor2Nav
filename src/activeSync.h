@@ -55,8 +55,10 @@ namespace condor2nav {
     
     ~CActiveSync();
 
+    void Read(const std::string &src, std::stringstream &stream) const;
     void Write(const std::string &dest, const std::string &buffer) const;
-    void DirectoryCreate(const std::string &name) const;
+    void DirectoryCreate(const std::string &path) const;
+    bool FileExists(const std::string &path) const;
   };
 
 }

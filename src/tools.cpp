@@ -158,6 +158,16 @@ void condor2nav::DirectoryCreate(const std::string &dirName)
  */
 bool condor2nav::FileExists(const std::string &fileName) 
 {
-  std::ifstream file(fileName.c_str());
-  return file.is_open();
+  bool activeSync = false;
+  if(fileName.size() > 2 && fileName[0] == '\\' && fileName[1] != '\\')
+    activeSync = true;
+
+  if(activeSync) {
+    CActiveSync &activeSync(CActiveSync::Instance());
+    return activeSync.FileExists(fileName);
+  }
+  else {
+    std::ifstream file(fileName.c_str());
+    return file.is_open();
+  }
 }

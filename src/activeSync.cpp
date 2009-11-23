@@ -28,7 +28,7 @@
 #include "activeSync.h"
 #include "rapi.h"
 #include <fstream>
-
+#include <memory>
 
 condor2nav::CDelayedPtr<condor2nav::CActiveSync> condor2nav::CActiveSync::_instance;
 
@@ -96,6 +96,43 @@ condor2nav::CActiveSync::~CActiveSync()
 
 
 /**
+ * @brief Reads whole file to a string.
+ *
+ * Method reads whole file to a string.
+ *
+ * @param src Target file path. 
+ * @param stream Stream to store file content. 
+**/
+void condor2nav::CActiveSync::Read(const std::string &src, std::stringstream &stream) const
+{
+  std::wstring fileName(src.begin(), src.end());
+  HANDLE hSrc = CeCreateFile(fileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  if(hSrc == INVALID_HANDLE_VALUE)
+    throw std::runtime_error("ERROR: Unable to open ActiveSync file '" + src + "'!!!");
+
+  DWORD numBytes = CeGetFileSize(hSrc, NULL);
+  std::auto_ptr<char> buff(new char[numBytes]);
+
+  if(!CeReadFile(hSrc, buff.get(), numBytes, &numBytes, NULL))
+    throw std::runtime_error("ERROR: Reading ActiveSync file '" + src + "'!!!");
+
+  // remove all returns from a file
+  std::string buffer(buff.get(), numBytes);
+  size_t pos = 0;
+  do {
+    pos = buffer.find_first_of('\r', pos);
+    if(pos != std::string::npos)
+      buffer.erase(pos, 1);
+  }
+  while(pos != std::string::npos);
+
+  stream.str(buffer);
+
+  CeCloseHandle(hSrc);
+}
+
+
+/**
  * @brief Writes buffer to a file on the target device.
  *
  * Method writes buffer to a file on the target device.
@@ -119,15 +156,40 @@ void condor2nav::CActiveSync::Write(const std::string &dest, const std::string &
 
 
 /**
- * @brief Creates direcotry on the target device.
+ * @brief Creates directory on the target device.
  *
- * Method creates direcotry on the target device.
+ * Method creates directory on the target device.
  *
- * @param name Target directory path. 
+ * @param path Target directory path. 
 **/
-void condor2nav::CActiveSync::DirectoryCreate(const std::string &name) const
+void condor2nav::CActiveSync::DirectoryCreate(const std::string &path) const
 {
-  std::wstring dirName(name.begin(), name.end());
+  std::wstring dirName(path.begin(), path.end());
   if(!CeCreateDirectory(dirName.c_str(), NULL) && CeGetLastError() != ERROR_ALREADY_EXISTS)
-    throw std::runtime_error("ERROR: Creating ActiveSync directory '" + name + "'!!!");
+    throw std::runtime_error("ERROR: Creating ActiveSync directory '" + path + "'!!!");
+}
+
+
+/**
+ * @brief Checks if a file exists on the target device.
+ *
+ * Method checks if a file exists on the target device.
+ *
+ * @param path Target file path.
+ *
+ * @return @p true if file exists.
+**/
+bool condor2nav::CActiveSync::FileExists(const std::string &path) const
+{
+  std::wstring fileName(path.begin(), path.end());
+  HANDLE hDest = CeCreateFile(fileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  if(hDest == INVALID_HANDLE_VALUE) {
+    if(CeGetLastError() == ERROR_FILE_NOT_FOUND)
+      return false;
+    throw std::runtime_error("ERROR: Unable to check if file '" + path + "' exists!!!");
+  }
+  else {
+    CeCloseHandle(hDest);
+    return true;
+  }
 }

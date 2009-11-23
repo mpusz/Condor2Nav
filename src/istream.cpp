@@ -20,12 +20,12 @@
 //
 
 /**
- * @file ostream.cpp
+ * @file istream.cpp
  *
- * @brief Implements the OStream wrapper class. 
+ * @brief Implements the IStream wrapper class. 
 **/
 
-#include "ostream.h"
+#include "istream.h"
 #include "activeSync.h"
 #include <fstream>
 #include <iostream>
@@ -34,44 +34,41 @@
 /**
  * @brief Class constructor.
  *
- * condor2nav::COStream class constructor.
+ * condor2nav::CIStream class constructor.
  *
- * @param fileName The name of the file to create.
+ * @param fileName The name of the file to read.
 **/
-condor2nav::COStream::COStream(const std::string &fileName):
+condor2nav::CIStream::CIStream(const std::string &fileName):
 CStream(fileName)
 {
+  switch(Type()) {
+    case TYPE_LOCAL:
+      {
+        std::ifstream stream(fileName.c_str());
+        if(!stream)
+          throw std::runtime_error("ERROR: Couldn't open file '" + FileName() + "' for reading!!!");
+        Buffer() << stream.rdbuf();
+      }
+      break;
+
+    case TYPE_ACTIVE_SYNC:
+      {
+        CActiveSync &activeSync(CActiveSync::Instance());
+        activeSync.Read(FileName(), Buffer());
+      }
+      break;
+
+    default:
+      throw std::runtime_error("ERROR: Unknown stream type!!!");
+  }
 }
 
 
 /**
  * @brief Class destructor.
  *
- * condor2nav::COStream class destructor. Writes local buffer to
- * a file.
+ * condor2nav::CIStream class destructor.
 **/
-condor2nav::COStream::~COStream()
+condor2nav::CIStream::~CIStream()
 {
-  if(Buffer().str().size()) {
-    switch(Type()) {
-      case TYPE_LOCAL:
-        {
-          std::ofstream stream(FileName().c_str());
-          if(!stream)
-            std::cerr << "ERROR: Couldn't open file '" << FileName() << "' for writing!!!" << std::endl;
-          stream << Buffer().str();
-        }
-        break;
-
-      case TYPE_ACTIVE_SYNC:
-        {
-          CActiveSync &activeSync(CActiveSync::Instance());
-          activeSync.Write(FileName(), Buffer().str());
-        }
-        break;
-
-      default:
-        std::cerr << "ERROR: Unknown stream type (" << Type() << ")!!!" << std::endl;
-    }
-  }
 }

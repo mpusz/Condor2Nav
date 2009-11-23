@@ -199,11 +199,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\istream.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\main.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\ostream.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\stream.cpp"
 				>
 			</File>
 			<File
@@ -257,7 +265,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\istream.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\ostream.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\stream.h"
 				>
 			</File>
 			<File

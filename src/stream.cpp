@@ -20,12 +20,12 @@
 //
 
 /**
- * @file ostream.cpp
+ * @file stream.cpp
  *
- * @brief Implements the OStream wrapper class. 
+ * @brief Implements the Stream wrapper class. 
 **/
 
-#include "ostream.h"
+#include "stream.h"
 #include "activeSync.h"
 #include <fstream>
 #include <iostream>
@@ -34,44 +34,26 @@
 /**
  * @brief Class constructor.
  *
- * condor2nav::COStream class constructor.
+ * condor2nav::CStream class constructor.
  *
  * @param fileName The name of the file to create.
 **/
-condor2nav::COStream::COStream(const std::string &fileName):
-CStream(fileName)
+condor2nav::CStream::CStream(const std::string &fileName):
+_fileName(fileName)
 {
+  if(fileName.size() > 2 && fileName[0] == '\\' && fileName[1] != '\\')
+    _type = TYPE_ACTIVE_SYNC;
+  else
+    _type = TYPE_LOCAL;
 }
 
 
 /**
  * @brief Class destructor.
  *
- * condor2nav::COStream class destructor. Writes local buffer to
+ * condor2nav::CStream class destructor. Writes local buffer to
  * a file.
 **/
-condor2nav::COStream::~COStream()
+condor2nav::CStream::~CStream()
 {
-  if(Buffer().str().size()) {
-    switch(Type()) {
-      case TYPE_LOCAL:
-        {
-          std::ofstream stream(FileName().c_str());
-          if(!stream)
-            std::cerr << "ERROR: Couldn't open file '" << FileName() << "' for writing!!!" << std::endl;
-          stream << Buffer().str();
-        }
-        break;
-
-      case TYPE_ACTIVE_SYNC:
-        {
-          CActiveSync &activeSync(CActiveSync::Instance());
-          activeSync.Write(FileName(), Buffer().str());
-        }
-        break;
-
-      default:
-        std::cerr << "ERROR: Unknown stream type (" << Type() << ")!!!" << std::endl;
-    }
-  }
 }
