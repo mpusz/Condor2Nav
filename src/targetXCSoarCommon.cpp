@@ -365,9 +365,11 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const
 {
   unsigned pzNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "PZCount"));
-  if(pzNum == 0)
+  if(pzNum == 0) {
+    profileParser.Value("", "AirspaceFile", "\"\"");
     return;
-
+  }
+  
   profileParser.Value("", "AirspaceFile", "\"" + pathPrefix + std::string("\\") + AIRSPACES_FILE_NAME + std::string("\""));
   std::string airspacesFileName = outputPathPrefix + std::string("\\") + AIRSPACES_FILE_NAME;
   COStream airspacesFile(airspacesFileName);
