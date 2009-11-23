@@ -1,30 +1,45 @@
-Condor Scenery (Case Sensitive),XCSoar XCM File (Case Sensitive)
-Alpi2,Alpi3.xcm
-Alsace,Alsace.xcm
-Appalachia,Appalachia.xcm
-Catalonia North,Catalunya.xcm
-Central-Colombia,Columbia.xcm
-Corse,Corse.xcm
-Czech republic,Czech.xcm
-EasternAlps2.0,EastAlps.xcm
-Flying_M_Ranch,FlyingM.xcm
-Glacier Park,Glacier.xcm
-Grenoble,Grenoble.xcm
-Hungary,Hungary.xcm
-HW_SWGermany,HWSWGermany.xcm
-Massif_Central,Massif_Central.xcm
-Mifflin,Mifflin.xcm
-NewZealand,NewZealand.xcm
-PacificNW(1.0),PacificNW.xcm
-Porta-Westfalica,PortaWestfalica.xcm
-Provence,Provence.xcm
-Rieti,Rieti.xcm
-Rio-Grande,RioGrande.xcm
-RockyMountains,RockyMountains.xcm
-Scotland,Scotland.xcm
-ScotlandHD,Scotland.xcm
-Sierra Nevada,SierraNevada.xcm
-SlovakiaCE,SlovakiaCE.xcm
-Slovenia,Slovenia.xcm
-Vysocina2,Vysocina.xcm
-West_swiss,WestSwiss.xcm
+Condor Scenery (Case Sensitive),Waypoints File (Case Sensitive),XCSoar XCM File (Case Sensitive)
+Alpi2,Alpi2 - 2.02.csv,Alpi3.xcm
+Alsace,Alsace - 1.1.csv,Alsace.xcm
+Antarctica,,
+Appalachia,,Appalachia.xcm
+bacchus_marsh,,
+British_Columbia,,
+Catalunya,,Catalunya.xcm
+Central-Colombia,,Columbia.xcm
+Circus,,
+Cologne_Duss,,
+Condorclub,,
+Corse,,Corse.xcm
+Czech republic,,Czech.xcm
+EasternAlps2.0,,EastAlps.xcm
+Flutter,,
+Flying_M_Ranch,,FlyingM.xcm
+Glacier Park,,Glacier.xcm
+Glider-Park,,
+Grenoble,,Grenoble.xcm
+Hawaii,,
+Hungary,,Hungary.xcm
+HW_SWGermany,,HWSWGermany.xcm
+IslandHop,,
+kisogawa2,,
+Lakekeepit,,
+Lost_World,,
+Makalu Range,,
+Massif_Central,,Massif_Central.xcm
+Mifflin,,Mifflin.xcm
+Mount_Olympus,,
+NewZealand,,NewZealand.xcm
+PacificNW(1.0),,PacificNW.xcm
+Porta-Westfalica,,PortaWestfalica.xcm
+Provence,,Provence.xcm
+Rieti,,Rieti.xcm
+Rio-Grande,,RioGrande.xcm
+RockyMountains,,RockyMountains.xcm
+Scotland,,Scotland.xcm
+ScotlandHD,,Scotland.xcm
+Sierra Nevada,,SierraNevada.xcm
+SlovakiaCE,,SlovakiaCE.xcm
+Slovenia,,Slovenia.xcm
+Vysocina2,,Vysocina.xcm
+West_swiss,,WestSwiss.xcm
