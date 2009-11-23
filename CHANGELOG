@@ -6,6 +6,7 @@ Version: 0.4
 ============
 - Sceneries UTC Offset support removed
 - Nasty bug (introduced in 0.3) with writing to a local file fixed (thanks bo)
+- Reading of XCSoar/LK8000 configuration file directly from target device added
 
 Version: 0.3
 ============

@@ -46,7 +46,6 @@ const char *condor2nav::CTargetLK8000::LK8000_PROFILE_NAME    = "DEFAULT_PROFILE
 **/
 condor2nav::CTargetLK8000::CTargetLK8000(const CTranslator &translator):
 CTargetXCSoarCommon(translator),
-_profileParser(CTranslator::DATA_PATH + std::string("\\") + LK8000_PROFILE_NAME),
 _outputLK8000DataPath(OutputPath() + "\\LK8000")
 {
   std::string subDir = "\\condor2nav";
@@ -73,6 +72,17 @@ _outputLK8000DataPath(OutputPath() + "\\LK8000")
     _outputTaskFilePath = outputTaskDir + std::string("\\") + TASK_FILE_NAME;
   }
   DirectoryCreate(outputTaskDir);
+
+  std::string profilePath = _outputLK8000DataPath + _outputConfigSubDir + std::string("\\") + OUTPUT_PROFILE_NAME;
+  if(!FileExists(profilePath)) {
+    profilePath = _outputLK8000DataPath + std::string("\\") + CONFIG_SUBDIR + std::string("\\") + LK8000_PROFILE_NAME;
+    if(!FileExists(profilePath)) {
+      profilePath = CTranslator::DATA_PATH + std::string("\\") + LK8000_PROFILE_NAME;
+      if(!FileExists(profilePath))
+        throw std::runtime_error("ERROR: Please copy '" + std::string(LK8000_PROFILE_NAME) + "' file to '" + std::string(CTranslator::DATA_PATH) + "' directory.");
+    }
+  }
+  _profileParser = std::auto_ptr<CFileParserINI>(new CFileParserINI(profilePath));
 }
 
 
@@ -83,7 +93,7 @@ _outputLK8000DataPath(OutputPath() + "\\LK8000")
 **/
 condor2nav::CTargetLK8000::~CTargetLK8000()
 {
-  _profileParser.Dump(_outputLK8000DataPath + _outputConfigSubDir + std::string("\\") + OUTPUT_PROFILE_NAME);
+  _profileParser->Dump(_outputLK8000DataPath + _outputConfigSubDir + std::string("\\") + OUTPUT_PROFILE_NAME);
 }
 
 
@@ -96,7 +106,7 @@ condor2nav::CTargetLK8000::~CTargetLK8000()
 **/
 void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  SceneryMapProcess(_profileParser, sceneryData, _condor2navDataPath + _outputMapsSubDir);
+  SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPath + _outputMapsSubDir);
 }
 
 
@@ -107,7 +117,7 @@ void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &s
 **/
 void condor2nav::CTargetLK8000::SceneryTime()
 {
-  SceneryTimeProcess(_profileParser);
+  SceneryTimeProcess(*_profileParser);
 }
 
 
@@ -121,7 +131,7 @@ void condor2nav::CTargetLK8000::SceneryTime()
 **/
 void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
-  GliderProcess(_profileParser, gliderData, _condor2navDataPath + _outputPolarsSubDir, _outputLK8000DataPath + _outputPolarsSubDir);
+  GliderProcess(*_profileParser, gliderData, _condor2navDataPath + _outputPolarsSubDir, _outputLK8000DataPath + _outputPolarsSubDir);
 }
 
 
@@ -135,7 +145,7 @@ void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &glide
 **/
 void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  TaskProcess(_profileParser, taskParser, coordConv, _outputTaskFilePath);
+  TaskProcess(*_profileParser, taskParser, coordConv, _outputTaskFilePath);
 }
  
 
@@ -149,7 +159,7 @@ void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCo
 **/
 void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  PenaltyZonesProcess(_profileParser, taskParser, coordConv, _condor2navDataPath + _outputAirspacesSubDir, _outputLK8000DataPath + _outputAirspacesSubDir);
+  PenaltyZonesProcess(*_profileParser, taskParser, coordConv, _condor2navDataPath + _outputAirspacesSubDir, _outputLK8000DataPath + _outputAirspacesSubDir);
 }
 
 
@@ -162,5 +172,5 @@ void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, c
 **/
 void condor2nav::CTargetLK8000::Weather(const CFileParserINI &taskParser)
 {
-  WeatherProcess(_profileParser, taskParser);
+  WeatherProcess(*_profileParser, taskParser);
 }

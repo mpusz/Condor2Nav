@@ -40,7 +40,6 @@ const char *condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME    = "xcsoar-registry
 **/
 condor2nav::CTargetXCSoar::CTargetXCSoar(const CTranslator &translator):
 CTargetXCSoarCommon(translator),
-_profileParser(CTranslator::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME),
 _outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
 {
   std::string subDir = ConfigParser().Value("XCSoar", "Condor2NavDataSubDir");
@@ -55,6 +54,17 @@ _outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
     _outputTaskFilePath = _outputXCSoarDataPath + std::string("\\") + DEFAULT_TASK_FILE_NAME;
   else
     _outputTaskFilePath = _outputCondor2NavDataPath + std::string("\\") + TASK_FILE_NAME;
+
+  std::string profilePath = _outputCondor2NavDataPath + std::string("\\") + OUTPUT_PROFILE_NAME;
+  if(!FileExists(profilePath)) {
+    profilePath = _outputXCSoarDataPath + std::string("\\") + XCSOAR_PROFILE_NAME;
+    if(!FileExists(profilePath)) {
+      profilePath = CTranslator::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME;
+      if(!FileExists(profilePath))
+        throw std::runtime_error("ERROR: Please copy '" + std::string(XCSOAR_PROFILE_NAME) + "' file to '" + std::string(CTranslator::DATA_PATH) + "' directory.");
+    }
+  }
+  _profileParser = std::auto_ptr<CFileParserINI>(new CFileParserINI(profilePath));
 }
 
 
@@ -65,7 +75,7 @@ _outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
 **/
 condor2nav::CTargetXCSoar::~CTargetXCSoar()
 {
-  _profileParser.Dump(_outputCondor2NavDataPath + std::string("\\") + OUTPUT_PROFILE_NAME);
+  _profileParser->Dump(_outputCondor2NavDataPath + std::string("\\") + OUTPUT_PROFILE_NAME);
 }
 
 
@@ -78,7 +88,7 @@ condor2nav::CTargetXCSoar::~CTargetXCSoar()
 **/
 void condor2nav::CTargetXCSoar::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  SceneryMapProcess(_profileParser, sceneryData, _condor2navDataPath);
+  SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPath);
 }
 
 
@@ -89,7 +99,7 @@ void condor2nav::CTargetXCSoar::SceneryMap(const CFileParserCSV::CStringArray &s
 **/
 void condor2nav::CTargetXCSoar::SceneryTime()
 {
-  SceneryTimeProcess(_profileParser);
+  SceneryTimeProcess(*_profileParser);
 }
 
 
@@ -103,7 +113,7 @@ void condor2nav::CTargetXCSoar::SceneryTime()
 **/
 void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
-  GliderProcess(_profileParser, gliderData, _condor2navDataPath, _outputCondor2NavDataPath);
+  GliderProcess(*_profileParser, gliderData, _condor2navDataPath, _outputCondor2NavDataPath);
 }
 
 
@@ -117,7 +127,7 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
 **/
 void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  TaskProcess(_profileParser, taskParser, coordConv, _outputTaskFilePath);
+  TaskProcess(*_profileParser, taskParser, coordConv, _outputTaskFilePath);
 }
  
 
@@ -131,7 +141,7 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
 **/
 void condor2nav::CTargetXCSoar::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  PenaltyZonesProcess(_profileParser, taskParser, coordConv, _condor2navDataPath, _outputCondor2NavDataPath);
+  PenaltyZonesProcess(*_profileParser, taskParser, coordConv, _condor2navDataPath, _outputCondor2NavDataPath);
 }
 
 
@@ -144,5 +154,5 @@ void condor2nav::CTargetXCSoar::PenaltyZones(const CFileParserINI &taskParser, c
 **/
 void condor2nav::CTargetXCSoar::Weather(const CFileParserINI &taskParser)
 {
-  WeatherProcess(_profileParser, taskParser);
+  WeatherProcess(*_profileParser, taskParser);
 }
