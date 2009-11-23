@@ -5,6 +5,7 @@
 Version: 0.4
 ============
 - Sceneries UTC Offset support removed
+- Nasty bug (introduced in 0.3) with writing to a local file fixed (thanks bo)
 
 Version: 0.3
 ============

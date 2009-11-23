@@ -63,7 +63,7 @@ condor2nav::COStream::~COStream()
           std::ofstream stream(_fileName.c_str());
           if(!stream)
             throw std::runtime_error("ERROR: Couldn't open file '" + _fileName + "' for writing!!!");
-          stream << _buffer;
+          stream << _buffer.str();
         }
         break;
 
