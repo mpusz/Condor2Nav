@@ -268,7 +268,9 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
       }
       else if(i == tpNum - 1) {
         settingsTask.FinishRadius = radius;
-        settingsTask.FinishMinHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
+//        settingsTask.FinishMinHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
+        // AGL only in XCSoar ;-(
+        settingsTask.FinishMinHeight = 0;
       }
     }
     else if(sectorType == CCondor::SECTOR_WINDOW) {
@@ -286,7 +288,11 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 
   profileParser.Value("", "StartLine", Convert(settingsTask.StartType));
   profileParser.Value("", "StartMaxHeight", Convert(settingsTask.StartMaxHeight));
+  profileParser.Value("", "StartMaxHeightMargin", "0");
+  profileParser.Value("", "StartHeightRef", "1");        // AMSL
   profileParser.Value("", "StartRadius", Convert(settingsTask.StartRadius));
+  profileParser.Value("", "StartMaxSpeed", "0");
+  profileParser.Value("", "StartMaxSpeedMargin", "0");
 
   profileParser.Value("", "FAISector", Convert(settingsTask.SectorType));
   profileParser.Value("", "Radius", Convert(settingsTask.SectorRadius));
@@ -294,6 +300,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   profileParser.Value("", "FinishLine", Convert(settingsTask.FinishType));
   profileParser.Value("", "FinishMinHeight", Convert(settingsTask.FinishMinHeight));
   profileParser.Value("", "FinishRadius", Convert(settingsTask.FinishRadius));
+  profileParser.Value("", "FAIFinishHeight", Convert(settingsTask.FinishMinHeight));
 
   // dump Task file
   COStream tskFile(outputTaskFilePath);
