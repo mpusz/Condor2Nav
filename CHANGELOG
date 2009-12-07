@@ -2,6 +2,12 @@
  Condor2Nav
 ============
 
+Version: 0.5 (WIP)
+==================
+- Optional WP file generation for XCSoar/LK8000 support added
+- LK8000 1.17e support added (task files format updated)
+- More task data for start and finish turnpoints now set in PRF file
+
 Version: 0.4
 ============
 - Sceneries UTC Offset support removed

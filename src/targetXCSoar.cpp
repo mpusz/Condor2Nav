@@ -26,6 +26,7 @@
 **/
 
 #include "targetXCSoar.h"
+#include "imports/xcsoarTypes.h"
 
 
 const char *condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME    = "xcsoar-registry.prf";
@@ -127,7 +128,8 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
 **/
 void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  TaskProcess(*_profileParser, taskParser, coordConv, _outputTaskFilePath);
+  unsigned wpFile(Convert<unsigned>(ConfigParser().Value("XCSoar", "TaskWPFileGenerate")));
+  TaskProcess(*_profileParser, taskParser, coordConv, _outputTaskFilePath, xcsoar::MAXTASKPOINTS_XCSOAR, xcsoar::MAXSTARTPOINTS_XCSOAR, wpFile > 0, _outputCondor2NavDataPath);
 }
  
 

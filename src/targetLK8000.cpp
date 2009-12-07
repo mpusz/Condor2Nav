@@ -26,6 +26,7 @@
 **/
 
 #include "targetLK8000.h"
+#include "imports/xcsoarTypes.h"
 
 
 const char *condor2nav::CTargetLK8000::AIRSPACES_SUBDIR       = "_Airspaces";
@@ -33,6 +34,7 @@ const char *condor2nav::CTargetLK8000::CONFIG_SUBDIR          = "_Configuration"
 const char *condor2nav::CTargetLK8000::MAPS_SUBDIR            = "_Maps";
 const char *condor2nav::CTargetLK8000::POLARS_SUBDIR          = "_Polars";
 const char *condor2nav::CTargetLK8000::TASKS_SUBDIR           = "_Tasks";
+const char *condor2nav::CTargetLK8000::WAYPOINTS_SUBDIR       = "_Waypoints";
 
 const char *condor2nav::CTargetLK8000::LK8000_PROFILE_NAME    = "DEFAULT_PROFILE.prf";
 
@@ -55,12 +57,14 @@ _outputLK8000DataPath(OutputPath() + "\\LK8000")
   _outputConfigSubDir = std::string("\\") + CONFIG_SUBDIR + subDir;
   _outputMapsSubDir = std::string("\\") + MAPS_SUBDIR + subDir;
   _outputPolarsSubDir = std::string("\\") + POLARS_SUBDIR + subDir;
+  _outputPolarsSubDir = std::string("\\") + POLARS_SUBDIR + subDir;
+  _outputWaypointsSubDir = std::string("\\") + WAYPOINTS_SUBDIR + subDir;
 
   DirectoryCreate(_outputLK8000DataPath + _outputAirspacesSubDir);
   DirectoryCreate(_outputLK8000DataPath + _outputConfigSubDir);
   DirectoryCreate(_outputLK8000DataPath + _outputMapsSubDir);
   DirectoryCreate(_outputLK8000DataPath + _outputPolarsSubDir);
-  DirectoryCreate(_outputLK8000DataPath + _outputPolarsSubDir);
+  DirectoryCreate(_outputLK8000DataPath + _outputWaypointsSubDir);
 
   std::string outputTaskDir;
   if(Convert<unsigned>(ConfigParser().Value("LK8000", "DefaultTaskOverwrite"))) {
@@ -145,7 +149,8 @@ void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &glide
 **/
 void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  TaskProcess(*_profileParser, taskParser, coordConv, _outputTaskFilePath);
+  unsigned wpFile(Convert<unsigned>(ConfigParser().Value("LK8000", "TaskWPFileGenerate")));
+  TaskProcess(*_profileParser, taskParser, coordConv, _outputTaskFilePath, xcsoar::MAXTASKPOINTS_LK8000, xcsoar::MAXSTARTPOINTS_LK8000, wpFile > 0, _outputLK8000DataPath + _outputWaypointsSubDir);
 }
  
 

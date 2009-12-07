@@ -45,7 +45,8 @@ namespace condor2nav {
     static const char *CONFIG_SUBDIR;            ///< @brief LK8000 configuration subdirectory. 
     static const char *MAPS_SUBDIR;              ///< @brief LK8000 maps subdirectory. 
     static const char *POLARS_SUBDIR;            ///< @brief LK8000 polars subdirectory. 
-    static const char *TASKS_SUBDIR;             ///< @brief LK8000 tasks subdirectory. 
+    static const char *TASKS_SUBDIR;             ///< @brief LK8000 tasks subdirectory.
+    static const char *WAYPOINTS_SUBDIR;         ///< @brief LK8000 waypoints subdirectory.
 
     // inputs
     static const char *LK8000_PROFILE_NAME;	     ///< @brief LK8000 profile file name to use for input. 
@@ -59,6 +60,7 @@ namespace condor2nav {
     std::string _outputMapsSubDir;               ///< @brief The subdirectory where output LK8000 airspaces file should be located
     std::string _outputPolarsSubDir;             ///< @brief The subdirectory where output LK8000 polars file should be located
     std::string _outputTaskFilePath;             ///< @brief The path where output LK8000 task file should be located
+    std::string _outputWaypointsSubDir;          ///< @brief The subdirectory where output LK8000 waypoints file should be located
     
   public:
     explicit CTargetLK8000(const CTranslator &translator);

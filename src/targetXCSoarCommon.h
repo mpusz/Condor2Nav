@@ -47,12 +47,13 @@ namespace condor2nav {
     static const char *DEFAULT_TASK_FILE_NAME;   ///< @brief The name of the default XCSoar task file. 
     static const char *POLAR_FILE_NAME;          ///< @brief The name of XCSoar glider polar file to generate.
     static const char *AIRSPACES_FILE_NAME;      ///< @brief The name of XCSoar airspaces file to generate. 
+    static const char *WP_FILE_NAME;             ///< @brief The name of XCSoar WP file with task waypoints.
     static const unsigned WAYPOINT_INDEX_OFFSET = 100000; ///< @brief A big value that should point behind all the waypoints
 
     void SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const;
     void SceneryTimeProcess(CFileParserINI &profileParser) const;
     void GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
-    void TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &outputTaskFilePath) const;
+    void TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &outputTaskFilePath, unsigned maxTaskPoints, unsigned maxStartPoints, bool generateWPFile, const std::string &wpOutputPathPrefix) const;
     void PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
     void WeatherProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser) const;
 
