@@ -43,12 +43,12 @@
  *
  * @return Converted coordinate string.
 **/
-std::string condor2nav::DDFF2DDMMFF(float value, bool longitude)
+std::string condor2nav::DDFF2DDMMFF(double value, bool longitude)
 {
   int deg = static_cast<int>(value);
   if(deg < 0)
     deg = -deg;
-  float min = (value - deg) * 60;
+  double min = (value - deg) * 60;
 
   std::stringstream stream;
   stream.setf(std::ios::fixed, std::ios::floatfield);
@@ -70,7 +70,7 @@ std::string condor2nav::DDFF2DDMMFF(float value, bool longitude)
  *
  * @return Converted coordinate string.
 **/
-std::string condor2nav::DDFF2DDMMSS(float value, bool longitude)
+std::string condor2nav::DDFF2DDMMSS(double value, bool longitude)
 {
   int deg = static_cast<int>(value);
   if(deg < 0)

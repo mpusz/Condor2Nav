@@ -86,8 +86,8 @@ namespace condor2nav {
   template<class T> T Convert(const std::string &str);
   template<class T> std::string Convert(const T &val);
 
-  std::string DDFF2DDMMFF(float value, bool longitude);
-  std::string DDFF2DDMMSS(float value, bool longitude);
+  std::string DDFF2DDMMFF(double value, bool longitude);
+  std::string DDFF2DDMMSS(double value, bool longitude);
 
   unsigned KmH2MS(unsigned value);
 

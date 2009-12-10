@@ -29,6 +29,7 @@
 #include "tools.h"
 #include <fstream>
 #include <iomanip>
+#include <cmath>
 
 
 /* ******************** C O N D O R   -   C O O R D   C O N V E R T E R ********************* */
@@ -89,36 +90,42 @@ condor2nav::CCondor::CCoordConverter::~CCoordConverter()
 /**
  * @brief Converts Condor coordinates to longitude.
  *
- * Method converts Condor coordinates to a float longitude value.
+ * Method converts Condor coordinates to a double longitude value.
  * 
  * @param x The x coordinate.
  * @param y The y coordinate. 
  *
- * @return Converted float longitude value.
+ * @return Converted double longitude value.
 **/
-float condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y) const
+double condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y) const
 {
   float xVal(condor2nav::Convert<float>(x));
   float yVal(condor2nav::Convert<float>(y));
-  return _iface.xyToLon(xVal, yVal);
+  double lon = _iface.xyToLon(xVal, yVal);
+  int deg = static_cast<int>(lon);
+  double min = static_cast<int>(floor((lon - deg) * 60.0 * 1000 + 0.5)) / static_cast<double>(1000.0);
+  return deg + min / 60;
 }
 
 
 /**
- * @brief Converts Condor coordinates to float latitude value.
+ * @brief Converts Condor coordinates to double latitude value.
  *
  * Method converts Condor coordinates to latitude.
  * 
  * @param x The x coordinate.
  * @param y The y coordinate. 
  *
- * @return Converted float latitude value.
+ * @return Converted double latitude value.
 **/
-float condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y) const
+double condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y) const
 {
   float xVal(condor2nav::Convert<float>(x));
   float yVal(condor2nav::Convert<float>(y));
-  return _iface.xyToLat(xVal, yVal);
+  double lat = _iface.xyToLat(xVal, yVal);
+  int deg = static_cast<int>(lat);
+  double min = static_cast<int>(floor((lat - deg) * 60.0 * 1000 + 0.5)) / static_cast<double>(1000.0);
+  return deg + min / 60;
 }
 
 
@@ -135,7 +142,7 @@ float condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const
 **/
 std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
-  float longitude(Longitude(x, y));
+  double longitude(Longitude(x, y));
   switch(format) {
   case FORMAT_DDMMFF:
     return DDFF2DDMMFF(longitude, true);
@@ -160,7 +167,7 @@ std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x
 **/
 std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
-  float latitude(Latitude(x, y));
+  double latitude(Latitude(x, y));
   switch(format) {
   case FORMAT_DDMMFF:
     return DDFF2DDMMFF(latitude, false);
