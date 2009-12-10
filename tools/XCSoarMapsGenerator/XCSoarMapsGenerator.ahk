@@ -127,7 +127,7 @@ DllCall("FreeLibrary", "UInt", hModule)  ; To conserve memory, the DLL may be un
 ; ************************ G E N E R A T E   L A N D S C A P E   T E R R A I N *******************************
 
 ; create browser window
-#Include COM.ahk
+#Include include\COM.ahk
 
 COM_AtlAxWinInit()
 Gui, +LastFound +Resize
@@ -408,6 +408,6 @@ FileMove %zipPath%, %xcmPath%
 
 ; ************************ F I N I S H *******************************
 
-MsgBox Landscape translation completed successfully!!!`n'%xcmPath%' file generated.
+MsgBox Landscape translation completed successfully!!!`nMap file: %xcmPath%`nWaypoints file: %waypointsPath%
 
 ExitApp
