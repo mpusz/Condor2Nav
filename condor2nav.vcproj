@@ -312,15 +312,15 @@
 			>
 		</Filter>
 		<File
-			RelativePath=".\CHANGELOG"
+			RelativePath=".\CHANGELOG.txt"
 			>
 		</File>
 		<File
-			RelativePath=".\COPYING"
+			RelativePath=".\COPYING.txt"
 			>
 		</File>
 		<File
-			RelativePath=".\README"
+			RelativePath=".\README.txt"
 			>
 		</File>
 	</Files>
