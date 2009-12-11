@@ -256,9 +256,8 @@ Loop READ, %condorDir%\Landscapes\%landscapeName%\%landscapeName%.cup
 			; write waypoint to file
 			csvLine := index . "," . lat . "," . lon . "," . altitude . ",T," . name . ","
 			FileAppend %csvline%`n, %csvPath%
+			index++
 		}
-
-		index++
 	}
 }
 
