@@ -109,6 +109,10 @@ namespace xcsoar {
     bool InSector;
   };
 
+  enum WaypointFlags_t {
+    WAYPOINT_AIRPORT    = 0x01,
+    WAYPOINT_TURNPOINT  = 0x02
+  };
 
   struct WAYPOINT
   {

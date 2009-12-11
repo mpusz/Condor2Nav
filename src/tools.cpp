@@ -54,7 +54,7 @@ std::string condor2nav::DDFF2DDMMFF(double value, bool longitude)
   stream.setf(std::ios::fixed, std::ios::floatfield);
   stream.setf(std::ios::showpoint);
   stream.precision(3);
-  stream << deg << ":" << min << (longitude ? (value > 0 ? "E" : "W") : (value > 0 ? "N" : "S"));
+  stream << deg << ":" << std::setfill('0') << std::setw(6) << min << (longitude ? (value > 0 ? "E" : "W") : (value > 0 ? "N" : "S"));
   return stream.str();
 }
 

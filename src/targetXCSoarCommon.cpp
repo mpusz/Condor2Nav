@@ -137,6 +137,7 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
 * @param profileParser XCSoar profile file parser.
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
+* @param sceneryData Information describing the scenery. 
 * @param outputTaskFilePath The path of output XCSoar task file.
 * @param maxTaskPoints The number of waypoints stored in a task file
 * @param maxStartPoints The number of alternate startpoints stored in a task file
@@ -144,7 +145,9 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
 * @param wpOutputPathPrefix XCSoar WP subdirectory prefix (in filesystem format).
 **/
 void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser,
-                                                  const CCondor::CCoordConverter &coordConv, const std::string &outputTaskFilePath,
+                                                  const CCondor::CCoordConverter &coordConv,
+                                                  const CFileParserCSV::CStringArray &sceneryData,
+                                                  const std::string &outputTaskFilePath,
                                                   unsigned maxTaskPoints, unsigned maxStartPoints,
                                                   bool generateWPFile, const std::string &wpOutputPathPrefix) const
 {
@@ -189,6 +192,10 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   // check if enough waypoints to create a task
   if(tpNum - 1 > maxTaskPoints)
     throw std::range_error("ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!");
+
+  std::auto_ptr<CFileParserCSV> waypointsParser;
+  if(sceneryData.at(SCENERY_WAYPOINTS_FILE) != "")
+    waypointsParser = std::auto_ptr<CFileParserCSV>(new CFileParserCSV("data\\Waypoints\\" + sceneryData.at(SCENERY_WAYPOINTS_FILE)));
   
   // skip takeoff waypoint
   for(unsigned i=1; i<tpNum; i++) {
@@ -205,17 +212,38 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     std::string x(taskParser.Value("Task", "TPPosX" + tpIdxStr));
     std::string y(taskParser.Value("Task", "TPPosY" + tpIdxStr));
 
+    double latitude = coordConv.Latitude(x, y);
+    double longitude = coordConv.Longitude(x, y);
+    std::string latitudeStr = DDFF2DDMMFF(latitude, false);
+    std::string longitudeStr = DDFF2DDMMFF(longitude, true);
+    unsigned waypointFlags = xcsoar::WAYPOINT_TURNPOINT;
+    std::string waypointFlagsStr = "T";
+    
+    if(sceneryData.at(SCENERY_WAYPOINTS_FILE) != "") {
+      // look for waypoint data in a scenery waypoints file
+      const CFileParserCSV::CRowsList &waypoints = waypointsParser->Rows();
+      for(CFileParserCSV::CRowsList::const_iterator it=waypoints.begin(); it!=waypoints.end(); ++it) {
+        if((**it).at(1) == latitudeStr && (**it).at(2) == longitudeStr) {
+          if((**it).at(4) == "AT") {
+            // mark waypoint as airport
+            waypointFlagsStr = "AT";
+            waypointFlags |= xcsoar::WAYPOINT_AIRPORT;
+          }
+          break;
+        }
+      }
+    }
+    
     if(generateWPFile)
-      *wpFile << i << "," << coordConv.Latitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMFF) << "," 
-      << coordConv.Longitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMFF) << ","
-      << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M,T," << name << ","
-      << taskParser.Value("Task", "TPName" + tpIdxStr) << std::endl;
+      *wpFile << i << "," << latitudeStr << "," << longitudeStr << ","
+              << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M," << waypointFlagsStr << "," << name << ","
+              << taskParser.Value("Task", "TPName" + tpIdxStr) << std::endl;
 
     taskPointArray[i - 1].Index = taskWaypointArray[i - 1].Number = WAYPOINT_INDEX_OFFSET + i;
-    taskWaypointArray[i - 1].Latitude = coordConv.Latitude(x, y);
-    taskWaypointArray[i - 1].Longitude = coordConv.Longitude(x, y);
+    taskWaypointArray[i - 1].Latitude = latitude;
+    taskWaypointArray[i - 1].Longitude = longitude;
     taskWaypointArray[i - 1].Altitude = Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
-    taskWaypointArray[i - 1].Flags = 2;  // Turnpoint
+    taskWaypointArray[i - 1].Flags = waypointFlags;
     mbstowcs(taskWaypointArray[i - 1].Name, name.c_str(), NAME_SIZE);
     mbstowcs(taskWaypointArray[i - 1].Comment, taskParser.Value("Task", "TPName" + tpIdxStr).c_str(), COMMENT_SIZE);
     taskWaypointArray[i - 1].InTask = 1;

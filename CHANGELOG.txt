@@ -9,6 +9,7 @@ Version: 0.5 (WIP)
 - More task data for start and finish turnpoints now set in PRF file
 - Project related text files now have .txt extension
 - Waypoints accuracy fixed to exactly match map files
+- Proper handling of aiport type waypoints in a task file
 
 Version: 0.4
 ============

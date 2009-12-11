@@ -125,11 +125,14 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
 *
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
+* @param sceneryData Information describing the scenery. 
 **/
-void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
+void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData)
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("XCSoar", "TaskWPFileGenerate")));
-  TaskProcess(*_profileParser, taskParser, coordConv, _outputTaskFilePath, xcsoar::MAXTASKPOINTS_XCSOAR, xcsoar::MAXSTARTPOINTS_XCSOAR, wpFile > 0, _outputCondor2NavDataPath);
+  TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, 
+              _outputTaskFilePath, xcsoar::MAXTASKPOINTS_XCSOAR, xcsoar::MAXSTARTPOINTS_XCSOAR,
+              wpFile > 0, _outputCondor2NavDataPath);
 }
  
 

@@ -61,6 +61,7 @@ namespace condor2nav {
       **/
       enum TSceneriesDataColumns {
         SCENERY_NAME,
+        SCENERY_WAYPOINTS_FILE,
         SCENERY_XCSOAR_FILE
       };
 
@@ -123,8 +124,9 @@ namespace condor2nav {
        *
        * @param taskParser Condor task parser. 
        * @param coordConv  Condor coordinates converter.
+       * @param sceneryData Information describing the scenery. 
       **/
-      virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
+      virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData) = 0;
 
       /**
        * @brief Sets task penalty zones. 

@@ -172,21 +172,27 @@ void condor2nav::CTranslator::Run()
 {
   // create translation target
   std::auto_ptr<CTarget> target(Target());
-
-  // translate scenery data
+  
   {
     const CFileParserCSV sceneriesParser(DATA_PATH + std::string("\\") + SCENERIES_DATA_FILE_NAME);
     const CFileParserCSV::CStringArray &sceneryData = sceneriesParser.Row(_condor.TaskParser().Value("Task", "Landscape"));
 
+    // translate scenery data
     if(_configParser.Value("Condor2Nav", "SetSceneryMap") == "1") {
       std::cout << "Setting scenery map data..." << std::endl;
       target->SceneryMap(sceneryData);
     }
-  }
 
-  if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1") {
-    std::cout << "Setting scenery time..." << std::endl;
-    target->SceneryTime();
+    if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1") {
+      std::cout << "Setting scenery time..." << std::endl;
+      target->SceneryTime();
+    }
+  
+    // translate task
+    if(_configParser.Value("Condor2Nav", "SetTask") == "1") {
+      std::cout << "Setting task data..." << std::endl;
+      target->Task(_condor.TaskParser(), _condor.CoordConverter(), sceneryData);
+    }
   }
   
   // translate glider data
@@ -194,12 +200,6 @@ void condor2nav::CTranslator::Run()
     std::cout << "Setting glider data..." << std::endl;
     const CFileParserCSV glidersParser(DATA_PATH + std::string("\\") + GLIDERS_DATA_FILE_NAME);
     target->Glider(glidersParser.Row(_condor.TaskParser().Value("Plane", "Name")));
-  }
-
-  // translate task
-  if(_configParser.Value("Condor2Nav", "SetTask") == "1") {
-    std::cout << "Setting task data..." << std::endl;
-    target->Task(_condor.TaskParser(), _condor.CoordConverter());
   }
 
   // translate penalty zones
