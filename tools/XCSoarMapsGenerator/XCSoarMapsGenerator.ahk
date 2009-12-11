@@ -26,8 +26,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 
-; ************************ W I N D O W   N A M E S ***************************
+; ************************ C O N S T A N T S ***************************
 
+outputPath = ..\..\data\XCSoar
 landscapeEditorTitle = Condor Scenery Toolkit: Landscape Editor
 landscapeEditorAirportPropertiesTitle = Airport properties
 
@@ -101,6 +102,170 @@ If landscapeName =
 ; obtain scenery version
 IniRead landscapeVersion, %condorDir%\Landscapes\%landscapeName%\%landscapeName%.ini, General, Version
 
+
+
+
+; ************************ G E T   L A N D S C A P E   A I R P O R T S *******************************
+
+csvPath = %outputPath%\Waypoints\%landscapeName%_%landscapeVersion%.csv
+FileDelete %csvPath%
+
+index = 1
+
+SetControlDelay 50
+
+IfWinNotExist %landscapeEditorTitle%
+{
+	; Open landscape editor
+	Run %landscapeEditorPath%
+
+	WinWait %landscapeEditorTitle%, , 3
+	if ErrorLevel
+	{
+		MsgBox Condor Scenery Toolkit not installed!!!
+		ExitApp
+	}
+}
+WinActivate %landscapeEditorTitle%
+WinWaitActive %landscapeEditorTitle%
+
+; set selected landscape
+Control ChooseString, %landscapeName%, TComboBox1, %landscapeEditorTitle%
+WinWait Loading textures
+WinWaitClose
+
+; select Airports
+Control ChooseString, Airports, TCheckListBox1, %landscapeEditorTitle%
+
+; iterate through airports
+ControlFocus TListBox1, %landscapeEditorTitle%
+ControlGet airportsList, List, , TListBox1, %landscapeEditorTitle%
+Loop Parse, airportsList, `n
+{
+	Control Choose, %A_Index%, TListBox1, %landscapeEditorTitle%
+	Send {APPSKEY}{UP}{ENTER}
+
+	WinWaitActive %landscapeEditorAirportPropertiesTitle%
+
+	ControlGetText name,      TEdit3, %landscapeEditorAirportPropertiesTitle%
+	ControlGetText lat,       TEdit2, %landscapeEditorAirportPropertiesTitle%
+	ControlGetText lon,       TEdit1, %landscapeEditorAirportPropertiesTitle%
+	ControlGetText altitude,  TSpinEdit6, %landscapeEditorAirportPropertiesTitle%
+	ControlGetText direction, TSpinEdit5, %landscapeEditorAirportPropertiesTitle%
+	ControlGetText length,    TSpinEdit4, %landscapeEditorAirportPropertiesTitle%
+	ControlGetText width,     TSpinEdit3, %landscapeEditorAirportPropertiesTitle%
+	ControlGet     asphalt,   Checked, , TCheckBox4, %landscapeEditorAirportPropertiesTitle%
+	ControlGetText freqHigh,  TSpinEdit2, %landscapeEditorAirportPropertiesTitle%
+	ControlGetText freqLow,   TSpinEdit1, %landscapeEditorAirportPropertiesTitle%
+
+	; transform latitiude
+	if(lat >= 0)
+		latLetter = N
+	else
+		latLetter = S
+	latDeg := Floor(Abs(lat))
+	latMin := Round((lat - latDeg) * 60, 3)
+	Loop, % 6 - StrLen(latMin) ; prepend with zeros if necessary
+		latMin = 0%latMin%
+	lat := latDeg . ":" . latMin . latLetter
+
+	; transform longitude
+	if(lon >= 0)
+		lonLetter = E
+	else
+		lonLetter = W
+	lonDeg := Floor(Abs(lon))
+	lonMin := Round((lon - lonDeg) * 60, 3)
+	Loop, % 6 - StrLen(lonMin) ; prepend with zeros if necessary
+		lonMin = 0%lonMin%
+	lon := lonDeg . ":" . lonMin . lonLetter
+
+	altitude = %altitude%M
+
+	if(direction > 180)
+		direction := (direction - 180) . "/" . direction
+	else
+		direction := direction . "/" . (direction + 180)
+
+	csvLine := index . "," . lat . "," . lon . "," . altitude . ",AT," . name . ", Dir: " . direction . " Dim: " . length . "/" . width
+	FileAppend %csvline%`n, %csvPath%
+	
+	ControlSend TButton1, {ENTER}, %landscapeEditorAirportPropertiesTitle%
+	WinWaitClose %landscapeEditorAirportPropertiesTitle%
+	
+	index++
+}
+
+WinClose %landscapeEditorTitle%
+
+airportsNum := index - 1
+
+
+
+; ************************ G E T   L A N D S C A P E   W A Y P O I N T S *******************************
+
+; process landscape turnpoints
+Loop READ, %condorDir%\Landscapes\%landscapeName%\%landscapeName%.cup
+{
+	If(A_Index != 1)
+	{
+		StringSplit, data, A_LoopReadLine, `,
+		If(data0 < 6) {
+			MsgBox Error parsing Condor Landscape waypoints file '%condorDir%\Landscapes\%landscapeName%\%landscapeName%.cup'!!!
+			ExitApp
+		}
+
+		; crop name
+		StringTrimLeft name, data1, 1
+		StringTrimRight name, name, 1
+
+		; transform latitiude
+		latLetter := SubStr(data4, 0, 1)
+		StringTrimRight lat, data4, 1
+		latDeg := Floor(lat / 100)
+		StringTrimLeft latMin, lat, 2
+		lat := latDeg . ":" . latMin . latLetter
+
+		; transform longitude
+		lonLetter := SubStr(data5, 0, 1)
+		StringTrimRight lon, data5, 1
+		lonDeg := Floor(lon / 100)
+		StringTrimLeft lonMin, lon, 3
+		lon := lonDeg . ":" . lonMin . lonLetter
+
+		altitude := Round(data6) . "M"
+
+		; check if airport with the same coordinates is present already
+		skip := false
+		Loop READ, %csvPath%
+		{
+			StringSplit, data, A_LoopReadLine, `,
+			If(data2 = lat && data3 = lon)
+			{
+				; airport found -> skip the waypoint
+				skip := true
+				Break
+			}
+
+			If(A_Index = airportsNum)
+				Break
+		}
+	
+		If(skip = false)
+		{
+			; write waypoint to file
+			csvLine := index . "," . lat . "," . lon . "," . altitude . ",T," . name . ","
+			FileAppend %csvline%`n, %csvPath%
+		}
+
+		index++
+	}
+}
+
+
+
+; ************************ G E N E R A T E   L A N D S C A P E   T E R R A I N *******************************
+
 ; resolve scenery extremum coordinates
 dllName = %condorDir%\NaviCon.dll
 trnPath = %condorDir%\Landscapes\%landscapeName%\%landscapeName%.trn
@@ -122,9 +287,6 @@ maxLat := DllCall("NaviCon\XYToLat", Float, maxX, Float, maxY, Float)
 
 DllCall("FreeLibrary", "UInt", hModule)  ; To conserve memory, the DLL may be unloaded after using it.
 
-
-
-; ************************ G E N E R A T E   L A N D S C A P E   T E R R A I N *******************************
 
 ; create browser window
 #Include include\COM.ahk
@@ -244,8 +406,8 @@ loop
 	Sleep 1000
 }
 
-; download terain file
-xcmPath = ..\data\XCSoar\Maps\%fileName%.xcm
+; download terrain file
+xcmPath = %outputPath%\Maps\%fileName%.xcm
 FileDelete %xcmPath%
 UrlDownloadToFile http://xcsoar.dd.com.au/cgi-bin/terrain.pl?rm=download_file, %xcmPath%
 
@@ -254,143 +416,10 @@ COM_AtlAxWinTerm()
 
 
 
-; ************************ G E T   L A N D S C A P E   W A Y P O I N T S *******************************
-
-csvPath = ..\data\XCSoar\Waypoints\%landscapeName%_%landscapeVersion%.csv
-FileDelete %csvPath%
-
-index = 1
-
-; process landscape turnpoints
-Loop READ, %condorDir%\Landscapes\%landscapeName%\%landscapeName%.cup
-{
-	If(A_Index != 1)
-	{
-		StringSplit, data, A_LoopReadLine, `,
-		If(data0 < 6) {
-			MsgBox Error parsing Condor Landscape waypoints file '%condorDir%\Landscapes\%landscapeName%\%landscapeName%.cup'!!!
-			ExitApp
-		}
-
-		; crop name
-		StringTrimLeft name, data1, 1
-		StringTrimRight name, name, 1
-
-		; transform latitiude
-		latLetter := SubStr(data4, 0, 1)
-		StringTrimRight lat, data4, 1
-		latDeg := Floor(lat / 100)
-		StringTrimLeft latMin, lat, 2
-		lat := latDeg . ":" . latMin . latLetter
-
-		; transform longitude
-		lonLetter := SubStr(data5, 0, 1)
-		StringTrimRight lon, data5, 1
-		lonDeg := Floor(lon / 100)
-		StringTrimLeft lonMin, lon, 3
-		lon := lonDeg . ":" . lonMin . lonLetter
-
-		altitude := Round(data6) . "M"
-
-		csvLine := index . "," . lat . "," . lon . "," . altitude . ",T," . name . ","
-		FileAppend %csvline%`n, %csvPath%
-
-		index++
-	}
-}
-
-
-
-; ************************ G E T   L A N D S C A P E   A I R P O R T S *******************************
-
-SetControlDelay 50
-
-IfWinNotExist %landscapeEditorTitle%
-{
-	; Open landscape editor
-	Run %landscapeEditorPath%
-
-	WinWait %landscapeEditorTitle%, , 3
-	if ErrorLevel
-	{
-		MsgBox Condor Scenery Toolkit not installed!!!
-		ExitApp
-	}
-}
-WinActivate %landscapeEditorTitle%
-WinWaitActive %landscapeEditorTitle%
-
-; set selected landscape
-Control ChooseString, %landscapeName%, TComboBox1, %landscapeEditorTitle%
-WinWait Loading textures
-WinWaitClose
-
-; select Airports
-Control ChooseString, Airports, TCheckListBox1, %landscapeEditorTitle%
-
-; iterate through airports
-ControlFocus TListBox1, %landscapeEditorTitle%
-ControlGet airportsList, List, , TListBox1, %landscapeEditorTitle%
-Loop Parse, airportsList, `n
-{
-	Control Choose, %A_Index%, TListBox1, %landscapeEditorTitle%
-	Send {APPSKEY}{UP}{ENTER}
-
-	WinWaitActive %landscapeEditorAirportPropertiesTitle%
-
-	ControlGetText name,      TEdit3, %landscapeEditorAirportPropertiesTitle%
-	ControlGetText lat,       TEdit2, %landscapeEditorAirportPropertiesTitle%
-	ControlGetText lon,       TEdit1, %landscapeEditorAirportPropertiesTitle%
-	ControlGetText altitude,  TSpinEdit6, %landscapeEditorAirportPropertiesTitle%
-	ControlGetText direction, TSpinEdit5, %landscapeEditorAirportPropertiesTitle%
-	ControlGetText length,    TSpinEdit4, %landscapeEditorAirportPropertiesTitle%
-	ControlGetText width,     TSpinEdit3, %landscapeEditorAirportPropertiesTitle%
-	ControlGet     asphalt,   Checked, , TCheckBox4, %landscapeEditorAirportPropertiesTitle%
-	ControlGetText freqHigh,  TSpinEdit2, %landscapeEditorAirportPropertiesTitle%
-	ControlGetText freqLow,   TSpinEdit1, %landscapeEditorAirportPropertiesTitle%
-
-	; transform latitiude
-	if(lat>=0)
-		latLetter = N
-	else
-		latLetter = S
-	latDeg := Floor(Abs(lat))
-	latMin := Round((lat - latDeg) * 60, 3)
-	lat := latDeg . ":" . latMin . latLetter
-
-	; transform longitude
-	if(lon>=0)
-		lonLetter = E
-	else
-		lonLetter = W
-	lonDeg := Floor(Abs(lon))
-	lonMin := Round((lon - lonDeg) * 60, 3)
-	lon := lonDeg . ":" . lonMin . lonLetter
-
-	altitude = %altitude%M
-
-	if(direction > 180)
-		direction := (direction - 180) . "/" . direction
-	else
-		direction := direction . "/" . (direction + 180)
-
-	csvLine := index . "," . lat . "," . lon . "," . altitude . ",AT," . name . ", Dir: " . direction . " Dim: " . length . "/" . width
-	FileAppend %csvline%`n, %csvPath%
-	
-	ControlSend TButton1, {ENTER}, %landscapeEditorAirportPropertiesTitle%
-	WinWaitClose %landscapeEditorAirportPropertiesTitle%
-	
-	index++
-}
-
-WinClose %landscapeEditorTitle%
-
-
-
 ; ************************ R E P A C K   T E R R A I N   F I L E *******************************
 
 zipPath := RegExReplace(xcmPath, "\.xcm$", ".zip")
-waypointsPath = ..\data\XCSoar\Maps\waypoints.xcw
+waypointsPath = %outputPath%\Maps\waypoints.xcw
 
 FileCopy %csvPath%, %waypointsPath%
 FileMove %xcmPath%, %zipPath%
