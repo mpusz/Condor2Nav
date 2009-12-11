@@ -41,7 +41,10 @@ namespace condor2nav {
    * be processed with that class.
   **/
   class CFileParserCSV : public CFileParser {
+  public:
     typedef std::deque<CStringArray *> CRowsList;	///< @brief The list of string arrays. 
+
+  private:
     CRowsList _rowsList;	        ///< @brief The list of file rows.
 
   public:
@@ -51,6 +54,7 @@ namespace condor2nav {
     virtual void Dump(const std::string &filePath = "") const;
     
     const CStringArray &Row(const std::string &value, unsigned column = 0) const;
+    const CRowsList &Rows() const;
 //    void Row(CStringArray &row);
   };
 

@@ -91,6 +91,19 @@ const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(con
 }
 
 
+/**
+ * @brief Returns all rows.
+ *
+ * Method returns all rows parsed from a CSV file.
+ *
+ * @return Rows.
+**/
+const condor2nav::CFileParserCSV::CRowsList &condor2nav::CFileParserCSV::Rows() const
+{
+  return _rowsList;
+}
+
+
 //void condor2nav::CFileParserCSV::Row(CStringArray &row)
 //{
 //}
