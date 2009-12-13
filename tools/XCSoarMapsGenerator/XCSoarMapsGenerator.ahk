@@ -163,7 +163,8 @@ Loop Parse, airportsList, `n
 		latLetter = N
 	else
 		latLetter = S
-	latDeg := Floor(Abs(lat))
+	lat := Abs(lat)
+	latDeg := Floor(lat)
 	latMin := Round((lat - latDeg) * 60, 3)
 	Loop, % 6 - StrLen(latMin) ; prepend with zeros if necessary
 		latMin = 0%latMin%
@@ -174,7 +175,8 @@ Loop Parse, airportsList, `n
 		lonLetter = E
 	else
 		lonLetter = W
-	lonDeg := Floor(Abs(lon))
+	lon := Abs(lon)
+	lonDeg := Floor(lon)
 	lonMin := Round((lon - lonDeg) * 60, 3)
 	Loop, % 6 - StrLen(lonMin) ; prepend with zeros if necessary
 		lonMin = 0%lonMin%
@@ -209,31 +211,36 @@ Loop READ, %condorDir%\Landscapes\%landscapeName%\%landscapeName%.cup
 {
 	If(A_Index != 1)
 	{
-		StringSplit, data, A_LoopReadLine, `,
-		If(data0 < 6) {
+		searchStr = "
+		pos := InStr(A_LoopReadLine, searchStr, false, 2)
+		StringLeft name, A_LoopReadLine, pos
+		; crop name
+		StringTrimLeft name, name, 1
+		StringTrimRight name, name, 1
+		StringReplace name, name, `,
+
+		StringTrimLeft rest, A_LoopReadLine, pos + 1
+		StringSplit, data, rest, `,
+		If(data0 < 5) {
 			MsgBox Error parsing Condor Landscape waypoints file '%condorDir%\Landscapes\%landscapeName%\%landscapeName%.cup'!!!
 			ExitApp
 		}
 
-		; crop name
-		StringTrimLeft name, data1, 1
-		StringTrimRight name, name, 1
-
 		; transform latitiude
-		latLetter := SubStr(data4, 0, 1)
-		StringTrimRight lat, data4, 1
+		latLetter := SubStr(data3, 0, 1)
+		StringTrimRight lat, data3, 1
 		latDeg := Floor(lat / 100)
 		StringTrimLeft latMin, lat, 2
 		lat := latDeg . ":" . latMin . latLetter
 
 		; transform longitude
-		lonLetter := SubStr(data5, 0, 1)
-		StringTrimRight lon, data5, 1
+		lonLetter := SubStr(data4, 0, 1)
+		StringTrimRight lon, data4, 1
 		lonDeg := Floor(lon / 100)
 		StringTrimLeft lonMin, lon, 3
 		lon := lonDeg . ":" . lonMin . lonLetter
 
-		altitude := Round(data6) . "M"
+		altitude := Round(data5) . "M"
 
 		; check if airport with the same coordinates is present already
 		skip := false
@@ -306,8 +313,10 @@ loop
 ; fill general landscape information
 document := COM_Invoke(pwb, "Document")
 fileName := landscapeName . "_" . landscapeVersion
-StringReplace trnName, fileName, ., _
-StringReplace trnName, trnName, %A_SPACE%, _
+StringReplace trnName, fileName, ., _, All
+StringReplace trnName, trnName, %A_SPACE%, _, All
+StringReplace trnName, trnName, -, _, All
+StringTrimRight trnName, trnName, StrLen(trnName) - 20
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "areaname"), "Item", 0), "value", trnName)
 email = user@wp.pl
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "email"), "Item", 0), "value", email)
@@ -323,13 +332,19 @@ loop
 
 ; fill lanscape coordinates
 ; transform top
-if(maxLat>=0)
+If(maxLat >= 0)
 	latLetter = N
 else
 	latLetter = S
-latDeg := Floor(Abs(maxLat))
+maxLat := Abs(maxLat)
+latDeg := Floor(maxLat)
 latMin := Floor((maxLat - latDeg) * 60)
 latSec := Round(((maxLat - latDeg) * 60 - latMin) * 60)
+If(latSec = 60)
+{
+	latMin := latMin + 1
+	latSec := 0
+}
 
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "top_degrees"), "Item", 0), "value", latDeg)
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "top_minutes"), "Item", 0), "value", latMin)
@@ -337,13 +352,19 @@ COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "top_seconds"), 
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "top_direction"), "Item", 0), "value", latLetter)
 
 ; transform bottom
-if(minLat>=0)
+if(minLat >= 0)
 	latLetter = N
 else
 	latLetter = S
-latDeg := Floor(Abs(minLat))
+minLat := Abs(minLat)
+latDeg := Floor(minLat)
 latMin := Floor((minLat - latDeg) * 60)
 latSec := Round(((minLat - latDeg) * 60 - latMin) * 60)
+If(latSec = 60)
+{
+	latMin := latMin + 1
+	latSec := 0
+}
 
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "bottom_degrees"), "Item", 0), "value", latDeg)
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "bottom_minutes"), "Item", 0), "value", latMin)
@@ -351,13 +372,19 @@ COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "bottom_seconds"
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "bottom_direction"), "Item", 0), "value", latLetter)
 
 ; transform left
-if(maxLon>=0)
+if(maxLon >= 0)
 	lonLetter = E
 else
 	lonLetter = W
-lonDeg := Floor(Abs(maxLon))
+maxLon := Abs(maxLon)
+lonDeg := Floor(maxLon)
 lonMin := Floor((maxLon - lonDeg) * 60)
 lonSec := Round(((maxLon - lonDeg) * 60 - lonMin) * 60)
+If(lonSec = 60)
+{
+	lonMin := lonMin + 1
+	lonSec := 0
+}
 
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "left_degrees"), "Item", 0), "value", lonDeg)
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "left_minutes"), "Item", 0), "value", lonMin)
@@ -365,13 +392,19 @@ COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "left_seconds"),
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "left_direction"), "Item", 0), "value", lonLetter)
 
 ; transform right
-if(minLon>=0)
+if(minLon >= 0)
 	lonLetter = E
 else
 	lonLetter = W
-lonDeg := Floor(Abs(minLon))
+minLon := Abs(minLon)
+lonDeg := Floor(minLon)
 lonMin := Floor((minLon - lonDeg) * 60)
 lonSec := Floor(((minLon - lonDeg) * 60 - lonMin) * 60)
+If(lonSec = 60)
+{
+	lonMin := lonMin + 1
+	lonSec := 0
+}
 
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "right_degrees"), "Item", 0), "value", lonDeg)
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "right_minutes"), "Item", 0), "value", lonMin)
@@ -384,7 +417,8 @@ loop
 	If (busy := COM_Invoke(pwb, "busy") = false)
 		Break
 
-; submit default resolution
+; select and submit map resolution
+COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "resolution"), "Item", 1), "checked", "true")
 COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByTagName", "FORM"), "Item", 0), "submit")
 loop
 	If (busy := COM_Invoke(pwb, "busy") = false)
@@ -424,10 +458,10 @@ FileCopy %csvPath%, %waypointsPath%
 FileMove %xcmPath%, %zipPath%
 
 ; remove airspaces
-RunWait %zipAppPath% d %zipPath% airspace.txt
+RunWait %zipAppPath% d "%zipPath%" airspace.txt
 
 ; add waypoints
-RunWait %zipAppPath% a %zipPath% %waypointsPath%
+RunWait %zipAppPath% a "%zipPath%" "%waypointsPath%"
 
 FileDelete %waypointsPath%
 FileMove %zipPath%, %xcmPath%
@@ -436,6 +470,6 @@ FileMove %zipPath%, %xcmPath%
 
 ; ************************ F I N I S H *******************************
 
-MsgBox Landscape translation completed successfully!!!`nMap file: %xcmPath%`nWaypoints file: %waypointsPath%
+MsgBox Landscape translation completed successfully!!!`nMap file: %xcmPath%`nWaypoints file: %csvPath%
 
 ExitApp
