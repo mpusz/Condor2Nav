@@ -10,6 +10,7 @@ Version: 0.5 (WIP)
 - Project related text files now have .txt extension
 - Waypoints accuracy fixed to exactly match map files
 - Proper handling of aiport type waypoints in a task file
+- Condor sceneries maps and waypoints generated for XCSoar
 
 Version: 0.4
 ============
