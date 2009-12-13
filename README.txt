@@ -57,7 +57,8 @@ In case of XCSoar translation following steps must be completed:
 1. Have XCSoar installed and configured on the target device
    (e.g. PDA, PNA, PC).
 2. Obtain XCM map files for all supported sceneries from condor2nav
-   project webpage (http://sourceforge.net/projects/condor2nav/files)
+   project webpage
+   (http://sourceforge.net/projects/condor2nav/files/maps/XCSoar/Maps.zip/download)
 3. Find "XCSoarData" directory created with XCSoar and copy all
    XCM scenery files to the [XCSoar] "Condor2NavDataSubDir" subdirectory
    on the target device.
@@ -71,7 +72,8 @@ In case of LK8000 translation following steps must be completed:
 1. Have LK8000 installed and configured on the target device
    (e.g. PDA, PNA, PC).
 2. Obtain XCM map files for all supported sceneries from condor2nav
-   project webpage (http://sourceforge.net/projects/condor2nav/files)
+   project webpage
+   (http://sourceforge.net/projects/condor2nav/files/maps/XCSoar/Maps.zip/download)
 3. Copy all XCM scenery files to the "LK8000/_Maps/condor2nav" subdirectory
    on the target device.
 4. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the [LK8000]
