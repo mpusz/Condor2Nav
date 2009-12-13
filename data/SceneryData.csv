@@ -1,45 +1,56 @@
 Condor Scenery (Case Sensitive),Waypoints File (Case Sensitive),XCSoar XCM File (Case Sensitive)
-Alpi2,Alpi2 - 2.02.csv,Alpi3.xcm
-Alsace,Alsace - 1.1.csv,Alsace.xcm
-Antarctica,,
-Appalachia,,Appalachia.xcm
-bacchus_marsh,,
-British_Columbia,,
-Catalunya,,Catalunya.xcm
-Central-Colombia,,Columbia.xcm
-Circus,,
-Cologne_Duss,,
-Condorclub,,
-Corse,,Corse.xcm
-Czech republic,,Czech.xcm
-EasternAlps2.0,,EastAlps.xcm
-Flutter,,
-Flying_M_Ranch,,FlyingM.xcm
-Glacier Park,,Glacier.xcm
-Glider-Park,,
-Grenoble,,Grenoble.xcm
-Hawaii,,
-Hungary,,Hungary.xcm
-HW_SWGermany,,HWSWGermany.xcm
-IslandHop,,
-kisogawa2,,
-Lakekeepit,,
-Lost_World,,
-Makalu Range,,
-Massif_Central,,Massif_Central.xcm
-Mifflin,,Mifflin.xcm
-Mount_Olympus,,
-NewZealand,,NewZealand.xcm
-PacificNW(1.0),,PacificNW.xcm
-Porta-Westfalica,,PortaWestfalica.xcm
-Provence,,Provence.xcm
-Rieti,,Rieti.xcm
-Rio-Grande,,RioGrande.xcm
-RockyMountains,,RockyMountains.xcm
-Scotland,,Scotland.xcm
-ScotlandHD,,Scotland.xcm
-Sierra Nevada,,SierraNevada.xcm
+Alpi2,Alpi2_2.02.csv,Alpi2_2.02.xcm
+Alsace,Alsace_1.1.csv,Alsace_1.1.xcm
+Appalachia,Appalachia_1.0.csv,Appalachia_1.0.xcm
+bacchus_marsh,bacchus_marsh.csv,bacchus_marsh.xcm
+British_Columbia,British_Columbia_1.01.csv,British_Columbia_1.01.xcm
+Catalunya,Catalunya_1.00.csv,Catalunya_1.00.xcm
+central_alps,central_alps_1.0.csv,central_alps_1.0.xcm
+Central-Colombia,Central-Colombia_2.1a.csv,Central-Colombia_2.1a.xcm
+Cologne_Duss,Cologne_Duss_v1.0.csv,Cologne_Duss_v1.0.xcm
+Condorclub,Condorclub_1.0.csv,Condorclub_1.0.xcm
+Corse,Corse_1.0.csv,Corse_1.0.xcm
+Czech republic,Czech republic_0.5.csv,Czech republic_0.5.xcm
+EasternAlps2.0,EasternAlps2.0_2.0.csv,EasternAlps2.0_2.0.xcm
+Flying_M_Ranch,Flying_M_Ranch_1.00.csv,Flying_M_Ranch_1.00.xcm
+Glacier Park,Glacier Park_1.0.csv,Glacier Park_1.0.xcm
+Grenoble,Grenoble_1.1.csv,Grenoble_1.1.xcm
+Hawaii,Hawaii_1.5.csv,Hawaii_1.5.xcm
+Hungary,Hungary_1.00.csv,Hungary_1.00.xcm
+HW_SWGermany,HW_SWGermany_1.08.csv,HW_SWGermany_1.08.xcm
+IslandHop,IslandHop_1.0.csv,IslandHop_1.0.xcm
+kisogawa2,kisogawa2.csv,kisogawa2.xcm
+Lakekeepit,Lakekeepit_1.1.csv,Lakekeepit_1.1.xcm
+Makalu Range,Makalu Range_2.0.csv,Makalu Range_2.0.xcm
+Massif_Central,Massif_Central_1.0.csv,Massif_Central_1.0.xcm
+Mifflin,Mifflin_1.0.csv,Mifflin_1.0.xcm
+Mount_Olympus,Mount_Olympus_1.0.csv,Mount_Olympus_1.0.xcm
+narromine,narromine_0.1.csv,narromine_0.1.xcm
+NEVictoria,NEVictoria_0.9.csv,NEVictoria_0.9.xcm
+NewZealand,NewZealand_0.8.csv,NewZealand_0.8.xcm
+Normandie,Normandie_0.5.csv,Normandie_0.5.xcm
+Oahu HD BETA,Oahu HD BETA_0.0.csv,Oahu HD BETA_0.0.xcm
+PacificNW,PacificNW_2.0.csv,PacificNW_2.0.xcm
+Palmeira-BR,Palmeira-BR.csv,Palmeira-BR.xcm
+Peru,Peru_1.0.csv,Peru_1.0.xcm
+PNG,PNG_1.00.csv,PNG_1.00.xcm
+Porta-Westfalica,Porta-Westfalica_1.0.csv,Porta-Westfalica_1.0.xcm
+Provence,Provence_1.30.csv,Provence_1.30.xcm
+pyrenees,pyrenees_1.beta.csv,pyrenees_1.beta.xcm
+Rieti,Rieti_1.00.csv,Rieti_1.00.xcm
+Rio-Grande,Rio-Grande_2.0.csv,Rio-Grande_2.0.xcm
+RockyMountains,RockyMountains_1.01.csv,RockyMountains_1.01.xcm
+Scotland,Scotland_2.1.csv,Scotland_2.1.xcm
+ScotlandHD,ScotlandHD_HD.csv,ScotlandHD_HD.xcm
+SEQld,SEQld_0.8.csv,SEQld_0.8.xcm
+Sierra Nevada,Sierra Nevada_1.1.csv,Sierra Nevada_1.1.xcm
 SlovakiaCE,SlovakiaCE_5.01.csv,SlovakiaCE_5.01.xcm
-Slovenia,,Slovenia.xcm
-Vysocina2,,Vysocina.xcm
-West_swiss,,WestSwiss.xcm
+Slovenia,Slovenia_1.03.csv,Slovenia_1.03.xcm
+Soaring-Island,Soaring-Island_1.0.csv,Soaring-Island_1.0.xcm
+SouthTurkey,SouthTurkey_1.0b.csv,SouthTurkey_1.0b.xcm
+StirlingRanges,StirlingRanges.csv,StirlingRanges.xcm
+uk_vfr2,uk_vfr2_1.0 RC1.csv,uk_vfr2_1.0 RC1.xcm
+ulster,ulster_0.1.csv,ulster_0.1.xcm
+Vysocina2,Vysocina2_1.0.csv,Vysocina2_1.0.xcm
+West_swiss,West_swiss_1.02.csv,West_swiss_1.02.xcm
+YAlps,YAlps_0.02.csv,YAlps_0.02.xcm

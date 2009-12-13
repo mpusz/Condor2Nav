@@ -13,9 +13,9 @@ finished it will be a fully automated translator between Condor and
 navigation applications files formats.
 
 The main idea of the application is based on the XCondor application made
-By Simon Taylor (thanks Simon for providing me the sources), however
-Condor2Nav C++ code is written from the scratch and it has (and will have
-more) new features to make the integration more accurate.
+by Simon Taylor, however Condor2Nav C++ code is written from the scratch
+and it has (and will have more) new features to make the integration more
+accurate.
 
 At the very beginning it will be a command line based application (no GUI).
 
@@ -26,8 +26,8 @@ The project is still in Beta phase so use it on your own responsibility.
 Please report all the problems you encounter to the forum on the project
 webpage.
 At the current development stage aplication should be stable and ready to
-be tested. Data provided in CSV file (gliders, sceneries) may be invalid
-and need some review and update.
+be tested. Gliders data provided in CSV file may be invalid and need some
+review and update.
 
 
 3. Installation
@@ -36,12 +36,14 @@ Obtain latest release package from the project website and extract it
 anywhere on the hard drive.
 
 The package contains:
-- README - that readme file
-- CHANGELOG - changes introduced in subsequent releases
+- README.txt - that readme file
+- CHANGELOG.txt - changes introduced in subsequent releases
 - condor2nav.exe - application executable
 - condor2nav.ini - project configuration
 - data/GliderData.csv - CSV file with gliders information
 - data/SceneryData.csv - CSV file with supported sceneries information
+- data/Waypoints/*.csv - all supported Condor landscapes waypoints in
+                         WinPilot format
 
 
 4. Additional software
@@ -54,8 +56,8 @@ Soaring Simulator) on your local computer.
 In case of XCSoar translation following steps must be completed:
 1. Have XCSoar installed and configured on the target device
    (e.g. PDA, PNA, PC).
-2. Obtain Greg Nuspell's Condor XCM Sceneries from
-   http://surfnet.dl.sourceforge.net/sourceforge/xcsoar/XCM_files.zip.
+2. Obtain XCM map files for all supported sceneries from condor2nav
+   project webpage (http://sourceforge.net/projects/condor2nav/files)
 3. Find "XCSoarData" directory created with XCSoar and copy all
    XCM scenery files to the [XCSoar] "Condor2NavDataSubDir" subdirectory
    on the target device.
@@ -68,8 +70,8 @@ In case of XCSoar translation following steps must be completed:
 In case of LK8000 translation following steps must be completed:
 1. Have LK8000 installed and configured on the target device
    (e.g. PDA, PNA, PC).
-2. Obtain Greg Nuspell's Condor XCM Sceneries from
-   http://surfnet.dl.sourceforge.net/sourceforge/xcsoar/XCM_files.zip.
+2. Obtain XCM map files for all supported sceneries from condor2nav
+   project webpage (http://sourceforge.net/projects/condor2nav/files)
 3. Copy all XCM scenery files to the "LK8000/_Maps/condor2nav" subdirectory
    on the target device.
 4. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the [LK8000]
