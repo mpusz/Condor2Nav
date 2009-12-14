@@ -29,6 +29,7 @@
 #define __ACTIVESYNC_H__
 
 #include "tools.h"
+#include <rapi.h>
 
 namespace condor2nav {
 
@@ -41,6 +42,52 @@ namespace condor2nav {
    * @note Singleton design pattern
    */
   class CActiveSync {
+    typedef HRESULT (WINAPI *FCeRapiInitEx)(RAPIINIT *pRapiInit);  ///< @brief rapi.dll interface
+    typedef HRESULT (WINAPI *FCeRapiUninit)();  ///< @brief rapi.dll interface
+    typedef DWORD (WINAPI *FCeGetLastError)();  ///< @brief rapi.dll interface
+
+    typedef HANDLE (WINAPI *FCeCreateFile)(LPCWSTR lpFileName,
+                                           DWORD dwDesiredAccess, 
+                                           DWORD dwShareMode, 
+                                           LPSECURITY_ATTRIBUTES lpSecurityAttributes, 
+                                           DWORD dwCreationDisposition, 
+                                           DWORD dwFlagsAndAttributes, 
+                                           HANDLE hTemplateFile);  ///< @brief rapi.dll interface
+    typedef DWORD (WINAPI *FCeGetFileSize)(HANDLE hFile, 
+                                           LPDWORD lpFileSizeHigh);  ///< @brief rapi.dll interface
+    typedef BOOL (WINAPI *FCeReadFile)(HANDLE hFile, 
+                                       LPVOID lpBuffer, 
+                                       DWORD nNumberOfBytesToRead, 
+                                       LPDWORD lpNumberOfBytesRead, 
+                                       LPOVERLAPPED lpOverlapped);  ///< @brief rapi.dll interface
+    typedef BOOL (WINAPI *FCeWriteFile)(HANDLE hFile, 
+                                        LPCVOID lpBuffer, 
+                                        DWORD nNumberOfBytesToWrite, 
+                                        LPDWORD lpNumberOfBytesWritten, 
+                                        LPOVERLAPPED lpOverlapped);  ///< @brief rapi.dll interface
+    typedef BOOL (WINAPI *FCeCloseHandle)(HANDLE hObject);  ///< @brief rapi.dll interface
+
+    typedef BOOL (WINAPI *FCeCreateDirectory)(LPCWSTR lpPathName,
+                                              LPSECURITY_ATTRIBUTES lpSecurityAttributes);  ///< @brief rapi.dll interface
+
+
+    /**
+    * @brief rapi.dll interface.
+    **/
+    struct TDLLIface {
+      FCeRapiInitEx ceRapiInitEx;
+      FCeRapiUninit ceRapiUninit;
+      FCeGetLastError ceGetLastError;
+      FCeCreateFile ceCreateFile;
+      FCeGetFileSize ceGetFileSize;
+      FCeReadFile ceReadFile;
+      FCeWriteFile ceWriteFile;
+      FCeCloseHandle ceCloseHandle;
+      FCeCreateDirectory ceCreateDirectory;
+    };
+    HINSTANCE _hInstLib;	  ///< @brief DLL instance. 
+    TDLLIface _iface;	      ///< @brief DLL interface.
+
     static const unsigned TIMEOUT = 5000;        ///< @brief Timeout in ms for ActiveSync initialization. 
 
     friend class CDelayedPtr<CActiveSync>;

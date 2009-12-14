@@ -9,8 +9,10 @@ Version: 0.5 (WIP)
 - More task data for start and finish turnpoints now set in PRF file
 - Project related text files now have .txt extension
 - Waypoints accuracy fixed to exactly match map files
-- Proper handling of aiport type waypoints in a task file
+- Proper handling of airport type waypoints in a task file
 - Condor sceneries maps and waypoints generated for XCSoar
+- RAPI.DLL (ActiveSync) library dependency removed if a user does not want to
+  use ActiveSync connection
 
 Version: 0.4
 ============
