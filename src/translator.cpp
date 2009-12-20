@@ -133,12 +133,13 @@ const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
  *
  * condor2nav::CTranslator class constructor.
  *
+ * @param condorPath The path to Condor
  * @param cliTaskName Condor task name provided in application Command Line
  *                    ("" if nothing provided - default should be used).
 **/
-condor2nav::CTranslator::CTranslator(const std::string &cliTaskName):
+condor2nav::CTranslator::CTranslator(const std::string &condorPath, const std::string &cliTaskName):
 _configParser(CONFIG_FILE_NAME),
-_condor(_configParser.Value("Condor", "Path"), (cliTaskName != "") ? cliTaskName : _configParser.Value("Condor", "DefaultTaskName"))
+_condor(condorPath, (cliTaskName != "") ? cliTaskName : _configParser.Value("Condor", "DefaultTaskName"))
 {
 }
 

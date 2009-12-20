@@ -13,6 +13,7 @@ Version: 0.5 (WIP)
 - Condor sceneries maps and waypoints generated for XCSoar
 - RAPI.DLL (ActiveSync) library dependency removed if a user does not want to
   use ActiveSync connection
+- Reading Condor path from Windows registry support added (INI entry removed)
 
 Version: 0.4
 ============

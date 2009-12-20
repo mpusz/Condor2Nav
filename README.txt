@@ -91,16 +91,15 @@ However it is possible to configure it in the other way maybe to better
 suite user's needs. In that case [OPTIONAL] points may be useful.
 
 Open condor2nav.ini file and change the following:
-1. Set [Condor] "Path" value to the main Condor directory.
-2. [OPTIONAL] Change the name of Condor default task file you will use for
+1. [OPTIONAL] Change the name of Condor default task file you will use for
    the translation (Condor task file name can also be provided for each
    translation from the Command Line Interface - see "condor2nav.exe –h"
    for more info).
-3. [OPTIONAL] Condor2Nav is configured to use ActiveSync connection by
+2. [OPTIONAL] Condor2Nav is configured to use ActiveSync connection by
    default. In case of other translation target (local directory, connected
    flash card) change the application output path ([Condor2Nav] "OutputPath").
-4. [OPTIONAL] In [Condor2Nav] chapter setup which data should be translated.
-5. [OPTIONAL] In case of XCSoar translation and if proposed Condor2Nav data
+3. [OPTIONAL] In [Condor2Nav] chapter setup which data should be translated.
+4. [OPTIONAL] In case of XCSoar translation and if proposed Condor2Nav data
    path on the target device doesn't suite your needs change
    [XCSoar] "Condor2NavDataSubDir".
 

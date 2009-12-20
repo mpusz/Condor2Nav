@@ -164,7 +164,7 @@ namespace condor2nav {
     static const char *SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
     static const char *GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
 
-    explicit CTranslator(const std::string &cliTaskName);
+    explicit CTranslator(const std::string &condorPath, const std::string &cliTaskName);
     void Run();
   };
 

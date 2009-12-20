@@ -63,8 +63,21 @@ int condor2nav::CCondor2Nav::Run(int argc, const char *argv[]) const
     return EXIT_SUCCESS;
   }
 
+  // obtain Condor installation path
+  HKEY hTestKey;
+  if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) != ERROR_SUCCESS)
+    throw std::runtime_error("ERROR: Condor installation not found!!!");
+  DWORD bufferSize = 0;
+  RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, NULL, &bufferSize);
+  std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
+  RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
+  std::string path(buffer.get());
+  RegCloseKey(hTestKey);
+  size_t pos = path.find("Condor.exe");
+  path = path.substr(0, pos - 1);
+
   std::string taskName((argc > 1) ? argv[1] : "");
-  CTranslator translator(taskName);
+  CTranslator translator(path, taskName);
   translator.Run();
   
   return EXIT_SUCCESS;
