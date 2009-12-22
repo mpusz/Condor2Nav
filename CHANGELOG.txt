@@ -2,10 +2,10 @@
  Condor2Nav
 ============
 
-Version: 0.5 (WIP)
-==================
+Version: 0.5
+============
 - Optional WP file generation for XCSoar/LK8000 support added
-- LK8000 1.17e support added (task files format updated)
+- LK8000 1.18 support added (task files format updated)
 - More task data for start and finish turnpoints now set in PRF file
 - Project related text files now have .txt extension
 - Waypoints accuracy fixed to exactly match map files
