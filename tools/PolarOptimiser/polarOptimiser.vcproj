@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="PolarOptimiser"
+	Name="polarOptimiser"
 	ProjectGUID="{B8F602A9-0EB9-4B3B-ABFD-7AB913274536}"
 	RootNamespace="XCSoarPolar"
 	Keyword="Win32Proj"
@@ -159,6 +159,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir dist\$(ConfigurationName)\polarOptimiser&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\polarOptimiser&#x0D;&#x0A;copy /Y README.txt dist\$(ConfigurationName)\polarOptimiser&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
