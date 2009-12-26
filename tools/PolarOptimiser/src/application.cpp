@@ -158,11 +158,11 @@ void polarOptimiser::CApplication::SpeedPolar() const
   }
 
   unsigned speedMin;
-  std::cout << "Speed Min [km/h]:" << std::endl;
+  std::cout << "Speed Low [km/h]:" << std::endl;
   std::cin >> speedMin;
 
   unsigned speedMax;
-  std::cout << "Speed Max [km/h]:" << std::endl;
+  std::cout << "Speed High [km/h]:" << std::endl;
   std::cin >> speedMax;
   std::cout << std::endl;
 
@@ -220,7 +220,7 @@ void polarOptimiser::CApplication::Sink() const
 
 double polarOptimiser::CApplication::BestWeightCalculateUsingWaterBallast() const
 {
-  std::cout << "Please provide polar points for the \"max water ballast\" curve" << std::endl;
+  std::cout << "Please provide 3 polar points for the \"max water ballast\" curve" << std::endl;
   std::cout << "Sink speeds should be provided as negative values" << std::endl;
   std::cout << std::endl;
 
