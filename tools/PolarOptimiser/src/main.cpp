@@ -27,6 +27,22 @@
 
 #include "application.h"
 #include <iostream>
+#include <string>
+
+
+void Usage()
+{
+  std::cout << "PolarOptimiser 1.0 Copyright (C) 2009 Mateusz Pusz" << std::endl;
+  std::cout << std::endl;
+  std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software," << std::endl;
+  std::cout << "and you are welcome to redistribute it under GNU GPL conditions." << std::endl;
+  std::cout << std::endl;
+  std::cout << "Usage:" << std::endl;
+  std::cout << "  polarOptimier.exe [-h|<WINPILOT_POLAR_FILE>]" << std::endl;
+  std::cout << std::endl;
+  std::cout << "  -h                    - that help message" << std::endl;
+  std::cout << "  <WINPILOT_POLAR_FILE> - glider polar file in WinPilot like format" << std::endl;
+}
 
 
 /**
@@ -40,8 +56,11 @@
 int main(int argc, const char *argv[])
 {
   try {
-    if(argc < 2)
-      std::runtime_error("ERROR: WinPilot polar file not specified!!!");
+    if(argc == 1 || argc > 1 && std::string(argv[1]) == "-h") {
+      Usage();
+      return EXIT_SUCCESS;
+    }
+
     polarOptimiser::CApplication app(argv[1]);
     app.Run();
     return EXIT_SUCCESS;
