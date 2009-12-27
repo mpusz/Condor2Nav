@@ -575,6 +575,7 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = ./src \
+                         ./tools \
                          ./doc/doxygen_src/pages
 
 # This tag can be used to specify the character encoding of the source files 
