@@ -40,9 +40,9 @@ namespace polarOptimiser {
     unsigned _waterBallastLitersMax;
     std::auto_ptr<CPolar> _polar;
 
-    void PolarHeader() const;
-    void PolarLine(double speed, double ballast) const;
-    void PolarFooter() const;
+    void PolarHeader(bool sinkError = false) const;
+    void PolarLine(double speed, double weight, double ballast, bool sinkError = false, double expSink = 0) const;
+    void PolarFooter(bool sinkError = false) const;
 
     void PolarFileRead(const std::string &fileName, CDataArray &data);
 

@@ -85,34 +85,44 @@ polarOptimiser::CApplication::CApplication(const std::string &fileName)
 
   if(data.size() > 8) {
     std::cout << "Best polar" << std::endl;
-    PolarHeader();
+    PolarHeader(true);
     for(unsigned l=0; l<(data.size() - 2) / 2; l++)
-      PolarLine(data.at(l * 2 + 2), 0);
-    PolarFooter();
+      PolarLine(data.at(l * 2 + 2), _massDryGross, 0, true, data.at(l * 2 + 3));
+    PolarFooter(true);
     std::cout << std::endl;
     std::cout << "Gross sink error: " << bestError << "m/s" << std::endl;
   }
 }
 
 
-void polarOptimiser::CApplication::PolarHeader() const
+void polarOptimiser::CApplication::PolarHeader(bool sinkError /* = false */) const
 {
-  std::cout << "-------------------------------------------------" << std::endl;
-  std::cout << "| Speed [km/h]  |   Sink [m/s]  |       LD      |" << std::endl;
-  std::cout << "-------------------------------------------------" << std::endl;
+  std::cout << std::setfill('-') << std::setw(16 * (sinkError ? 4 : 3) + 1) << "" << std::endl;
+  std::cout << "| Speed [km/h]  |   Sink [m/s]  |       LD      |";
+  if(sinkError)
+    std::cout << "   Sink Error  |";
+  std::cout << std::endl;
+  std::cout << std::setfill('-') << std::setw(16 * (sinkError ? 4 : 3) + 1) << "" << std::endl;
 }
 
 
-void polarOptimiser::CApplication::PolarLine(double speed, double ballast) const
+void polarOptimiser::CApplication::PolarLine(double speed, double weight, double ballast, bool sinkError /* = false */, double expSink /* = 0 */) const
 {
-  double sink = _polar->Sink(speed, _massDryGross, ballast);
-  std::cout << "| " << std::setw(13) << speed << " | " << std::setw(13) << sink << " | " << std::setw(13) << (speed / 3.6 / (-sink)) << " |" << std::endl;
+  double sink = _polar->Sink(speed, weight, ballast);
+  std::cout << std::setfill(' ') << "| " << std::setw(13) << speed << " | " <<
+    std::fixed << std::setprecision(3) << std::setw(13) << sink << " | " <<
+    std::setprecision(2) << std::setw(13) << (speed / 3.6 / (-sink)) << " |";
+  if(sinkError)
+    std::cout << " " << std::setw(13) << std::setprecision(4) << sink - expSink << " |";
+  std::cout.unsetf(std::ios_base::fixed);
+  std::cout.precision(0);
+  std::cout << std::endl;
 }
 
 
-void polarOptimiser::CApplication::PolarFooter() const
+void polarOptimiser::CApplication::PolarFooter(bool sinkError /* = false */) const
 {
-  std::cout << "-------------------------------------------------" << std::endl;
+  std::cout << std::setfill('-') << std::setw(16 * (sinkError ? 4 : 3) + 1) << "" << std::endl;
 }
 
 
@@ -188,7 +198,7 @@ void polarOptimiser::CApplication::SpeedPolar() const
 
   PolarHeader();
   for(std::set<unsigned>::iterator it=speeds.begin(); it!=speeds.end(); ++it) {
-    PolarLine(*it, ballast);
+    PolarLine(*it, _massDryGross, ballast);
   }
   PolarFooter();
 
@@ -251,10 +261,12 @@ double polarOptimiser::CApplication::BestWeightCalculateUsingWaterBallast() cons
   std::cout << "Gross sink error: " << error << "m/s" << std::endl;
   std::cout << std::endl;
 
-  std::cout << "Full ballast calculated polar:" << std::endl;
-  std::cout << "------------------------------" << std::endl;
+  std::cout << "Full ballast calculated polar" << std::endl;
+  PolarHeader(true);
   for(unsigned i=0; i<3; i++)
-    std::cout << "Sink for speed " << speedFull[i] << " = " << _polar->Sink(speedFull[i], weight, _waterBallastLitersMax) << std::endl;
+    PolarLine(speedFull[i], weight, _waterBallastLitersMax, true, sinkFull[i]);
+  PolarFooter(true);
+  std::cout << std::endl;
 
   return weight;
 }
