@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version: 1.0 (WIP)
+==================
+- all gliders speed polars updated
+
 Version: 0.5
 ============
 - Optional WP file generation for XCSoar/LK8000 support added
