@@ -20,7 +20,7 @@
 //
 
 /**
- * @file main.cpp
+ * @file PolarOptimiser/src/main.cpp
  *
  * @brief Implements the main() function. 
 **/

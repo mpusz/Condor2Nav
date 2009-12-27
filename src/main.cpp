@@ -20,7 +20,7 @@
 //
 
 /**
- * @file main.cpp
+ * @file condor2nav/src/main.cpp
  *
  * @brief Implements the main() function. 
 **/

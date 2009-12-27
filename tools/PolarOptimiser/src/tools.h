@@ -20,7 +20,7 @@
 //
 
 /**
- * @file tools.h
+ * @file PolarOptimiser/src/tools.h
  *
  * @brief Common utilities. 
 **/
