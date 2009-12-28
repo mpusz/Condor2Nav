@@ -2,8 +2,8 @@
  Condor2Nav
 ============
 
-Version: 1.0 (WIP)
-==================
+Version: 1.0
+============
 - all gliders speed polars updated
 
 Version: 0.5
