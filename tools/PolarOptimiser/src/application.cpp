@@ -35,14 +35,23 @@
 #include <set>
 
 
+/**
+ * @brief Class constructor
+ *
+ * polarOptimiser::CApplication class constructor responsible for polar curve creation.
+ *
+ * @param fileName WinPilot polar file
+ */
 polarOptimiser::CApplication::CApplication(const std::string &fileName)
 {
+  // get polar curve data
   CDataArray data;
   PolarFileRead(fileName, data);
 
   if(data.size() < 8 || data.size() % 2 != 0)
     throw std::runtime_error("ERROR: Invalid number of data specified in POLAR file!!!");
 
+  // set equation parameters
   _massDryGross = data.at(0);
   _waterBallastLitersMax = static_cast<unsigned>(data.at(1));
 
@@ -51,6 +60,7 @@ polarOptimiser::CApplication::CApplication(const std::string &fileName)
   unsigned idx0 = 2, idx1 = 4, idx2 = 6;
   double bestError = 0xFFFF;
   if(data.size() > 8) {
+    // look for the best 3 polar curve points
     for(unsigned i=2; i<data.size(); i+=2) {
       speed[0] = data.at(i);
       sink[0] = data.at(i + 1);
@@ -75,6 +85,8 @@ polarOptimiser::CApplication::CApplication(const std::string &fileName)
       }
     }
   }
+
+  // assign 3 polar curve points
   speed[0] = data[idx0];
   sink[0] = data[idx0 + 1];
   speed[1] = data[idx1];
@@ -84,6 +96,7 @@ polarOptimiser::CApplication::CApplication(const std::string &fileName)
   _polar = std::auto_ptr<CPolarXCSoar>(new CPolarXCSoar(speed, sink));
 
   if(data.size() > 8) {
+    // print calculation values and errors
     std::cout << "Best polar" << std::endl;
     PolarHeader(true);
     for(unsigned l=0; l<(data.size() - 2) / 2; l++)
@@ -95,6 +108,13 @@ polarOptimiser::CApplication::CApplication(const std::string &fileName)
 }
 
 
+/**
+ * @brief Prints speed polar table header
+ *
+ * Method prints speed polar table header.
+ *
+ * @param sinkError Specifies if sink calculation error should be printed
+ */
 void polarOptimiser::CApplication::PolarHeader(bool sinkError /* = false */) const
 {
   std::cout << std::setfill('-') << std::setw(16 * (sinkError ? 4 : 3) + 1) << "" << std::endl;
@@ -106,6 +126,17 @@ void polarOptimiser::CApplication::PolarHeader(bool sinkError /* = false */) con
 }
 
 
+/**
+ * @brief Prints one speed polar table line
+ * 
+ * Method prints one speed polar table line.
+ *
+ * @param speed Speed to be used for calculation
+ * @param weight Weight to be used for calculation
+ * @param ballast Water ballast to be used for calculation
+ * @param sinkError Specifies if sink calculation error should be printed
+ * @param expSink Expected sink rate to be used for error calculation
+ */
 void polarOptimiser::CApplication::PolarLine(double speed, double weight, double ballast, bool sinkError /* = false */, double expSink /* = 0 */) const
 {
   double sink = _polar->Sink(speed, weight, ballast);
@@ -120,12 +151,27 @@ void polarOptimiser::CApplication::PolarLine(double speed, double weight, double
 }
 
 
+/**
+ * @brief Prints speed polar table footer
+ *
+ * Method prints speed polar table footer.
+ *
+ * @param sinkError Specifies if sink calculation error should be printed
+ */
 void polarOptimiser::CApplication::PolarFooter(bool sinkError /* = false */) const
 {
   std::cout << std::setfill('-') << std::setw(16 * (sinkError ? 4 : 3) + 1) << "" << std::endl;
 }
 
 
+/**
+ * @brief Reads WinPilot style polar file
+ *
+ * Method reads WinPilot style polar file.
+ *
+ * @param fileName The name of polar file
+ * @param data An array to store read data.
+ */
 void polarOptimiser::CApplication::PolarFileRead(const std::string &fileName, CDataArray &data)
 {
   // open Polar file
@@ -157,6 +203,11 @@ void polarOptimiser::CApplication::PolarFileRead(const std::string &fileName, CD
 }
 
 
+/**
+ * @brief Prints speed polar table
+ *
+ * Method prints speed polar table.
+ */
 void polarOptimiser::CApplication::SpeedPolar() const
 {
   double ballast = 0;
@@ -207,6 +258,11 @@ void polarOptimiser::CApplication::SpeedPolar() const
 }
 
 
+/**
+ * @brief Calculates sink for provided speed
+ *
+ * Method calculates sink for provided speed
+ */
 void polarOptimiser::CApplication::Sink() const
 {
   double ballast = 0;
@@ -228,6 +284,13 @@ void polarOptimiser::CApplication::Sink() const
 }
 
 
+/**
+ * @brief Calculates the best MassDryGross value based on MAX Water Ballast speed polar
+ *
+ * Method calculates the best MassDryGross value based on MAX Water Ballast speed polar.
+ *
+ * @return The best MAssDryGross.
+ */
 double polarOptimiser::CApplication::BestWeightCalculateUsingWaterBallast() const
 {
   std::cout << "Please provide 3 polar points for the \"max water ballast\" curve" << std::endl;
@@ -272,6 +335,11 @@ double polarOptimiser::CApplication::BestWeightCalculateUsingWaterBallast() cons
 }
 
 
+/**
+ * @brief Dumps polar curve in WinPilot file format
+ *
+ * Method dumps polar curve in WinPilot file format.
+ */
 void polarOptimiser::CApplication::WinPilotDump() const
 {
   std::cout << "***************************************************************************************************" << std::endl;
@@ -286,6 +354,11 @@ void polarOptimiser::CApplication::WinPilotDump() const
 }
 
 
+/**
+ * @brief Application main loop
+ *
+ * Method implements application main loop.
+ */
 void polarOptimiser::CApplication::Run()
 {
   bool exit = false;

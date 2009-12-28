@@ -32,9 +32,15 @@
 
 namespace polarOptimiser {
 
+  /**
+   * @brief XCSoar specific polar curve equation
+   *
+   * polarOptimiser::CPolarXCSoar implements XCSoar specific polar curve
+   * equation.
+   */
   class CPolarXCSoar : public CPolar {
-    double _speed[3];
-    double _polar[3];
+    double _speed[3];     /**< @brief Array of 3 speeds from polar curve */
+    double _polar[3];     /**< @brief Array of 3 sinks from polar curve */
     double SinkRate(double a, double b, double c, double MC, double HW, double V) const;
   public:
     CPolarXCSoar(const double (&speed)[3], const double (&sink)[3]);

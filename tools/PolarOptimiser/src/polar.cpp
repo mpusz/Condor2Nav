@@ -27,11 +27,25 @@
 
 #include "polar.h"
 
+/**
+ * @brief Class destructor
+ *
+ * polarOptimiser::CPolar class destructor.
+ */
 polarOptimiser::CPolar::~CPolar()
 {
 }
 
 
+/**
+ * @brief Obtains sink for specified speed from polar curve
+ *
+ * Method obtains sink for specified speed from polar curve.
+ *
+ * @param speed Speed to be used for polar curve point
+ *
+ * @return Sink for specified speed from polar curve.
+ */
 double polarOptimiser::CPolar::Sink(double speed) const
 {
   return Sink(speed, 200, 0);  // any weight is good here

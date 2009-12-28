@@ -31,14 +31,23 @@
 #include "polarXCSoar.h"
 #include <vector>
 
+/**
+ * @brief PolarOptimiser project namespace
+ */
 namespace polarOptimiser {
 
+  /**
+   * @brief Main PolarOptimiser class
+   *
+   * polarOptimiser::CApplication class is responsible for menu handling, data
+   * input and output and basic calculations.
+   */
   class CApplication {
     typedef std::vector<double> CDataArray;
 
-    double _massDryGross;
-    unsigned _waterBallastLitersMax;
-    std::auto_ptr<CPolar> _polar;
+    double _massDryGross;                 /**< @brief Glider + pilot weight with empty water tanks. */
+    unsigned _waterBallastLitersMax;      /**< @brief Maximum volume of water ballast in liters. */
+    std::auto_ptr<CPolar> _polar;         /**< @brief Glider polar equation implementation */
 
     void PolarHeader(bool sinkError = false) const;
     void PolarLine(double speed, double weight, double ballast, bool sinkError = false, double expSink = 0) const;

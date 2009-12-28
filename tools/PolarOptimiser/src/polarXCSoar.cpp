@@ -45,11 +45,21 @@
 #include <string>
 #include <cmath>
 
+
+/**
+ * @brief Class constructor
+ *
+ * polarOptimiser::CPolarXCSoar class constructor.
+ *
+ * @param speed An array of speed polar curve values.
+ * @param sink An array of sink polar curve values.
+ */
 polarOptimiser::CPolarXCSoar::CPolarXCSoar(const double (&speed)[3], const double (&sink)[3])
 {
   for(unsigned i=0; i<3; i++)
     _speed[i] = speed[i];
 
+  // XCSoar specific calculations
   double d;
   double v1, v2, v3;
   double w1, w2, w3;
@@ -77,6 +87,20 @@ polarOptimiser::CPolarXCSoar::CPolarXCSoar(const double (&speed)[3], const doubl
 }
 
 
+/**
+ * @brief XCSoar speed polar curve equation
+ *
+ * Method implements XCSoar speed polar curve equation.
+ *
+ * @param a Equation argument
+ * @param b Equation argument
+ * @param c Equation argument
+ * @param MC MC value to use for calculations
+ * @param HW Horizontal wind value to be used for calculations
+ * @param V Speed in m/s
+ *
+ * @return Calculated sink value in m/s
+ */
 double polarOptimiser::CPolarXCSoar::SinkRate(double a, double b, double c, double MC, double HW, double V) const
 {
   double temp;
@@ -90,6 +114,16 @@ double polarOptimiser::CPolarXCSoar::SinkRate(double a, double b, double c, doub
 }
 
 
+/**
+* @brief Returns XCSoar polar curve speed parameter value
+*
+* Method returns XCSOar polar curve speed parameter value. It is the value stored
+* internally as a speed polar curve point.
+*
+* @param idx Index of a speed value to return.
+*
+* @return XCSoar polar curve speed parameter value
+*/
 double polarOptimiser::CPolarXCSoar::Speed(unsigned idx) const
 {
   if(idx > 2)
@@ -98,6 +132,17 @@ double polarOptimiser::CPolarXCSoar::Speed(unsigned idx) const
 }
 
 
+/**
+* @brief Calculates XCSoar sink polar curve value
+*
+* Method calculates XCSoar sink polar curve value.
+*
+* @param speed Speed value from polar curve to use
+* @param weight Glider + pilot mass
+* @param ballastLitres The amount of water ballast to set for calculations
+*
+* @return XCSoar polar curve sink value.
+*/
 double polarOptimiser::CPolarXCSoar::Sink(double speed, double weight, double ballastLitres) const
 {
   // now scale off weight
@@ -107,6 +152,7 @@ double polarOptimiser::CPolarXCSoar::Sink(double speed, double weight, double ba
   for(unsigned i=0; i<3; i++)
     polar[i] = _polar[i];
 
+  // XCSoar specific calculations
   weights[0] = 70;                     // Pilot weight
   weights[1] = weight - weights[0];    // Glider empty weight
   weights[2] = ballastLitres;          // Ballast weight

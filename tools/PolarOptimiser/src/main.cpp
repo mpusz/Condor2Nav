@@ -30,6 +30,11 @@
 #include <string>
 
 
+/**
+ * @brief Prints PolarOptimiser usage screen
+ *
+ * Function prints PolarOptimiser usage screen
+ */
 void Usage()
 {
   std::cout << "PolarOptimiser 1.0 Copyright (C) 2009 Mateusz Pusz" << std::endl;

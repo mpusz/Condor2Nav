@@ -30,10 +30,40 @@
 
 namespace polarOptimiser {
 
+  /**
+   * @brief Polar curve equation implementation.
+   *
+   * polarOptimiser::CPolar class is responsible for glider speed polar curve equation
+   * implementation. Such an equation should take speed and weights as inputs and produce
+   * sink value as an output.
+   */
   class CPolar {
   public:
     virtual ~CPolar();
+
+    /**
+     * @brief Returns polar curve speed parameter value
+     *
+     * Method returns polar curve speed parameter value. It is the value stored internally
+     * as a speed polar curve point.
+     *
+     * @param idx Index of a speed value to return.
+     *
+     * @return Polar curve speed parameter value
+     */
     virtual double Speed(unsigned idx) const = 0;
+
+    /**
+     * @brief Calculates sink polar curve value
+     *
+     * Method calculates sink polar curve value.
+     *
+     * @param speed Speed value from polar curve to use
+     * @param weight Glider + pilot mass
+     * @param ballastLitres The amount of water ballast to set for calculations
+     *
+     * @return Polar curve sink value.
+     */
     virtual double Sink(double speed, double weight, double ballastLitres) const = 0;
     double Sink(double speed) const;
   };
