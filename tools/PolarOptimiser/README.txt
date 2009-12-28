@@ -14,6 +14,9 @@ is able to verify and tune its speed polar file until he is happy with results.
 
 2. Usage
 --------
+PolarOptimiser is a command line utility, but can also be easily run in Windows
+graphical environment. To do that just drag-and-drop WinPilot glider speed polar
+file onto polarOptimiser.exe file (or a shortcut to it).
 
 2.1. Application execution
 --------------------------
