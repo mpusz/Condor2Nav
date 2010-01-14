@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version: 1.1 (WIP)
+==================
+- INI file variable OutputPath changed from "\My Flash Disk" to "\Storage Card"
+
 Version: 1.0
 ============
 - all gliders speed polars updated
