@@ -76,7 +76,6 @@ void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileP
 void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profileParser) const
 {
   profileParser.Value("", "UTCOffset", "0");
-  profileParser.Value("", "SetSystemTimeFromGPS", "1");
 }
 
 

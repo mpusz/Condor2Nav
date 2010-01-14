@@ -5,6 +5,7 @@
 Version: 1.1 (WIP)
 ==================
 - INI file variable OutputPath changed from "\My Flash Disk" to "\Storage Card"
+- Setting of "SetSystemTimeFromGPS" PRF parameter removed
 
 Version: 1.0
 ============
