@@ -56,7 +56,7 @@ condor2nav::COStream::~COStream()
     switch(Type()) {
       case TYPE_LOCAL:
         {
-          std::ofstream stream(FileName().c_str());
+          std::ofstream stream(FileName().c_str(), std::ios_base::out | std::ios_base::binary);
           if(!stream)
             std::cerr << "ERROR: Couldn't open file '" << FileName() << "' for writing!!!" << std::endl;
           stream << Buffer().str();
