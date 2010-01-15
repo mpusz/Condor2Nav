@@ -7,6 +7,7 @@ Version: 1.1 (WIP)
 - INI file variable OutputPath changed from "\My Flash Disk" to "\Storage Card"
 - Setting of "SetSystemTimeFromGPS" PRF parameter removed
 - South Turkey scenery updated to version 1.1
+- LK8000 crash on "BallastSecsToEmpty=0" workaround
 
 Version: 1.0
 ============
