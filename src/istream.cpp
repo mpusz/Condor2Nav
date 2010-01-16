@@ -44,10 +44,23 @@ CStream(fileName)
   switch(Type()) {
     case TYPE_LOCAL:
       {
-        std::ifstream stream(fileName.c_str());
+        char dirCurr[MAX_PATH];
+        std::string file(fileName);
+        size_t pos = file.find_last_of('\\');
+        if(pos != std::string::npos) {
+          GetCurrentDirectory(MAX_PATH, dirCurr);
+          std::string dir(file, 0, pos);
+          SetCurrentDirectory(dir.c_str());
+          file = file.substr(pos + 1);
+        }
+
+        std::ifstream stream(file.c_str());
         if(!stream)
-          throw std::runtime_error("ERROR: Couldn't open file '" + FileName() + "' for reading!!!");
+          throw std::runtime_error("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
         Buffer() << stream.rdbuf();
+
+        if(pos != std::string::npos)
+          SetCurrentDirectory(dirCurr);
       }
       break;
 

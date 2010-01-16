@@ -10,6 +10,7 @@ Version: 1.1 (WIP)
 - LK8000 crash on "BallastSecsToEmpty=0" workaround
 - Bug that caused spontanious task file corruptions on PC file system fixed
 - Application argument meaning changed - now full path to the FPL file must be provided
+- Vista Virtual Store support added
 
 Version: 1.0
 ============
