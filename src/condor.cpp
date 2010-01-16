@@ -190,11 +190,14 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
  * 
  * @param condorPath Full pathname of the Condor directory. 
  * @param taskName   Name of the Condor task to translate.
+ * @param cliTaskName Condor task name provided in application Command Line
+ *                    ("" if nothing provided - default should be used).
  *
  * @exception std Thrown when not supported Condor version.
 **/
-condor2nav::CCondor::CCondor(const std::string &condorPath, const std::string &taskName):
-_taskParser(condorPath + "\\FlightPlans\\User\\" + taskName + ".fpl"), _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
+condor2nav::CCondor::CCondor(const std::string &condorPath, const std::string &taskName, const std::string &cliTaskName):
+_taskParser((cliTaskName != "") ? cliTaskName : condorPath + "\\FlightPlans\\User\\" + taskName + ".fpl"),
+_coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
 {
   if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) != CONDOR_VERSION_SUPPORTED)
     throw std::out_of_range("Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!");

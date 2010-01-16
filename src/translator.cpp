@@ -139,7 +139,7 @@ const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
 **/
 condor2nav::CTranslator::CTranslator(const std::string &condorPath, const std::string &cliTaskName):
 _configParser(CONFIG_FILE_NAME),
-_condor(condorPath, (cliTaskName != "") ? cliTaskName : _configParser.Value("Condor", "DefaultTaskName"))
+_condor(condorPath, _configParser.Value("Condor", "DefaultTaskName"), cliTaskName)
 {
 }
 
