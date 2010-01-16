@@ -101,7 +101,7 @@ namespace condor2nav {
     const CCoordConverter _coordConverter;	       ///< @brief Condor map coordinates converter. 
 
   public:
-    CCondor(const std::string &condorPath, const std::string &taskName);
+    CCondor(const std::string &condorPath, const std::string &taskName, const std::string &cliTaskName);
     const CFileParserINI &TaskParser() const { return _taskParser; }
     const CCoordConverter &CoordConverter() const { return _coordConverter; }
   };

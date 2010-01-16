@@ -32,17 +32,16 @@
 
 void condor2nav::CCondor2Nav::Usage() const
 {
-  std::cout << "Condor2Nav 1.0 Copyright (C) 2009 Mateusz Pusz" << std::endl;
+  std::cout << "Condor2Nav 1.0 Copyright (C) 2009-2010 Mateusz Pusz" << std::endl;
   std::cout << std::endl;
   std::cout << "This program comes with ABSOLUTELY NO WARRANTY. This is free software," << std::endl;
   std::cout << "and you are welcome to redistribute it under GNU GPL conditions." << std::endl;
   std::cout << std::endl;
   std::cout << "Usage:" << std::endl;
-  std::cout << "  condor2nav.exe [-h|<CONDOR_TASK_NAME>]" << std::endl;
+  std::cout << "  condor2nav.exe [-h|<CONDOR_TASK_FULL_PATH>]" << std::endl;
   std::cout << std::endl;
-  std::cout << "  -h                 - that help message" << std::endl;
-  std::cout << "  <CONDOR_TASK_NAME> - Task name as seen in the Condor GUI" << std::endl;
-  std::cout << "                       (without file extension)" << std::endl;
+  std::cout << "  -h                      - that help message" << std::endl;
+  std::cout << "  <CONDOR_TASK_FULL_PATH> - full path to Condor Task file" << std::endl;
 }
 
 
