@@ -94,6 +94,7 @@ namespace condor2nav {
   // disk operations
   void DirectoryCreate(const std::string &fileName);
   bool FileExists(const std::string &dirName);
+  void FilePathSplit(const std::string &filePath, std::string &dir, std::string &file);
 }
 
 

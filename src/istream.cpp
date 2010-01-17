@@ -45,13 +45,12 @@ CStream(fileName)
     case TYPE_LOCAL:
       {
         char dirCurr[MAX_PATH];
-        std::string file(fileName);
-        size_t pos = file.find_last_of('\\');
-        if(pos != std::string::npos) {
+        std::string file;
+        std::string dir;
+        FilePathSplit(fileName, dir, file);
+        if(!dir.empty()) {
           GetCurrentDirectory(MAX_PATH, dirCurr);
-          std::string dir(file, 0, pos);
           SetCurrentDirectory(dir.c_str());
-          file = file.substr(pos + 1);
         }
 
         std::ifstream stream(file.c_str());
@@ -59,7 +58,7 @@ CStream(fileName)
           throw std::runtime_error("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
         Buffer() << stream.rdbuf();
 
-        if(pos != std::string::npos)
+        if(!dir.empty())
           SetCurrentDirectory(dirCurr);
       }
       break;

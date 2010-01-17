@@ -171,3 +171,26 @@ bool condor2nav::FileExists(const std::string &fileName)
     return file.is_open();
   }
 }
+
+
+/** 
+ * @brief Splits file path to directory path and file name.
+ * 
+ * Function splits file path to directory path and file name.
+ * 
+ * @param filePath File path to split
+ * @param dir Directory path component of a path
+ * @param file File name component of a path
+ */
+void condor2nav::FilePathSplit(const std::string &filePath, std::string &dir, std::string &file)
+{
+  size_t pos = filePath.find_last_of('\\');
+  if(pos != std::string::npos) {
+    dir = filePath.substr(0, pos + 1);
+    file = filePath.substr(pos + 1);
+  }
+  else {
+    dir = "";
+    file = filePath;
+  }
+}
