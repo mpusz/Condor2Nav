@@ -101,8 +101,6 @@ void condor2nav::CFileParser::LineParseKeyValue(const std::string &line, std::st
   size_t pos = line.find_first_of("=");
   if(pos == std::string::npos)
     throw std::runtime_error("ERROR: '=' sign not found in '" + Path() + "' file line '" + line + "'!!!");
-  if(line.find_last_of("=") != pos)
-    throw std::runtime_error("ERROR: More than one '=' sign found in '" + Path() + "' file line '" + line + "'!!!");
   
   key = line.substr(0, pos);
   WhiteSpacesRemove(key);
