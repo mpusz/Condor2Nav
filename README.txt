@@ -104,8 +104,9 @@ Open condor2nav.ini file and change the following:
 1. Open Condor and save the task for translation. By default "A" task name
    is used for translation.
 2. [OPTIONAL] In case of any other Condor task name, condor2nav.ini file 
-   should be updated or task name should be provided from the Command
-   Line Interface (see "condor2nav.exe -h" for more info).
+   should be updated or task file full path should be provided from the
+   Command Line Interface (see "condor2nav.exe -h" for more info) or a task
+   file icon should be drag-and-dropped on the condor2nav icon.
 3. Run condor2nav.exe (it is handful to create a shortcut to application 
    executable on the Windows desktop).
 
