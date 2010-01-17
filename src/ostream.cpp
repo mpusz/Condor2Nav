@@ -66,7 +66,7 @@ condor2nav::COStream::~COStream()
             file = file.substr(pos + 1);
           }
 
-          std::ofstream stream(file.c_str());
+          std::ofstream stream(file.c_str(), std::ios_base::out | std::ios_base::binary);
           if(!stream)
             std::cerr << "ERROR: Couldn't open file '" << FileName() << "' for writing!!!" << std::endl;
           stream << Buffer().str();
