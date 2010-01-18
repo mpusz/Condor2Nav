@@ -56,22 +56,10 @@ condor2nav::COStream::~COStream()
     switch(Type()) {
       case TYPE_LOCAL:
         {
-          char dirCurr[MAX_PATH];
-          std::string file;
-          std::string dir;
-          FilePathSplit(FileName(), dir, file);
-          if(!dir.empty()) {
-            GetCurrentDirectory(MAX_PATH, dirCurr);
-            SetCurrentDirectory(dir.c_str());
-          }
-          
-          std::ofstream stream(file.c_str(), std::ios_base::out | std::ios_base::binary);
+          std::ofstream stream(FileName().c_str(), std::ios_base::out | std::ios_base::binary);
           if(!stream)
             std::cerr << "ERROR: Couldn't open file '" << FileName() << "' for writing!!!" << std::endl;
           stream << Buffer().str();
-
-          if(!dir.empty())
-            SetCurrentDirectory(dirCurr);
         }
         break;
 

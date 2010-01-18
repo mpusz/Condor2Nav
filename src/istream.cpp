@@ -44,22 +44,16 @@ CStream(fileName)
   switch(Type()) {
     case TYPE_LOCAL:
       {
-        char dirCurr[MAX_PATH];
-        std::string file;
-        std::string dir;
-        FilePathSplit(fileName, dir, file);
-        if(!dir.empty()) {
-          GetCurrentDirectory(MAX_PATH, dirCurr);
-          SetCurrentDirectory(dir.c_str());
+        std::fstream stream(fileName.c_str(), std::ios_base::in);
+        if(!stream) {
+          // it is possible that a file is under Vista VirtualStore so try to look for it
+          stream.clear();
+          stream.open(fileName.c_str(), std::ios_base::in | std::ios_base::out);
+          if(!stream)
+            throw std::runtime_error("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
         }
 
-        std::ifstream stream(file.c_str());
-        if(!stream)
-          throw std::runtime_error("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
         Buffer() << stream.rdbuf();
-
-        if(!dir.empty())
-          SetCurrentDirectory(dirCurr);
       }
       break;
 
