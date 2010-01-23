@@ -136,8 +136,9 @@ void condor2nav::DirectoryCreate(const std::string &dirName)
         activeSync.DirectoryCreate(subDir);
       }
       else {
-        if (!::CreateDirectory(subDir.c_str(), 0) && GetLastError() != ERROR_ALREADY_EXISTS)
-          throw std::runtime_error("Cannot create directory '" + subDir + "'!!!");
+        DWORD error = ERROR_SUCCESS;
+        if (!::CreateDirectory(subDir.c_str(), 0) && (error = GetLastError()) != ERROR_ALREADY_EXISTS)
+          throw std::runtime_error("Cannot create directory '" + subDir + "' (" + Convert(error) + ")!!!");
       }
 
       if(pos != std::string::npos)
