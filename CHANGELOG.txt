@@ -2,15 +2,14 @@
  Condor2Nav
 ============
 
-Version: 1.1 (WIP)
-==================
+Version: 1.1
+============
 - INI file variable OutputPath changed from "\My Flash Disk" to "\Storage Card"
 - Setting of "SetSystemTimeFromGPS" PRF parameter removed
 - South Turkey scenery updated to version 1.1
 - LK8000 crash on "BallastSecsToEmpty=0" workaround
 - Bug that caused spontanious task file corruptions on PC file system fixed
 - Application argument meaning changed - now full path to the FPL file must be provided
-- Vista Virtual Store support added
 - Double '=' sign in Condor FPL file problem solved
 
 Version: 1.0
