@@ -283,27 +283,10 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     double longitude = coordConv.Longitude(x, y);
     std::string latitudeStr = DDFF2DDMMFF(latitude, false);
     std::string longitudeStr = DDFF2DDMMFF(longitude, true);
-    unsigned waypointFlags = xcsoar::WAYPOINT_TURNPOINT;
-    std::string waypointFlagsStr = "T";
-    
-    if(sceneryData.at(SCENERY_WAYPOINTS_FILE) != "") {
-      // look for waypoint data in a scenery waypoints file
-      const CFileParserCSV::CRowsList &waypoints = waypointsParser->Rows();
-      for(CFileParserCSV::CRowsList::const_iterator it=waypoints.begin(); it!=waypoints.end(); ++it) {
-        if((**it).at(1) == latitudeStr && (**it).at(2) == longitudeStr) {
-          if((**it).at(4) == "AT") {
-            // mark waypoint as airport
-            waypointFlagsStr = "AT";
-            waypointFlags |= xcsoar::WAYPOINT_AIRPORT;
-          }
-          break;
-        }
-      }
-    }
     
     if(generateWPFile)
       *wpFile << i << "," << latitudeStr << "," << longitudeStr << ","
-              << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M," << waypointFlagsStr << "," << name << ","
+              << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M,T," << name << ","
               << taskParser.Value("Task", "TPName" + tpIdxStr) << std::endl;
 
     TWaypoint waypoint;
@@ -311,7 +294,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     waypoint.latitude = latitude;
     waypoint.longitude = longitude;
     waypoint.altitude = Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
-    waypoint.flags = waypointFlags;
+    waypoint.flags = xcsoar::WAYPOINT_TURNPOINT;
     waypoint.name = name;
     waypoint.comment = taskParser.Value("Task", "TPName" + tpIdxStr);
     waypoint.inTask = true;
