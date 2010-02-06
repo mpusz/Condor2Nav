@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version: 1.2 (WIP)
+==================
+- Condor 1.1.0 registry variables support added
+
 Version: 1.1
 ============
 - INI file variable OutputPath changed from "\My Flash Disk" to "\Storage Card"
