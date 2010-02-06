@@ -33,6 +33,8 @@
 
 namespace condor2nav {
 
+  class COStream;
+
   /**
    * @brief Common tools for XCSoar family translations.
    *
@@ -41,6 +43,22 @@ namespace condor2nav {
   **/
   class CTargetXCSoarCommon : public CTranslator::CTarget {
   protected:
+    struct TWaypoint {
+      int number;
+      double latitude;
+      double longitude;
+      double altitude;
+      int flags;
+      std::string name;
+      std::string comment;
+      bool inTask;
+    };
+    typedef std::vector<TWaypoint> CWaypointArray;
+
+    typedef void (CTargetXCSoarCommon::*FTaskWaypointDump)(COStream &, const CWaypointArray &) const;
+    void TaskWaypointDumpXCSoar(COStream &tskFile, const CWaypointArray &waypointArray) const;
+    void TaskWaypointDumpLK8000(COStream &tskFile, const CWaypointArray &waypointArray) const;
+
     // outputs
     static const char *OUTPUT_PROFILE_NAME;      ///< @brief The name of XCSoar profile file to generate. 
     static const char *TASK_FILE_NAME;           ///< @brief The name of XCSoar task file to generate. 
@@ -53,7 +71,7 @@ namespace condor2nav {
     void SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const;
     void SceneryTimeProcess(CFileParserINI &profileParser) const;
     void GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
-    void TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, const std::string &outputTaskFilePath, unsigned maxTaskPoints, unsigned maxStartPoints, bool generateWPFile, const std::string &wpOutputPathPrefix) const;
+    void TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, const std::string &outputTaskFilePath, unsigned maxTaskPoints, unsigned maxStartPoints, FTaskWaypointDump wptFunc, bool generateWPFile, const std::string &wpOutputPathPrefix) const;
     void PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
     void WeatherProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser) const;
 

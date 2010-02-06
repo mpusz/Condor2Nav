@@ -55,12 +55,11 @@ Copyright_License {
 **/
 namespace xcsoar {
 
-  const unsigned MAXTASKPOINTS_XCSOAR = 10;
-  const unsigned MAXTASKPOINTS_LK8000 = 30;
-  const unsigned MAXSTARTPOINTS_XCSOAR = 10;
-  const unsigned MAXSTARTPOINTS_LK8000 = 30;
+  const unsigned MAXTASKPOINTS = 10;
+  const unsigned MAXSTARTPOINTS = 10;
   const unsigned NAME_SIZE = 50;
   const unsigned COMMENT_SIZE = 50;
+  const unsigned CUPSIZE_FREQ = 10;
 
   struct TASK_POINT
   {
@@ -133,7 +132,6 @@ namespace xcsoar {
     bool FarVisible;
     int FileNum;
   };
-
 
   enum AutoAdvanceMode_t {
     AUTOADVANCE_MANUAL=0,

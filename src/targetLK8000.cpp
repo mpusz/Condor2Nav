@@ -26,7 +26,7 @@
 **/
 
 #include "targetLK8000.h"
-#include "imports/xcsoarTypes.h"
+#include "imports/lk8000Types.h"
 
 
 const char *condor2nav::CTargetLK8000::AIRSPACES_SUBDIR       = "_Airspaces";
@@ -152,7 +152,7 @@ void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCo
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("LK8000", "TaskWPFileGenerate")));
   TaskProcess(*_profileParser, taskParser, coordConv, sceneryData,
-              _outputTaskFilePath, xcsoar::MAXTASKPOINTS_LK8000, xcsoar::MAXSTARTPOINTS_LK8000,
+              _outputTaskFilePath, lk8000::MAXTASKPOINTS, lk8000::MAXSTARTPOINTS, &CTargetLK8000::TaskWaypointDumpLK8000,
               wpFile > 0, _outputLK8000DataPath + _outputWaypointsSubDir);
 }
  

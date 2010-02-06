@@ -5,6 +5,7 @@
 Version: 1.2 (WIP)
 ==================
 - Condor 1.1.0 registry variables support added
+- LK8000 1.20 support aded (task files format updated)
 
 Version: 1.1
 ============

@@ -298,6 +298,10 @@
 				Name="Imports"
 				>
 				<File
+					RelativePath=".\src\imports\lk8000Types.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\imports\xcsoarTypes.h"
 					>
 				</File>
