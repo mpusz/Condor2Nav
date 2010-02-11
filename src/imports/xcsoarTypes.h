@@ -61,6 +61,11 @@ namespace xcsoar {
   const unsigned COMMENT_SIZE = 50;
   const unsigned CUPSIZE_FREQ = 10;
 
+  enum WaypointAATType_t {
+    WAYPOINT_AAT_CIRCLE,
+    WAYPOINT_AAT_SECTOR
+  };
+
   struct TASK_POINT
   {
     int Index;
@@ -74,7 +79,7 @@ namespace xcsoar {
     double SectorEndLon;
     POINT	 Start;
     POINT	 End;
-    int	 AATType;
+    WaypointAATType_t AATType;
     double AATCircleRadius;
     double AATSectorRadius;
     double AATStartRadial;

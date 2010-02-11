@@ -38,10 +38,23 @@ void condor2nav::CCondor2Nav::Usage() const
   std::cout << "and you are welcome to redistribute it under GNU GPL conditions." << std::endl;
   std::cout << std::endl;
   std::cout << "Usage:" << std::endl;
-  std::cout << "  condor2nav.exe [-h|<CONDOR_TASK_FULL_PATH>]" << std::endl;
+  std::cout << "  condor2nav.exe [-h|--aat <TASK_MIN_TIME>][--default|--last-race|<FPL_PATH>]" << std::endl;
   std::cout << std::endl;
-  std::cout << "  -h                      - that help message" << std::endl;
-  std::cout << "  <CONDOR_TASK_FULL_PATH> - full path to Condor Task file" << std::endl;
+  std::cout << "  -h                    - that help message" << std::endl;
+  std::cout << "  --aat <TASK_MIN_TIME> - convert a task as AAT with provided Task Minimum Time" << std::endl;
+  std::cout << "                          in minutes" << std::endl;
+  std::cout << "  --default             - run translation for default FPL file" << std::endl;
+  std::cout << "                          (Default FPL file name is specified in condor2nav.ini file)" << std::endl;
+  std::cout << "  --last-race           - convert last flown race" << std::endl;
+  std::cout << "                          (Useful option for servers that does not allow to save" << std::endl;
+  std::cout << "                           task file on local disk. Join the race, exit after few" << std::endl;
+  std::cout << "                           seconds, run translation with --last-race option and" << std::endl;
+  std::cout << "                           join a race once again, but now with full PDA support)" << std::endl;
+  std::cout << "  <FPL_PATH>            - full path to Condor FPL file" << std::endl;
+  std::cout << "                          (The same result can be achieved i.e. by drag-and-drop" << std::endl;
+  std::cout << "                           of FPL file in Windows Explorer onto condor2nav.exe icon)" << std::endl;
+  std::cout << "Running condor2nav.exe with no arguments will provide interactive menu that allows" << std::endl;
+  std::cout << "to set required translation options." << std::endl;
 }
 
 
@@ -57,9 +70,35 @@ void condor2nav::CCondor2Nav::Usage() const
 **/
 int condor2nav::CCondor2Nav::Run(int argc, const char *argv[]) const
 {
-  if(argc > 1 && std::string(argv[1]) == "-h") {
-    Usage();
-    return EXIT_SUCCESS;
+  unsigned aatTime = 0;
+  std::string taskName;
+
+  for(int i=1; i<argc; i++) {
+    if(std::string(argv[i]) == "-h") {
+      Usage();
+      return EXIT_SUCCESS;
+    }
+    else if(std::string(argv[i]) == "--aat") {
+      if(i + 1 == argc)
+        throw std::runtime_error("ERROR: AAT TASK_MIN_TIME not provided!!!");
+     
+      std::stringstream stream(argv[++i]);
+      stream >> aatTime;
+      if(stream.fail())
+        throw std::runtime_error("ERROR: Invalid AAT TASK_MIN_TIME!!!");
+    }
+    else if(std::string(argv[i]) == "--default") {
+      // nothing needs to be done here
+    }
+    else if(std::string(argv[i]) == "--last-race") {
+
+    }
+    else if(argv[i][0] == '-') {
+      throw std::runtime_error("ERROR: Unkown option '" + std::string(argv[i]) + "' provided!!!");
+    }
+    else {
+      taskName = argv[i];
+    }
   }
 
   // obtain Condor installation path
@@ -88,8 +127,7 @@ int condor2nav::CCondor2Nav::Run(int argc, const char *argv[]) const
   else
     throw std::runtime_error("ERROR: Condor installation not found!!!");
   
-  std::string taskName((argc > 1) ? argv[1] : "");
-  CTranslator translator(path, taskName);
+  CTranslator translator(path, taskName, aatTime);
   translator.Run();
   
   return EXIT_SUCCESS;

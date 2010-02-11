@@ -122,11 +122,12 @@ namespace condor2nav {
        *
        * Method sets task information.
        *
-       * @param taskParser Condor task parser. 
-       * @param coordConv  Condor coordinates converter.
-       * @param sceneryData Information describing the scenery. 
+       * @param taskParser  Condor task parser. 
+       * @param coordConv   Condor coordinates converter.
+       * @param sceneryData Information describing the scenery.
+       * @param aatTime     Minimum time for AAT task
       **/
-      virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData) = 0;
+      virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime) = 0;
 
       /**
        * @brief Sets task penalty zones. 
@@ -151,6 +152,7 @@ namespace condor2nav {
   private:
     const CFileParserINI _configParser;           ///< @brief Configuration INI file parser.
     const CCondor _condor;                        ///< @brief Condor data.
+    const unsigned _aatTime;                      ///< @brief Minimum time for AAT task
 
     CTranslator(const CTranslator &);                     ///< @brief Disallowed
     const CTranslator &operator=(const CTranslator &);    ///< @brief Disallowed
@@ -164,7 +166,7 @@ namespace condor2nav {
     static const char *SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
     static const char *GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
 
-    explicit CTranslator(const std::string &condorPath, const std::string &cliTaskName);
+    CTranslator(const std::string &condorPath, const std::string &cliTaskName, unsigned aatTime);
     void Run();
   };
 

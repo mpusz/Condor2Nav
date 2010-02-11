@@ -126,12 +126,13 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
 * @param sceneryData Information describing the scenery. 
+* @param aatTime     Minimum time for AAT task
 **/
-void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData)
+void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime)
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("XCSoar", "TaskWPFileGenerate")));
-  TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, 
-              _outputTaskFilePath, xcsoar::MAXTASKPOINTS, xcsoar::MAXSTARTPOINTS, &CTargetXCSoar::TaskWaypointDumpXCSoar,
+  TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
+              xcsoar::MAXTASKPOINTS, xcsoar::MAXSTARTPOINTS, &CTargetXCSoar::TaskWaypointDumpXCSoar,
               wpFile > 0, _outputCondor2NavDataPath);
 }
  

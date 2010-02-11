@@ -135,11 +135,13 @@ const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
  *
  * @param condorPath The path to Condor
  * @param cliTaskName Condor task name provided in application Command Line
- *                    ("" if nothing provided - default should be used).
+ *                   ("" if nothing provided - default should be used).
+ * @param aatTime    Minimum time for AAT task
 **/
-condor2nav::CTranslator::CTranslator(const std::string &condorPath, const std::string &cliTaskName):
+condor2nav::CTranslator::CTranslator(const std::string &condorPath, const std::string &cliTaskName, unsigned aatTime):
 _configParser(CONFIG_FILE_NAME),
-_condor(condorPath, _configParser.Value("Condor", "DefaultTaskName"), cliTaskName)
+_condor(condorPath, _configParser.Value("Condor", "DefaultTaskName"), cliTaskName),
+_aatTime(aatTime)
 {
 }
 
@@ -192,7 +194,7 @@ void condor2nav::CTranslator::Run()
     // translate task
     if(_configParser.Value("Condor2Nav", "SetTask") == "1") {
       std::cout << "Setting task data..." << std::endl;
-      target->Task(_condor.TaskParser(), _condor.CoordConverter(), sceneryData);
+      target->Task(_condor.TaskParser(), _condor.CoordConverter(), sceneryData, _aatTime);
     }
   }
   

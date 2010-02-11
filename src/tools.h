@@ -91,6 +91,9 @@ namespace condor2nav {
 
   unsigned KmH2MS(unsigned value);
 
+  double Deg2Rad(double angle);
+  double Rad2Deg(double angle);
+
   // disk operations
   void DirectoryCreate(const std::string &fileName);
   bool FileExists(const std::string &dirName);

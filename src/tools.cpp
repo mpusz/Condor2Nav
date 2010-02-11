@@ -32,6 +32,14 @@
 #include <windows.h>
 
 
+
+namespace condor2nav {
+
+  const double PI = 3.1415923865;
+
+}
+
+
 /**
  * @brief Converts longitude and latitude coordinates.
  *
@@ -95,6 +103,36 @@ std::string condor2nav::DDFF2DDMMSS(double value, bool longitude)
 unsigned condor2nav::KmH2MS(unsigned value)
 {
   return static_cast<unsigned>((value * 10.0 / 36) + 0.5);
+}
+
+
+/**
+ * @brief Converts angle described in degrees to radians
+ *
+ * Method converts angle described in degrees to radians.
+ *
+ * @param angle     Angle to convert. 
+ *
+ * @return Converted angle.
+**/
+double condor2nav::Deg2Rad(double angle)
+{
+  return angle * PI / 180 ;
+}
+
+
+/**
+ * @brief Converts angle described in radians to degrees
+ *
+ * Method converts angle described in radians to degrees.
+ *
+ * @param angle     Angle to convert. 
+ *
+ * @return Converted angle.
+**/
+double condor2nav::Rad2Deg(double angle)
+{
+  return angle * 180 / PI;
 }
 
 

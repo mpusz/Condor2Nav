@@ -30,6 +30,7 @@
 #include "imports/lk8000Types.h"
 #include "ostream.h"
 #include <iostream>
+#include <cmath>
 
 
 const char *condor2nav::CTargetXCSoarCommon::OUTPUT_PROFILE_NAME    = "Condor.prf";
@@ -197,6 +198,35 @@ void condor2nav::CTargetXCSoarCommon::TaskWaypointDumpLK8000(COStream &tskFile, 
 
 
 /**
+* @brief Calculates the bearing between 2 locations.
+*
+* Method calculates the bearing between 2 locations.
+*
+* @param lon1 First point longitude.
+* @param lat1 First point latitude.
+* @param lon2 Second point longitude.
+* @param lat2 Second point latitude.
+*
+* @return The bearing between 2 locations.
+**/
+unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(double lon1, double lat1, double lon2, double lat2) const
+{
+  lon1 = Deg2Rad(lon1);
+  lat1 = Deg2Rad(lat1);
+  lon2 = Deg2Rad(lon2);
+  lat2 = Deg2Rad(lat2);
+  
+  double clat1 = cos(lat1);
+  double clat2 = cos(lat2);
+  double dlon = lon2 - lon1;
+
+  double y = sin(dlon) * clat2;
+  double x = clat1 * sin(lat2) - sin(lat1) * clat2 * cos(dlon);
+  return (x==0 && y==0) ? 0 : (static_cast<unsigned>(360 + Rad2Deg(atan2(y, x)) + 0.5) % 360);
+}
+
+
+/**
 * @brief Sets task information. 
 *
 * Method sets task information.
@@ -206,6 +236,7 @@ void condor2nav::CTargetXCSoarCommon::TaskWaypointDumpLK8000(COStream &tskFile, 
 * @param coordConv  Condor coordinates converter.
 * @param sceneryData Information describing the scenery. 
 * @param outputTaskFilePath The path of output XCSoar task file.
+* @param aatTime     Minimum time for AAT task
 * @param maxTaskPoints The number of waypoints stored in a task file.
 * @param maxStartPoints The number of alternate startpoints stored in a task file.
 * @param wptFunc The function to be used for dumping waypoints data.
@@ -216,6 +247,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
                                                   const CCondor::CCoordConverter &coordConv,
                                                   const CFileParserCSV::CStringArray &sceneryData,
                                                   const std::string &outputTaskFilePath,
+                                                  unsigned aatTime,
                                                   unsigned maxTaskPoints, unsigned maxStartPoints,
                                                   FTaskWaypointDump wptFunc,
                                                   bool generateWPFile, const std::string &wpOutputPathPrefix) const
@@ -230,13 +262,13 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 
   // set task settings
   SETTINGS_TASK settingsTask = { 0 };
-  settingsTask.AATEnabled       = false;
-  settingsTask.AATTaskLength    = 0;
+  settingsTask.AATEnabled       = aatTime > 0;
+  settingsTask.AATTaskLength    = aatTime;
   try {
     settingsTask.AutoAdvance      = static_cast<AutoAdvanceMode_t>(Convert<unsigned>(profileParser.Value("", "AutoAdvance")));
   }
   catch(const std::range_error &) {
-    settingsTask.AutoAdvance    = AUTOADVANCE_AUTO;
+    settingsTask.AutoAdvance    = AUTOADVANCE_ARMSTART;
   }
   settingsTask.EnableMultipleStartPoints = false;
 
@@ -247,9 +279,11 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   memset(startPointArray, 0, maxStartPoints * sizeof(START_POINT));
   CWaypointArray waypointArray;
   waypointArray.reserve(maxTaskPoints);
-
-  for(unsigned i=0; i<maxTaskPoints; i++)
+  for(unsigned i=0; i<maxTaskPoints; i++) {
     taskPointArray[i].Index = -1;
+    taskPointArray[i].AATStartRadial = 0;
+    taskPointArray[i].AATFinishRadial = 360;
+  }
   for(unsigned i=0; i<maxTaskPoints; i++)
     startPointArray[i].Index = -1;
 
@@ -278,7 +312,6 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 
     std::string x(taskParser.Value("Task", "TPPosX" + tpIdxStr));
     std::string y(taskParser.Value("Task", "TPPosY" + tpIdxStr));
-
     double latitude = coordConv.Latitude(x, y);
     double longitude = coordConv.Longitude(x, y);
     std::string latitudeStr = DDFF2DDMMFF(latitude, false);
@@ -289,6 +322,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
               << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M,T," << name << ","
               << taskParser.Value("Task", "TPName" + tpIdxStr) << std::endl;
 
+    // fill waypoint data
     TWaypoint waypoint;
     taskPointArray[i - 1].Index = waypoint.number = WAYPOINT_INDEX_OFFSET + i;
     waypoint.latitude = latitude;
@@ -307,78 +341,115 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
       unsigned radius(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
       unsigned angle(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr)));
 
-      switch(angle) {
-      case 90:
-        if(i == 1)
-          settingsTask.StartType = xcsoar::START_SECTOR;
-        else if(i == tpNum - 1)
-          settingsTask.FinishType = xcsoar::FINISH_SECTOR;
-        else {
-          if(i > 2 && settingsTask.SectorType != xcsoar::AST_FAI) {
-            tpsValid = false;
-            settingsTask.SectorRadius = radius;
-          }
-          settingsTask.SectorType = xcsoar::AST_FAI;
-          if(i > 2 && settingsTask.SectorRadius != radius) {
-            std::cerr << "WARNING: " << name << ": XCSoar does not support different TPs types. The smallest radius will be used for all FAI sectors. If you advance a sector in XCSoar you will advance it in Condor." << std::endl;
-            settingsTask.SectorRadius = min(settingsTask.SectorRadius, radius);
-          }
-          else
-            settingsTask.SectorRadius = radius;
+      if(settingsTask.AATEnabled && i > 1 && i < tpNum - 1) {
+        // AAT waypoints
+        if(angle == 360) {
+          taskPointArray[i - 1].AATType = WAYPOINT_AAT_CIRCLE;
+          taskPointArray[i - 1].AATCircleRadius = radius;
         }
-        break;
-
-      case 180:
-        if(i == 1)
-          settingsTask.StartType = xcsoar::START_LINE;
-        else if(i == tpNum - 1)
-          settingsTask.FinishType = xcsoar::FINISH_LINE;
         else {
-          if(i > 2 && settingsTask.SectorType == xcsoar::AST_FAI)
-            tpsValid = false;
+          taskPointArray[i - 1].AATType = WAYPOINT_AAT_SECTOR;
+          taskPointArray[i - 1].AATSectorRadius = radius;
+
+          std::string x1 = taskParser.Value("Task", "TPPosX" + Convert(i - 1));
+          std::string y1 = taskParser.Value("Task", "TPPosY" + Convert(i - 1));
+          double lon1 = coordConv.Longitude(x1, y1);
+          double lat1 = coordConv.Latitude(x1, y1);
+          unsigned angle1 = WaypointBearing(lon1, lat1, longitude, latitude);
+
+          std::string x2 = taskParser.Value("Task", "TPPosX" + Convert(i + 1));
+          std::string y2 = taskParser.Value("Task", "TPPosY" + Convert(i + 1));
+          double lon2 = coordConv.Longitude(x2, y2);
+          double lat2 = coordConv.Latitude(x2, y2);
+          unsigned angle2 = WaypointBearing(lon2, lat2, longitude, latitude);
+
+          unsigned halfAngle;
+          if(angle1 == angle2)
+            halfAngle = angle1;
           else {
-            std::cerr << "WARNING: " << name << ": XCSoar does not support line TP type. FAI Sector will be used instead. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
+            halfAngle = static_cast<unsigned>((angle1 + angle2) / 2.0);
+            if((angle1 > angle2 && angle1 - angle2 > 180) || (angle1 < angle2 && angle2 - angle1 > 180))
+              halfAngle = (halfAngle + 180) % 360;
+          }
+          taskPointArray[i - 1].AATStartRadial = static_cast<unsigned>(360 + halfAngle - angle / 2.0) % 360;
+          taskPointArray[i - 1].AATFinishRadial = static_cast<unsigned>(360 + halfAngle + angle / 2.0) % 360;
+        }
+      }
+      else {
+        // START, END or regular (not AAT) waypoint
+        switch(angle) {
+        case 90:
+          if(i == 1)
+            settingsTask.StartType = xcsoar::START_SECTOR;
+          else if(i == tpNum - 1)
+            settingsTask.FinishType = xcsoar::FINISH_SECTOR;
+          else {
+            if(i > 2 && settingsTask.SectorType != xcsoar::AST_FAI) {
+              tpsValid = false;
+              settingsTask.SectorRadius = radius;
+            }
             settingsTask.SectorType = xcsoar::AST_FAI;
-            settingsTask.SectorRadius = radius;
-          }
-        }
-        break;
-
-      case 270:
-        std::cerr << "WARNING: " << name << ": XCSoar does not support TP with angle '270'. Circle sector will be used instead. Be carefull to advance a waypoint in Condor after it has been advanced by the XCSoar." << std::endl;
-      case 360:
-        if(i == 1)
-          settingsTask.StartType = xcsoar::START_CIRCLE;
-        else if(i == tpNum - 1)
-          settingsTask.FinishType = xcsoar::FINISH_CIRCLE;
-        else {
-          if(i > 2 && settingsTask.SectorType != xcsoar::AST_CIRCLE)
-            tpsValid = false;
-          else {
-            settingsTask.SectorType = xcsoar::AST_CIRCLE;
             if(i > 2 && settingsTask.SectorRadius != radius) {
-              std::cerr << "WARNING: " << name << ": XCSoar does not support different TPs types. The smallest radius will be used for all circle sectors. If you advance a sector in XCSoar you will advance it in Condor." << std::endl;
+              std::cerr << "WARNING: " << name << ": XCSoar does not support different TPs types. The smallest radius will be used for all FAI sectors. If you advance a sector in XCSoar you will advance it in Condor." << std::endl;
               settingsTask.SectorRadius = min(settingsTask.SectorRadius, radius);
             }
             else
               settingsTask.SectorRadius = radius;
           }
-        }
-        break;
+          break;
 
-      default:
-        ;
-      }
-      
-      if(i == 1) {
-        settingsTask.StartRadius = radius;
-        settingsTask.StartMaxHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPHeight" + tpIdxStr));
-      }
-      else if(i == tpNum - 1) {
-        settingsTask.FinishRadius = radius;
-//        settingsTask.FinishMinHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
-        // AGL only in XCSoar ;-(
-        settingsTask.FinishMinHeight = 0;
+        case 180:
+          if(i == 1)
+            settingsTask.StartType = xcsoar::START_LINE;
+          else if(i == tpNum - 1)
+            settingsTask.FinishType = xcsoar::FINISH_LINE;
+          else {
+            if(i > 2 && settingsTask.SectorType == xcsoar::AST_FAI)
+              tpsValid = false;
+            else {
+              std::cerr << "WARNING: " << name << ": XCSoar does not support line TP type. FAI Sector will be used instead. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
+              settingsTask.SectorType = xcsoar::AST_FAI;
+              settingsTask.SectorRadius = radius;
+            }
+          }
+          break;
+
+        case 270:
+          std::cerr << "WARNING: " << name << ": XCSoar does not support TP with angle '270'. Circle sector will be used instead. Be carefull to advance a waypoint in Condor after it has been advanced by the XCSoar." << std::endl;
+        case 360:
+          if(i == 1)
+            settingsTask.StartType = xcsoar::START_CIRCLE;
+          else if(i == tpNum - 1)
+            settingsTask.FinishType = xcsoar::FINISH_CIRCLE;
+          else {
+            if(i > 2 && settingsTask.SectorType != xcsoar::AST_CIRCLE)
+              tpsValid = false;
+            else {
+              settingsTask.SectorType = xcsoar::AST_CIRCLE;
+              if(i > 2 && settingsTask.SectorRadius != radius) {
+                std::cerr << "WARNING: " << name << ": XCSoar does not support different TPs types. The smallest radius will be used for all circle sectors. If you advance a sector in XCSoar you will advance it in Condor." << std::endl;
+                settingsTask.SectorRadius = min(settingsTask.SectorRadius, radius);
+              }
+              else
+                settingsTask.SectorRadius = radius;
+            }
+          }
+          break;
+
+        default:
+          ;
+        }
+
+        if(i == 1) {
+          settingsTask.StartRadius = radius;
+          settingsTask.StartMaxHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPHeight" + tpIdxStr));
+        }
+        else if(i == tpNum - 1) {
+          settingsTask.FinishRadius = radius;
+          //        settingsTask.FinishMinHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
+          // AGL only in XCSoar ;-(
+          settingsTask.FinishMinHeight = 0;
+        }
       }
     }
     else if(sectorType == CCondor::SECTOR_WINDOW) {
