@@ -9,6 +9,7 @@ Version: 1.2 (WIP)
 - Support for A types waypoint in a task removed (safety altitude was always taken into account)
 - Oahu HD BETA scenery replaced with Oahu HD version 1.0
 - AAT tasks support added
+- Lacking VS redistributable package problem solved
 
 Version: 1.1
 ============
