@@ -28,10 +28,14 @@
 #ifndef __CONDOR2NAV_H__
 #define __CONDOR2NAV_H__
 
+#include <string>
+
 /**
  * @brief Condor2Nav project namespace.
 **/
 namespace condor2nav {
+
+  class CFileParserINI;
 
   /**
    * @brief Main project class.
@@ -40,7 +44,18 @@ namespace condor2nav {
    * command line handling and running the translation.
   **/
   class CCondor2Nav {
+    enum TFPLType {
+      TYPE_DEFAULT,
+      TYPE_RESULT,
+      TYPE_USER
+    };
+
+    static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file. 
     void Usage() const;
+    void CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const;
+    std::string CondorPath() const;
+    void FPLPath(const CFileParserINI &configParser, TFPLType fplType, const std::string &condorPath, std::string &fplPath) const;
+
   public:
     int Run(int argc, const char *argv[]) const;
   };

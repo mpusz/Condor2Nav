@@ -31,6 +31,10 @@
 #include <iomanip>
 #include <cmath>
 
+const char *condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
+const char *condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
+
+
 
 /* ******************** C O N D O R   -   C O O R D   C O N V E R T E R ********************* */
 
@@ -189,14 +193,12 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
  * condor2nav::CCondor class constructor.
  * 
  * @param condorPath Full pathname of the Condor directory. 
- * @param taskName   Name of the Condor task to translate.
- * @param cliTaskName Condor task name provided in application Command Line
- *                    ("" if nothing provided - default should be used).
+ * @param fplPath    Condor FPL file to convert path
  *
  * @exception std Thrown when not supported Condor version.
 **/
-condor2nav::CCondor::CCondor(const std::string &condorPath, const std::string &taskName, const std::string &cliTaskName):
-_taskParser((cliTaskName != "") ? cliTaskName : condorPath + "\\FlightPlans\\User\\" + taskName + ".fpl"),
+condor2nav::CCondor::CCondor(const std::string &condorPath, const std::string &fplPath):
+_taskParser(fplPath),
 _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
 {
   if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) != CONDOR_VERSION_SUPPORTED)

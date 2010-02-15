@@ -32,7 +32,6 @@
 #include <iostream>
 
 
-const char *condor2nav::CTranslator::CONFIG_FILE_NAME = "condor2nav.ini";
 const char *condor2nav::CTranslator::DATA_PATH = "data";
 const char *condor2nav::CTranslator::SCENERIES_DATA_FILE_NAME = "SceneryData.csv";
 const char *condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME = "GliderData.csv";
@@ -133,14 +132,14 @@ const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
  *
  * condor2nav::CTranslator class constructor.
  *
- * @param condorPath The path to Condor
- * @param cliTaskName Condor task name provided in application Command Line
- *                   ("" if nothing provided - default should be used).
- * @param aatTime    Minimum time for AAT task
+ * @param configParser Configuration file parser
+ * @param condorPath   The path to Condor
+ * @param fplPath      Condor FPL file to convert path
+ * @param aatTime      Minimum time for AAT task
 **/
-condor2nav::CTranslator::CTranslator(const std::string &condorPath, const std::string &cliTaskName, unsigned aatTime):
-_configParser(CONFIG_FILE_NAME),
-_condor(condorPath, _configParser.Value("Condor", "DefaultTaskName"), cliTaskName),
+condor2nav::CTranslator::CTranslator(const CFileParserINI &configParser, const std::string &condorPath, const std::string &fplPath, unsigned aatTime):
+_configParser(configParser),
+_condor(condorPath, fplPath),
 _aatTime(aatTime)
 {
 }

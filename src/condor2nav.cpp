@@ -30,6 +30,10 @@
 #include <iostream>
 
 
+const char *condor2nav::CCondor2Nav::CONFIG_FILE_NAME = "condor2nav.ini";
+
+
+
 void condor2nav::CCondor2Nav::Usage() const
 {
   std::cout << "Condor2Nav 1.1 Copyright (C) 2009-2010 Mateusz Pusz" << std::endl;
@@ -58,25 +62,16 @@ void condor2nav::CCondor2Nav::Usage() const
 }
 
 
-/**
- * @brief Runs translation.
- *
- * Method is responsible for command line handling and running the translation.
- *
- * @param argc   Number of command-line arguments. 
- * @param argv   Array of command-line argument strings. 
- * 
- * @return Application execution result.
-**/
-int condor2nav::CCondor2Nav::Run(int argc, const char *argv[]) const
+void condor2nav::CCondor2Nav::CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const
 {
-  unsigned aatTime = 0;
-  std::string taskName;
+  fplType = TYPE_DEFAULT;
+  fplPath = "";
+  aatTime = 0;
 
   for(int i=1; i<argc; i++) {
     if(std::string(argv[i]) == "-h") {
       Usage();
-      return EXIT_SUCCESS;
+      exit(EXIT_SUCCESS);
     }
     else if(std::string(argv[i]) == "--aat") {
       if(i + 1 == argc)
@@ -89,31 +84,36 @@ int condor2nav::CCondor2Nav::Run(int argc, const char *argv[]) const
     }
     else if(std::string(argv[i]) == "--default") {
       // nothing needs to be done here
+      fplType = TYPE_DEFAULT;
     }
     else if(std::string(argv[i]) == "--last-race") {
-
+      fplType = TYPE_RESULT;
     }
     else if(argv[i][0] == '-') {
       throw std::runtime_error("ERROR: Unkown option '" + std::string(argv[i]) + "' provided!!!");
     }
     else {
-      taskName = argv[i];
+      fplPath = argv[i];
+      fplType = TYPE_USER;
     }
   }
+}
 
-  // obtain Condor installation path
+
+std::string condor2nav::CCondor2Nav::CondorPath() const
+{
+  std::string condorPath;
   HKEY hTestKey;
-  std::string path;
   if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
     // check for Condor 1.1.2
     DWORD bufferSize = 0;
     RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, NULL, &bufferSize);
     std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
     RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
-    path = buffer.get();
+    condorPath = buffer.get();
     RegCloseKey(hTestKey);
-    size_t pos = path.find("Condor.exe");
-    path = path.substr(0, pos - 1);
+    size_t pos = condorPath.find("Condor.exe");
+    condorPath = condorPath.substr(0, pos - 1);
   }
   else if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
     // check for Condor 1.1.0
@@ -121,13 +121,88 @@ int condor2nav::CCondor2Nav::Run(int argc, const char *argv[]) const
     RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, NULL, &bufferSize);
     std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
     RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
-    path = buffer.get();
+    condorPath = buffer.get();
     RegCloseKey(hTestKey);
   }
   else
     throw std::runtime_error("ERROR: Condor installation not found!!!");
+
+  return condorPath;
+}
+
+
+void condor2nav::CCondor2Nav::FPLPath(const CFileParserINI &configParser, TFPLType fplType, const std::string &condorPath, std::string &fplPath) const
+{
+  if(fplType == TYPE_DEFAULT) {
+    std::string fplPathUser = configParser.Value("Condor", "FlightPlansPath");
+    if(fplPathUser.empty())
+      fplPath = condorPath + "\\" + CCondor::FLIGHT_PLANS_PATH + "\\" + configParser.Value("Condor", "DefaultTaskName") + ".fpl";
+    else
+      fplPath = fplPathUser + "\\" + configParser.Value("Condor", "DefaultTaskName") + ".fpl";
+  }
+  else if(fplType == TYPE_RESULT) {
+    std::string resultsPathUser = configParser.Value("Condor", "RaceResultsPath");
+    if(resultsPathUser.empty())
+      fplPath = condorPath + "\\" + CCondor::RACE_RESULTS_PATH + "\\";
+    else
+      fplPath = resultsPathUser + "\\";
+
+    // find the latest race result
+    std::string fileName;
+    FILETIME fileTime;
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind;
+    hFind = FindFirstFile((fplPath + "*.fpl").c_str(), &findFileData);
+    if(hFind == INVALID_HANDLE_VALUE)
+      throw std::runtime_error("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
+    else {
+      fileName = findFileData.cFileName;
+      fileTime = findFileData.ftLastWriteTime;
+
+      while(FindNextFile(hFind, &findFileData)) {
+        if(CompareFileTime(&findFileData.ftLastWriteTime, &fileTime) > 0) {
+          fileName = findFileData.cFileName;
+          fileTime = findFileData.ftLastWriteTime;
+        }
+      }
+      if(GetLastError() != ERROR_NO_MORE_FILES)
+        throw std::runtime_error("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
+      FindClose(hFind);
+    }
+    fplPath += fileName;
+  }
+}
+
+
+/**
+ * @brief Runs translation.
+ *
+ * Method is responsible for command line handling and running the translation.
+ *
+ * @param argc   Number of command-line arguments. 
+ * @param argv   Array of command-line argument strings. 
+ * 
+ * @return Application execution result.
+**/
+int condor2nav::CCondor2Nav::Run(int argc, const char *argv[]) const
+{
+  // parse CLI options
+  TFPLType fplType;
+  std::string fplPath;
+  unsigned aatTime;
+  CLIParse(argc, argv, fplType, fplPath, aatTime);
   
-  CTranslator translator(path, taskName, aatTime);
+  // obtain Condor installation path
+  std::string condorPath = CondorPath();
+  
+  // open configuration file
+  CFileParserINI configParser(CONFIG_FILE_NAME);
+  
+  // create Condor FPL file path
+  FPLPath(configParser, fplType, condorPath, fplPath);
+  
+  // run translation
+  CTranslator translator(configParser, condorPath, fplPath, aatTime);
   translator.Run();
   
   return EXIT_SUCCESS;

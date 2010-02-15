@@ -10,6 +10,7 @@ Version: 1.2 (WIP)
 - Oahu HD BETA scenery replaced with Oahu HD version 1.0
 - AAT tasks support added
 - Lacking VS redistributable package problem solved
+- FlightPlansPath & RaceResultsPath INI parameters support added
 
 Version: 1.1
 ============

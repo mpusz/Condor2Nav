@@ -95,13 +95,15 @@ namespace condor2nav {
     };
 
   private:
-    static const unsigned CONDOR_VERSION_SUPPORTED = 1120;	  ///< @brief Supported Condor version. 
-
+    static const unsigned CONDOR_VERSION_SUPPORTED = 1120;	  ///< @brief Supported Condor version.
     const CFileParserINI _taskParser;	           ///< @brief Condor task file parser. 
     const CCoordConverter _coordConverter;	       ///< @brief Condor map coordinates converter. 
 
   public:
-    CCondor(const std::string &condorPath, const std::string &taskName, const std::string &cliTaskName);
+    static const char *FLIGHT_PLANS_PATH;
+    static const char *RACE_RESULTS_PATH;
+
+    CCondor(const std::string &condorPath, const std::string &fplPath);
     const CFileParserINI &TaskParser() const { return _taskParser; }
     const CCoordConverter &CoordConverter() const { return _coordConverter; }
   };
