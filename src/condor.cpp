@@ -135,14 +135,16 @@ double condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, cons
 
 /**
  * @brief Converts Condor coordinates to longitude.
+ *        
+ * Method converts Condor coordinates to longitude. 
  *
- * Method converts Condor coordinates to longitude.
- * 
- * @param x The x coordinate.
- * @param y The y coordinate. 
- * @param format Coordinate output string format.
+ * @param x      The x coordinate. 
+ * @param y      The y coordinate. 
+ * @param format Coordinate output string format. 
  *
- * @return Converted coordinate string.
+ * @exception std::out_of_range Thrown when unsupported output format is provided. 
+ *
+ * @return Converted coordinate string. 
 **/
 std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
@@ -160,14 +162,16 @@ std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x
 
 /**
  * @brief Converts Condor coordinates to latitude.
+ *        
+ * Method converts Condor coordinates to latitude. 
  *
- * Method converts Condor coordinates to latitude.
- * 
- * @param x The x coordinate.
- * @param y The y coordinate. 
- * @param format Coordinate output string format.
+ * @param x      The x coordinate. 
+ * @param y      The y coordinate. 
+ * @param format Coordinate output string format. 
  *
- * @return Converted coordinate string.
+ * @exception std::out_of_range Thrown when unsupported output format is provided. 
+ *
+ * @return Converted coordinate string. 
 **/
 std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {

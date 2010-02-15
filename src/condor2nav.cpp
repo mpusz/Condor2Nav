@@ -34,6 +34,11 @@ const char *condor2nav::CCondor2Nav::CONFIG_FILE_NAME = "condor2nav.ini";
 
 
 
+/**
+ * @brief Prints condor2nav executable usage help. 
+ *
+ * Method prints condor2nav executable usage help.
+**/
 void condor2nav::CCondor2Nav::Usage() const
 {
   std::cout << "Condor2Nav 1.1 Copyright (C) 2009-2010 Mateusz Pusz" << std::endl;
@@ -62,6 +67,19 @@ void condor2nav::CCondor2Nav::Usage() const
 }
 
 
+/**
+ * @brief Parse Command Line Interface parameters.
+ *        
+ * Method parses Command Line Interface parameters and returns user provided values. 
+ *
+ * @param argc             Number of command line arguments. 
+ * @param argv             The array of command line arguments. 
+ * @param [in,out] fplType Type of the FPL file.
+ * @param [in,out] fplPath Full pathname of the FPL file. 
+ * @param [in,out] aatTime Minimum time of the AAT task. 
+ *
+ * @exception std::runtime_error Thrown when parsing error occurred.
+**/
 void condor2nav::CCondor2Nav::CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const
 {
   fplType = TYPE_DEFAULT;
@@ -100,6 +118,13 @@ void condor2nav::CCondor2Nav::CLIParse(int argc, const char *argv[], TFPLType &f
 }
 
 
+/**
+ * @brief Returns a path to Condor: The Competition Soaring Simulator
+ *
+ * Method returns a path to Condor: The Competition Soaring Simulator.
+ *
+ * @return Path to Condor: The Competition Soaring Simulator
+ */
 std::string condor2nav::CCondor2Nav::CondorPath() const
 {
   std::string condorPath;
@@ -131,6 +156,18 @@ std::string condor2nav::CCondor2Nav::CondorPath() const
 }
 
 
+/**
+ * @brief Returns FPL file path.
+ *
+ * Method returns FPL file path.
+ *
+ * @param configParser     The INI file configuration parser. 
+ * @param fplType          Type of the FPL file. 
+ * @param condorPath       Full pathname of the Condor: The Competition Soaring Simulator. 
+ * @param [in,out] fplPath Full pathname of the FPL file. 
+ *
+ * @exception std::runtime_error Thrown when FPL file cannot be found.
+**/
 void condor2nav::CCondor2Nav::FPLPath(const CFileParserINI &configParser, TFPLType fplType, const std::string &condorPath, std::string &fplPath) const
 {
   if(fplType == TYPE_DEFAULT) {

@@ -44,13 +44,17 @@ namespace condor2nav {
    * command line handling and running the translation.
   **/
   class CCondor2Nav {
+    /**
+     * @brief Values that represent different types of supported flight plan types. 
+    **/
     enum TFPLType {
-      TYPE_DEFAULT,
-      TYPE_RESULT,
-      TYPE_USER
+      TYPE_DEFAULT,	          ///< @brief Default task name (from INI) file will be run. 
+      TYPE_RESULT,	          ///< @brief Use last flown FPL from race result directory.
+      TYPE_USER	              ///< @brief User provided exact path to FPL file. 
     };
 
-    static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file. 
+    static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file.
+
     void Usage() const;
     void CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const;
     std::string CondorPath() const;
