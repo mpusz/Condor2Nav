@@ -26,7 +26,6 @@
 **/
 
 #include "targetXCSoarCommon.h"
-#include "imports/xcsoarTypes.h"
 #include "imports/lk8000Types.h"
 #include "ostream.h"
 #include <iostream>
@@ -136,12 +135,32 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
 *
 * Method dumps waypoints in XCSoar format.
 *
-* @param tskFile Task file to update with waypoints.
-* @param waypointArray The array of waypoints data.
+* @param outputTaskFilePath The output task file path
+* @param settingsTask       Task settings
+* @param taskPointArray     Task points array
+* @param startPointArray    Task start points array
+* @param waypointArray      The array of waypoints data.
 **/
-void condor2nav::CTargetXCSoarCommon::TaskWaypointDumpXCSoar(COStream &tskFile, const CWaypointArray &waypointArray) const
+void condor2nav::CTargetXCSoarCommon::TaskDumpXCSoar(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
 {
   using namespace xcsoar;
+
+  COStream tskFile(outputTaskFilePath);
+
+  tskFile.Write(reinterpret_cast<const char *>(taskPointArray), MAXTASKPOINTS * sizeof(TASK_POINT));
+
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATEnabled), sizeof(settingsTask.AATEnabled));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATTaskLength), sizeof(settingsTask.AATTaskLength));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishRadius), sizeof(settingsTask.FinishRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishType), sizeof(settingsTask.FinishType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartRadius), sizeof(settingsTask.StartRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartType), sizeof(settingsTask.StartType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorType), sizeof(settingsTask.SectorType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorRadius), sizeof(settingsTask.SectorRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AutoAdvance), sizeof(settingsTask.AutoAdvance));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.EnableMultipleStartPoints), sizeof(settingsTask.EnableMultipleStartPoints));
+
+  tskFile.Write(reinterpret_cast<const char *>(startPointArray), MAXSTARTPOINTS * sizeof(START_POINT));
 
   WAYPOINT *taskWaypointArray = new WAYPOINT[MAXTASKPOINTS];
   memset(taskWaypointArray, 0, MAXTASKPOINTS * sizeof(WAYPOINT));
@@ -169,12 +188,36 @@ void condor2nav::CTargetXCSoarCommon::TaskWaypointDumpXCSoar(COStream &tskFile, 
 *
 * Method dumps waypoints in LK8000 format.
 *
-* @param tskFile Task file to update with waypoints.
-* @param waypointArray The array of waypoints data.
+* @param outputTaskFilePath The output task file path
+* @param settingsTask       Task settings
+* @param taskPointArray     Task points array
+* @param startPointArray    Task start points array
+* @param waypointArray      The array of waypoints data.
 **/
-void condor2nav::CTargetXCSoarCommon::TaskWaypointDumpLK8000(COStream &tskFile, const CWaypointArray &waypointArray) const
+void condor2nav::CTargetXCSoarCommon::TaskDumpLK8000(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
 {
   using namespace lk8000;
+  std::string ver = "LK1" + Convert(lk8000::MAXTASKPOINTS) + Convert(lk8000::MAXSTARTPOINTS);
+  char version[50] = { 0 };
+  sprintf(version, ver.c_str());
+
+  COStream tskFile(outputTaskFilePath);
+  tskFile.Write(version, 50);
+
+  tskFile.Write(reinterpret_cast<const char *>(taskPointArray), lk8000::MAXTASKPOINTS * sizeof(TASK_POINT));
+
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATEnabled), sizeof(settingsTask.AATEnabled));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATTaskLength), sizeof(settingsTask.AATTaskLength));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishRadius), sizeof(settingsTask.FinishRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishType), sizeof(settingsTask.FinishType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartRadius), sizeof(settingsTask.StartRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartType), sizeof(settingsTask.StartType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorType), sizeof(settingsTask.SectorType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorRadius), sizeof(settingsTask.SectorRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AutoAdvance), sizeof(settingsTask.AutoAdvance));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.EnableMultipleStartPoints), sizeof(settingsTask.EnableMultipleStartPoints));
+
+  tskFile.Write(reinterpret_cast<const char *>(startPointArray), lk8000::MAXSTARTPOINTS * sizeof(START_POINT));
 
   lk8000::WAYPOINT *taskWaypointArray = new lk8000::WAYPOINT[lk8000::MAXTASKPOINTS];
   memset(taskWaypointArray, 0, lk8000::MAXTASKPOINTS * sizeof(lk8000::WAYPOINT));
@@ -188,7 +231,7 @@ void condor2nav::CTargetXCSoarCommon::TaskWaypointDumpLK8000(COStream &tskFile, 
     taskWaypointArray[i].Altitude = waypointArray[i].altitude;
     taskWaypointArray[i].Flags = waypointArray[i].flags;
     mbstowcs(taskWaypointArray[i].Name, waypointArray[i].name.c_str(), NAME_SIZE);
-    mbstowcs(taskWaypointArray[i].Comment, waypointArray[i].comment.c_str(), COMMENT_SIZE);
+    mbstowcs(taskWaypointArray[i].Comment, waypointArray[i].comment.c_str(), lk8000::COMMENT_SIZE);
     taskWaypointArray[i].InTask = true;
   }
   
@@ -239,7 +282,7 @@ unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(double lon1, double la
 * @param aatTime     Minimum time for AAT task
 * @param maxTaskPoints The number of waypoints stored in a task file.
 * @param maxStartPoints The number of alternate startpoints stored in a task file.
-* @param wptFunc The function to be used for dumping waypoints data.
+* @param taskDumpFunc The function to be used for dumping task files.
 * @param generateWPFile Flag specifying if WP file should be generated.
 * @param wpOutputPathPrefix XCSoar WP subdirectory prefix (in filesystem format).
 **/
@@ -249,7 +292,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
                                                   const std::string &outputTaskFilePath,
                                                   unsigned aatTime,
                                                   unsigned maxTaskPoints, unsigned maxStartPoints,
-                                                  FTaskWaypointDump wptFunc,
+                                                  FTaskDump taskDumpFunc,
                                                   bool generateWPFile, const std::string &wpOutputPathPrefix) const
 {
   using namespace xcsoar;
@@ -284,7 +327,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     taskPointArray[i].AATStartRadial = 0;
     taskPointArray[i].AATFinishRadial = 360;
   }
-  for(unsigned i=0; i<maxTaskPoints; i++)
+  for(unsigned i=0; i<maxStartPoints; i++)
     startPointArray[i].Index = -1;
 
   bool tpsValid(true);
@@ -482,24 +525,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   profileParser.Value("", "FAIFinishHeight", Convert(settingsTask.FinishMinHeight));
 
   // dump Task file
-  COStream tskFile(outputTaskFilePath);
-
-  tskFile.Write(reinterpret_cast<const char *>(taskPointArray), maxTaskPoints * sizeof(TASK_POINT));
-
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATEnabled), sizeof(settingsTask.AATEnabled));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATTaskLength), sizeof(settingsTask.AATTaskLength));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishRadius), sizeof(settingsTask.FinishRadius));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishType), sizeof(settingsTask.FinishType));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartRadius), sizeof(settingsTask.StartRadius));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartType), sizeof(settingsTask.StartType));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorType), sizeof(settingsTask.SectorType));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorRadius), sizeof(settingsTask.SectorRadius));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AutoAdvance), sizeof(settingsTask.AutoAdvance));
-  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.EnableMultipleStartPoints), sizeof(settingsTask.EnableMultipleStartPoints));
-
-  tskFile.Write(reinterpret_cast<const char *>(startPointArray), maxStartPoints * sizeof(START_POINT));
-
-  (this->*wptFunc)(tskFile, waypointArray);
+  (this->*taskDumpFunc)(outputTaskFilePath, settingsTask, taskPointArray, startPointArray, waypointArray);
 }
 
   // set units

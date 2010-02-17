@@ -29,6 +29,7 @@
 #define __TARGET_XCSOAR_COMMON_H__
 
 #include "translator.h"
+#include "imports/xcsoarTypes.h"
 
 
 namespace condor2nav {
@@ -57,9 +58,9 @@ namespace condor2nav {
     };
     typedef std::vector<TWaypoint> CWaypointArray;
 
-    typedef void (CTargetXCSoarCommon::*FTaskWaypointDump)(COStream &, const CWaypointArray &) const;
-    void TaskWaypointDumpXCSoar(COStream &tskFile, const CWaypointArray &waypointArray) const;
-    void TaskWaypointDumpLK8000(COStream &tskFile, const CWaypointArray &waypointArray) const;
+    typedef void (CTargetXCSoarCommon::*FTaskDump)(const std::string &, const xcsoar::SETTINGS_TASK &, const xcsoar::TASK_POINT *, const xcsoar::START_POINT *, const CWaypointArray &) const;
+    void TaskDumpXCSoar(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
+    void TaskDumpLK8000(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
 
     // outputs
     static const char *OUTPUT_PROFILE_NAME;      ///< @brief The name of XCSoar profile file to generate. 
@@ -75,7 +76,7 @@ namespace condor2nav {
     void GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
     void TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv,
                      const CFileParserCSV::CStringArray &sceneryData, const std::string &outputTaskFilePath,
-                     unsigned aatTime, unsigned maxTaskPoints, unsigned maxStartPoints, FTaskWaypointDump wptFunc,
+                     unsigned aatTime, unsigned maxTaskPoints, unsigned maxStartPoints, FTaskDump taskDumpFunc,
                      bool generateWPFile, const std::string &wpOutputPathPrefix) const;
     void PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
     void WeatherProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser) const;

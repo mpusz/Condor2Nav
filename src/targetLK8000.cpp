@@ -153,7 +153,7 @@ void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCo
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("LK8000", "TaskWPFileGenerate")));
   TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
-              lk8000::MAXTASKPOINTS, lk8000::MAXSTARTPOINTS, &CTargetLK8000::TaskWaypointDumpLK8000,
+              lk8000::MAXTASKPOINTS, lk8000::MAXSTARTPOINTS, &CTargetLK8000::TaskDumpLK8000,
               wpFile > 0, _outputLK8000DataPath + _outputWaypointsSubDir);
 }
  

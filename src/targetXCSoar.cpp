@@ -132,7 +132,7 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("XCSoar", "TaskWPFileGenerate")));
   TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
-              xcsoar::MAXTASKPOINTS, xcsoar::MAXSTARTPOINTS, &CTargetXCSoar::TaskWaypointDumpXCSoar,
+              xcsoar::MAXTASKPOINTS, xcsoar::MAXSTARTPOINTS, &CTargetXCSoar::TaskDumpXCSoar,
               wpFile > 0, _outputCondor2NavDataPath);
 }
  

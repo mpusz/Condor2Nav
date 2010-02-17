@@ -57,13 +57,17 @@ namespace lk8000 {
  
   using namespace xcsoar;
 
-//#define LK8000_VER_1_20
+#define LK8000_VER_1_20
 
 #ifdef LK8000_VER_1_20
 
-#define CUPSUP 1
-  const unsigned MAXTASKPOINTS = 20;
-  const unsigned MAXSTARTPOINTS = 20;
+  const unsigned MAXTASKPOINTS   = 20;
+  const unsigned MAXSTARTPOINTS  = 20;
+  const unsigned COMMENT_SIZE    = 150;
+
+  const unsigned CUPSIZE_COUNTRY = 10;
+  const unsigned CUPSIZE_CODE    = 20;
+  const unsigned CUPSIZE_FREQ    = 20;
 
 #else
 
@@ -90,13 +94,26 @@ namespace lk8000 {
     TCHAR *Details;
     bool FarVisible;
     int FileNum; // which file it is in, or -1 to delete
-#ifdef CUPSUP
+
+#ifdef LK8000_VER_1_20
     short Format;
-    TCHAR Freq[CUPSIZE_FREQ];
+    wchar_t Code[CUPSIZE_CODE];
+    wchar_t Freq[CUPSIZE_FREQ];
     int   RunwayLen;
     int   RunwayDir;
-    TCHAR Country[5];
+    wchar_t Country[CUPSIZE_COUNTRY];
     short Style;
+
+    // RESERVED FOR FUTURE USE, CURRENTLY UNUSED
+    wchar_t RESERVED_TCHAR1[10];
+    bool  RESERVED_BOOL1;
+    bool  RESERVED_BOOL2;
+    int   RESERVED_INT1;
+    int   RESERVED_INT2;
+    double RESERVED_DOUBLE1;
+    double RESERVED_DOUBLE2;
+    short RESERVED_SHORT1;
+    short RESERVED_SHORT2;
 #endif
   };
 
