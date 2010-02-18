@@ -253,7 +253,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\condor2nav.ico"
+				RelativePath="..\..\condor2nav.ico"
 				>
 			</File>
 		</Filter>
