@@ -28,6 +28,7 @@
 #ifndef __CONDOR_H__
 #define __CONDOR_H__
 
+#include "condor2nav.h"
 #include "fileParserINI.h"
 #include <windows.h> 
 
@@ -96,12 +97,14 @@ namespace condor2nav {
 
   private:
     static const unsigned CONDOR_VERSION_SUPPORTED = 1120;	  ///< @brief Supported Condor version.
+    static const char *FLIGHT_PLANS_PATH;
+    static const char *RACE_RESULTS_PATH;
     const CFileParserINI _taskParser;	           ///< @brief Condor task file parser. 
     const CCoordConverter _coordConverter;	       ///< @brief Condor map coordinates converter. 
 
   public:
-    static const char *FLIGHT_PLANS_PATH;
-    static const char *RACE_RESULTS_PATH;
+    static std::string InstallPath();
+    static void FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType, const std::string &condorPath, std::string &fplPath);
 
     CCondor(const std::string &condorPath, const std::string &fplPath);
     const CFileParserINI &TaskParser() const { return _taskParser; }

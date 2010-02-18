@@ -28,7 +28,6 @@
 #include "ostream.h"
 #include "activeSync.h"
 #include <fstream>
-#include <iostream>
 
 
 /**
@@ -58,7 +57,7 @@ condor2nav::COStream::~COStream()
         {
           std::ofstream stream(FileName().c_str(), std::ios_base::out | std::ios_base::binary);
           if(!stream)
-            std::cerr << "ERROR: Couldn't open file '" << FileName() << "' for writing!!!" << std::endl;
+            throw std::runtime_error("ERROR: Couldn't open file '" + FileName() + "' for writing!!!");
           stream << Buffer().str();
         }
         break;
@@ -71,7 +70,7 @@ condor2nav::COStream::~COStream()
         break;
 
       default:
-        std::cerr << "ERROR: Unknown stream type (" << Type() << ")!!!" << std::endl;
+        throw std::runtime_error("ERROR: Unknown stream type (" + Convert(Type()) + ")!!!");
     }
   }
 }

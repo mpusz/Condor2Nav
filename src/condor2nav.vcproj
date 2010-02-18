@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="windows-1250"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="condor2nav"
-	ProjectGUID="{05D74FBE-E04D-4423-B486-D42AF3A3C223}"
-	RootNamespace="XCondor2"
+	ProjectGUID="{1193780C-0BA4-4948-A77C-761E5E3C6E65}"
+	RootNamespace="condor2nav"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="4"
 			CharacterSet="2"
 			>
 			<Tool
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -59,17 +59,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				LinkIncremental="2"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -81,18 +74,15 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README.txt dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y CHANGELOG.txt dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;xcopy /D /I /Y data\XCSoar\Waypoints dist\$(ConfigurationName)\condor2nav\data\Waypoints&#x0D;&#x0A;"
+				CommandLine="mkdir ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\README.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\CHANGELOG.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\condor2nav.ini ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\GliderData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\data\SceneryData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;xcopy /D /I /Y ..\data\XCSoar\Waypoints ..\dist\$(ConfigurationName)\condor2nav\data\Waypoints&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="4"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -115,7 +105,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -132,19 +122,10 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				LinkIncremental="1"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
+				Name="VCLibrarianTool"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -156,11 +137,8 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y &quot;$(TargetPath)&quot; dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y README.txt dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y CHANGELOG.txt dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\condor2nav.ini dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y data\GliderData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y data\SceneryData.csv dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;xcopy /D /I /Y data\XCSoar\Waypoints dist\$(ConfigurationName)\condor2nav\data\Waypoints&#x0D;&#x0A;"
+				CommandLine="mkdir ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\README.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\CHANGELOG.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\condor2nav.ini ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\GliderData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\data\SceneryData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;xcopy /D /I /Y ..\data\XCSoar\Waypoints ..\dist\$(ConfigurationName)\condor2nav\data\Waypoints&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -173,63 +151,59 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\activeSync.cpp"
+				RelativePath=".\activeSync.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\condor.cpp"
+				RelativePath=".\condor.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\condor2nav.cpp"
+				RelativePath=".\condor2nav.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\fileParser.cpp"
+				RelativePath=".\fileParser.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\fileParserCSV.cpp"
+				RelativePath=".\fileParserCSV.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\fileParserINI.cpp"
+				RelativePath=".\fileParserINI.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\istream.cpp"
+				RelativePath=".\istream.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\main.cpp"
+				RelativePath=".\ostream.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\ostream.cpp"
+				RelativePath=".\stream.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\stream.cpp"
+				RelativePath=".\targetLK8000.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\targetLK8000.cpp"
+				RelativePath=".\targetXCSoar.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\targetXCSoar.cpp"
+				RelativePath=".\targetXCSoarCommon.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\targetXCSoarCommon.cpp"
+				RelativePath=".\tools.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tools.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\translator.cpp"
+				RelativePath=".\translator.cpp"
 				>
 			</File>
 		</Filter>
@@ -239,90 +213,84 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\activeSync.h"
+				RelativePath=".\activeSync.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\condor.h"
+				RelativePath=".\condor.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\condor2nav.h"
+				RelativePath=".\condor2nav.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\fileParser.h"
+				RelativePath=".\fileParser.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\fileParserCSV.h"
+				RelativePath=".\fileParserCSV.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\fileParserINI.h"
+				RelativePath=".\fileParserINI.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\istream.h"
+				RelativePath=".\istream.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\ostream.h"
+				RelativePath=".\ostream.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\stream.h"
+				RelativePath=".\stream.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\targetLK8000.h"
+				RelativePath=".\targetLK8000.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\targetXCSoar.h"
+				RelativePath=".\targetXCSoar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\targetXCSoarCommon.h"
+				RelativePath=".\targetXCSoarCommon.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tools.h"
+				RelativePath=".\tools.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\translator.h"
+				RelativePath=".\translator.h"
 				>
 			</File>
 			<Filter
-				Name="Imports"
+				Name="imports"
 				>
 				<File
-					RelativePath=".\src\imports\lk8000Types.h"
+					RelativePath=".\imports\lk8000Types.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\imports\xcsoarTypes.h"
+					RelativePath=".\imports\xcsoarTypes.h"
 					>
 				</File>
 			</Filter>
 		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-		</Filter>
 		<File
-			RelativePath=".\CHANGELOG.txt"
+			RelativePath="..\CHANGELOG.txt"
 			>
 		</File>
 		<File
-			RelativePath=".\COPYING.txt"
+			RelativePath="..\COPYING.txt"
 			>
 		</File>
 		<File
-			RelativePath=".\README.txt"
+			RelativePath="..\README.txt"
 			>
 		</File>
 	</Files>

@@ -20,39 +20,16 @@
 //
 
 /**
- * @file stream.cpp
- *
- * @brief Implements the Stream wrapper class. 
-**/
+* @file gui\stdafx.cpp
+*
+* @brief Precompiled headers.
+*
+* source file that includes just the standard includes
+* condor2nav.pch will be the pre-compiled header
+* stdafx.obj will contain the pre-compiled type information
+*/
 
-#include "stream.h"
-#include "activeSync.h"
-#include <fstream>
+#include "stdafx.h"
 
-
-/**
- * @brief Class constructor.
- *
- * condor2nav::CStream class constructor.
- *
- * @param fileName The name of the file to create.
-**/
-condor2nav::CStream::CStream(const std::string &fileName):
-_fileName(fileName)
-{
-  if(fileName.size() > 2 && fileName[0] == '\\' && fileName[1] != '\\')
-    _type = TYPE_ACTIVE_SYNC;
-  else
-    _type = TYPE_LOCAL;
-}
-
-
-/**
- * @brief Class destructor.
- *
- * condor2nav::CStream class destructor. Writes local buffer to
- * a file.
-**/
-condor2nav::CStream::~CStream()
-{
-}
+// TODO: reference any additional headers you need in STDAFX.H
+// and not in this file

@@ -20,39 +20,31 @@
 //
 
 /**
- * @file stream.cpp
- *
- * @brief Implements the Stream wrapper class. 
-**/
+* @file gui\stdafx.h
+*
+* @brief Precompiled headers class.
+*
+* include file for standard system include files,
+* or project specific include files that are used frequently, but
+* are changed infrequently
+*/
 
-#include "stream.h"
-#include "activeSync.h"
-#include <fstream>
+#pragma once
 
+#include "targetver.h"
 
-/**
- * @brief Class constructor.
- *
- * condor2nav::CStream class constructor.
- *
- * @param fileName The name of the file to create.
-**/
-condor2nav::CStream::CStream(const std::string &fileName):
-_fileName(fileName)
-{
-  if(fileName.size() > 2 && fileName[0] == '\\' && fileName[1] != '\\')
-    _type = TYPE_ACTIVE_SYNC;
-  else
-    _type = TYPE_LOCAL;
-}
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+// Windows Header Files:
+#include <windows.h>
+
+// C RunTime Header Files
+#include <stdlib.h>
+#include <malloc.h>
+#include <memory.h>
+#include <tchar.h>
 
 
-/**
- * @brief Class destructor.
- *
- * condor2nav::CStream class destructor. Writes local buffer to
- * a file.
-**/
-condor2nav::CStream::~CStream()
-{
-}
+// TODO: reference additional headers your program requires here
+#include "tools.h"
+#include <commctrl.h>
+#include <commdlg.h>

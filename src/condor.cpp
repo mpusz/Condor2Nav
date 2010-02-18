@@ -191,6 +191,103 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
 
 /* ************************************* C O N D O R **************************************** */
 
+
+/**
+* @brief Returns a path to Condor: The Competition Soaring Simulator
+*
+* Method returns a path to Condor: The Competition Soaring Simulator.
+*
+* @return Path to Condor: The Competition Soaring Simulator
+*/
+std::string condor2nav::CCondor::InstallPath()
+{
+  return "C:\\Program Files\\Condor";
+
+  std::string condorPath;
+  HKEY hTestKey;
+  if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
+    // check for Condor 1.1.2
+    DWORD bufferSize = 0;
+    RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, NULL, &bufferSize);
+    std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
+    RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
+    condorPath = buffer.get();
+    RegCloseKey(hTestKey);
+    size_t pos = condorPath.find("Condor.exe");
+    condorPath = condorPath.substr(0, pos - 1);
+  }
+  else if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
+    // check for Condor 1.1.0
+    DWORD bufferSize = 0;
+    RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, NULL, &bufferSize);
+    std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
+    RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
+    condorPath = buffer.get();
+    RegCloseKey(hTestKey);
+  }
+  else
+    throw std::runtime_error("ERROR: Condor installation not found!!!");
+
+  return condorPath;
+}
+
+
+/**
+* @brief Returns FPL file path.
+*
+* Method returns FPL file path.
+*
+* @param configParser     The INI file configuration parser. 
+* @param fplType          Type of the FPL file. 
+* @param condorPath       Full pathname of the Condor: The Competition Soaring Simulator. 
+* @param [in,out] fplPath Full pathname of the FPL file. 
+*
+* @exception std::runtime_error Thrown when FPL file cannot be found.
+**/
+void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType, const std::string &condorPath, std::string &fplPath)
+{
+  if(fplType == CCondor2Nav::TYPE_DEFAULT) {
+    std::string fplPathUser = configParser.Value("Condor", "FlightPlansPath");
+    if(fplPathUser.empty())
+      fplPath = condorPath + "\\" + FLIGHT_PLANS_PATH + "\\" + configParser.Value("Condor", "DefaultTaskName") + ".fpl";
+    else
+      fplPath = fplPathUser + "\\" + configParser.Value("Condor", "DefaultTaskName") + ".fpl";
+  }
+  else if(fplType == CCondor2Nav::TYPE_RESULT) {
+    std::string resultsPathUser = configParser.Value("Condor", "RaceResultsPath");
+    if(resultsPathUser.empty())
+      fplPath = condorPath + "\\" + RACE_RESULTS_PATH + "\\";
+    else
+      fplPath = resultsPathUser + "\\";
+
+    // find the latest race result
+    std::string fileName;
+    FILETIME fileTime;
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind;
+    hFind = FindFirstFile((fplPath + "*.fpl").c_str(), &findFileData);
+    if(hFind == INVALID_HANDLE_VALUE)
+      throw std::runtime_error("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
+    else {
+      fileName = findFileData.cFileName;
+      fileTime = findFileData.ftLastWriteTime;
+
+      while(FindNextFile(hFind, &findFileData)) {
+        if(CompareFileTime(&findFileData.ftLastWriteTime, &fileTime) > 0) {
+          fileName = findFileData.cFileName;
+          fileTime = findFileData.ftLastWriteTime;
+        }
+      }
+      if(GetLastError() != ERROR_NO_MORE_FILES)
+        throw std::runtime_error("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
+      FindClose(hFind);
+    }
+    fplPath += fileName;
+  }
+}
+
+
+
 /**
  * @brief Class constructor. 
  *

@@ -28,7 +28,7 @@
 #ifndef __CONDOR2NAV_H__
 #define __CONDOR2NAV_H__
 
-#include <string>
+#include <sstream>
 
 /**
  * @brief Condor2Nav project namespace.
@@ -44,8 +44,9 @@ namespace condor2nav {
    * command line handling and running the translation.
   **/
   class CCondor2Nav {
+  public:
     /**
-     * @brief Values that represent different types of supported flight plan types. 
+    * @brief Values that represent different types of supported flight plan types. 
     **/
     enum TFPLType {
       TYPE_DEFAULT,	          ///< @brief Default task name (from INI) file will be run. 
@@ -53,15 +54,78 @@ namespace condor2nav {
       TYPE_USER	              ///< @brief User provided exact path to FPL file. 
     };
 
+    class CLogger {
+    public:
+      enum TType {
+        TYPE_NORMAL,
+        TYPE_WARNING,
+        TYPE_ERROR
+      };
+
+    private:
+      const TType _type;
+
+      CLogger(const CLogger &);
+      CLogger &operator=(const CLogger &);
+      virtual void Dump(const std::string &str) const = 0;
+
+    protected:
+      TType Type() const { return _type; }
+
+    public:
+      CLogger(TType type): _type(type) {}
+      virtual ~CLogger() {}
+      
+      /**
+      * @brief Dumps new data to a stream. 
+      *
+      * Function writes new data to a stream.
+      *
+      * @param stream Stream to use. 
+      * @param obj Data to write. 
+      *
+      * @return Stream instance.
+      **/
+      template<class T>
+      friend const CLogger &operator<<(const CLogger &logger, const T &obj)
+      {
+        std::stringstream stream;
+        stream << obj;
+        logger.Dump(stream.str());
+        return logger;
+      }
+
+      /**
+      * @brief Writes functor (e.g. std::endl) to a stream.
+      *
+      * Method writes functor (e.g. std::endl) to a stream.
+      *
+      * @param stream Stream to use. 
+      * @param f Functor to write. 
+      *
+      * @return Stream instance.
+      **/
+      friend const CLogger &operator<<(const CLogger &logger, std::ostream &(*f)(std::ostream &))
+      {
+        std::stringstream stream;
+        stream << f;
+        logger.Dump(stream.str());
+        return logger;
+      }
+    };
+
+  private:
+//    void Usage() const;
+//    void CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const;
+
+  protected:
     static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file.
 
-    void Usage() const;
-    void CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const;
-    std::string CondorPath() const;
-    void FPLPath(const CFileParserINI &configParser, TFPLType fplType, const std::string &condorPath, std::string &fplPath) const;
-
   public:
-    int Run(int argc, const char *argv[]) const;
+//    int Run(int argc, const char *argv[]) const;
+    virtual const CLogger &Log() const = 0;
+    virtual const CLogger &Warning() const = 0;
+    virtual const CLogger &Error() const = 0;
   };
 
 }
