@@ -114,15 +114,10 @@ namespace condor2nav {
       }
     };
 
-  private:
-//    void Usage() const;
-//    void CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const;
-
   protected:
     static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file.
 
   public:
-//    int Run(int argc, const char *argv[]) const;
     virtual const CLogger &Log() const = 0;
     virtual const CLogger &Warning() const = 0;
     virtual const CLogger &Error() const = 0;

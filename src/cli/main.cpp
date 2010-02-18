@@ -20,12 +20,13 @@
 //
 
 /**
- * @file condor2nav/src/main.cpp
+ * @file cli/main.cpp
  *
  * @brief Implements the main() function. 
 **/
 
-#include "condor2nav.h"
+#include "condor2navCLI.h"
+#include "tools.h"
 #include <iostream>
 
 
@@ -40,8 +41,12 @@
 int main(int argc, const char *argv[])
 {
   try {
-    condor2nav::CCondor2Nav app;
+    condor2nav::cli::CCondor2NavCLI app;
     return app.Run(argc, argv);
+  }
+  catch(const condor2nav::Exception &ex) {
+    std::cerr << ex.what() << std::endl;
+    exit(EXIT_FAILURE);
   }
   catch(const std::exception &ex) {
     std::cerr << ex.what() << std::endl;
