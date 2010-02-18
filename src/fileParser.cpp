@@ -26,6 +26,7 @@
 **/
 
 #include "fileParser.h"
+#include "tools.h"
 #include <string>
 
 
@@ -100,7 +101,7 @@ void condor2nav::CFileParser::LineParseKeyValue(const std::string &line, std::st
 {
   size_t pos = line.find_first_of("=");
   if(pos == std::string::npos)
-    throw std::runtime_error("ERROR: '=' sign not found in '" + Path() + "' file line '" + line + "'!!!");
+    throw EOperationFailed("ERROR: '=' sign not found in '" + Path() + "' file line '" + line + "'!!!");
   
   key = line.substr(0, pos);
   WhiteSpacesRemove(key);

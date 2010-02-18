@@ -176,7 +176,7 @@ void condor2nav::DirectoryCreate(const std::string &dirName)
       else {
         DWORD error = ERROR_SUCCESS;
         if (!::CreateDirectory(subDir.c_str(), 0) && (error = GetLastError()) != ERROR_ALREADY_EXISTS)
-          throw std::runtime_error("Cannot create directory '" + subDir + "' (" + Convert(error) + ")!!!");
+          throw EOperationFailed("Cannot create directory '" + subDir + "' (" + Convert(error) + ")!!!");
       }
 
       if(pos != std::string::npos)
@@ -232,4 +232,10 @@ void condor2nav::FilePathSplit(const std::string &filePath, std::string &dir, st
     dir = "";
     file = filePath;
   }
+}
+
+
+
+condor2nav::Exception::~Exception()
+{
 }

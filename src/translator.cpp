@@ -161,7 +161,7 @@ std::auto_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target(
   else if(target == "LK8000")
     return std::auto_ptr<CTarget>(new CTargetLK8000(*this));
   else
-    throw std::out_of_range("ERROR: Unknown translation target '" + target + "'!!!");
+    throw EOperationFailed("ERROR: Unknown translation target '" + target + "'!!!");
 }
 
 
@@ -173,6 +173,8 @@ std::auto_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target(
 **/
 void condor2nav::CTranslator::Run()
 {
+  _app.Warning() << "Translation START" << std::endl;
+
   // create translation target
   std::auto_ptr<CTarget> target(Target());
   
@@ -216,4 +218,6 @@ void condor2nav::CTranslator::Run()
     _app.Log() << "Setting weather data..." << std::endl;
     target->Weather(_condor.TaskParser());
   }
+
+  _app.Warning() << "Translation FINISH" << std::endl;
 }

@@ -126,7 +126,7 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
     unsigned xcsoarPercent = ballast * 100 / maxBallast;
     // round it to 5% increment steps
     xcsoarPercent = static_cast<unsigned>((static_cast<float>(xcsoarPercent) + 2.5) / 5) * 5;
-    Translator().App().Warning() << "WARNING: Cannot set initial glider ballast in XCSoar automatically. Please open 'Config'->'Setup Basic' and set '" << xcsoarPercent << "%' for the glider ballast." << std::endl;
+    Translator().App().Warning() << "WARNING: Cannot set initial glider ballast in XCSoar/LK8000 automatically. Please open 'Config'->'Setup Basic' and set '" << xcsoarPercent << "%' for the glider ballast." << std::endl;
   }
 }
 
@@ -336,7 +336,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 
   // check if enough waypoints to create a task
   if(tpNum - 1 > maxTaskPoints)
-    throw std::range_error("ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!");
+    throw EOperationFailed("ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!");
 
   std::auto_ptr<CFileParserCSV> waypointsParser;
   if(sceneryData.at(SCENERY_WAYPOINTS_FILE) != "")

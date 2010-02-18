@@ -63,7 +63,7 @@ CFileParser(filePath)
       // new chapter
       size_t pos = line.find_first_of("]");
       if(pos == std::string::npos)
-        throw std::runtime_error("ERROR: ']' not found in file line '" + line + "' in '" + Path() + "' INI !!!");
+        throw EOperationFailed("ERROR: ']' not found in file line '" + line + "' in '" + Path() + "' INI !!!");
       
       std::auto_ptr<TChapter> chapter(new TChapter);
       chapter->name = line.substr(1, pos - 1);
@@ -79,7 +79,7 @@ CFileParser(filePath)
     LineParseKeyValue(line, key, value);
 
     if(currentMap->find(&key) != currentMap->end())
-      throw std::runtime_error("ERROR: Entry '" + key + "' provided more than once in '" + Path() + "' INI file!!!");
+      throw EOperationFailed("ERROR: Entry '" + key + "' provided more than once in '" + Path() + "' INI file!!!");
 
     // add new entry
     std::auto_ptr<TKeyValue> data(new TKeyValue);
@@ -121,7 +121,7 @@ condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const 
     if((*it)->name == chapter)
       return **it;
 
-  throw std::runtime_error("ERROR: Chapter '" + chapter + "' not found in '" + Path() + "' INI file!!!");
+  throw EOperationFailed("ERROR: Chapter '" + chapter + "' not found in '" + Path() + "' INI file!!!");
 }
 
 
@@ -142,7 +142,7 @@ const condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(
     if((*it)->name == chapter)
       return **it;
 
-  throw std::runtime_error("ERROR: Chapter '" + chapter + "' not found in '" + Path() + "' INI file!!!");
+  throw EOperationFailed("ERROR: Chapter '" + chapter + "' not found in '" + Path() + "' INI file!!!");
 }
 
 
@@ -167,7 +167,7 @@ const std::string &condor2nav::CFileParserINI::Value(const std::string &chapter,
 
   CValuesMap::const_iterator it = mapPtr->find(&key);
   if(it == mapPtr->end())
-    throw std::range_error("ERROR: Entry '" + key + "' not found in '" + Path() + "' INI file!!!");
+    throw EOperationFailed("ERROR: Entry '" + key + "' not found in '" + Path() + "' INI file!!!");
   return it->second->value;
 }
 

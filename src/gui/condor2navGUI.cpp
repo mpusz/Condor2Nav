@@ -33,23 +33,18 @@
 
 void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) const
 {
-  static TType lastType = TYPE_NORMAL;
-  TType t = Type();
-  if(t != lastType) {
-    switch(Type()) {
-    case TYPE_NORMAL:
-      _log.Format(0, CWidgetRichEdit::COLOR_AUTO);
-      break;
-    case TYPE_WARNING:
-      _log.Format(CWidgetRichEdit::EFFECT_BOLD | CWidgetRichEdit::EFFECT_ITALIC, CWidgetRichEdit::COLOR_BLUE);
-      break;
-    case TYPE_ERROR:
-      _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_RED);
-      break;
-    default:
-      throw std::out_of_range("ERROR: Unsupported logger type (" + Convert(Type()) + ")!!!");
-    }
-    lastType = t;
+  switch(Type()) {
+  case TYPE_NORMAL:
+    _log.Format(0, CWidgetRichEdit::COLOR_AUTO);
+    break;
+  case TYPE_WARNING:
+    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_BLUE);
+    break;
+  case TYPE_ERROR:
+    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_RED);
+    break;
+  default:
+    throw EOperationFailed("ERROR: Unsupported logger type (" + Convert(Type()) + ")!!!");
   }
   _log.Append(str);
 }
@@ -147,23 +142,24 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
   case IDC_FPL_SELECT_BUTTON:
     if(command == BN_CLICKED) {
       OPENFILENAME ofn;       // common dialog box structure
-      char szFile[260];       // buffer for file name
+      char szFile[1024];       // buffer for file name
 
       // Initialize OPENFILENAME
       ZeroMemory(&ofn, sizeof(ofn));
       ofn.lStructSize = sizeof(ofn);
       ofn.hwndOwner = _hDlg;
+      ofn.lpstrFilter = "Condor FPL Files (*.fpl)\0*.fpl\0All Files (*.*)\0*.*\0";
+      ofn.nFilterIndex = 1;
       ofn.lpstrFile = szFile;
       // Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
       // use the contents of szFile to initialize itself.
       ofn.lpstrFile[0] = '\0';
       ofn.nMaxFile = sizeof(szFile);
-      ofn.lpstrFilter = "Condor FPL Files (*.fpl)\0*.fpl\0All Files (*.*)\0*.*\0";
-      ofn.nFilterIndex = 1;
       ofn.lpstrFileTitle = NULL;
       ofn.nMaxFileTitle = 0;
       ofn.lpstrInitialDir = NULL;
-      ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+      ofn.lpstrTitle = "Open Condor FPL file";
+      ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_READONLY;
 
       // Display the Open dialog box. 
       if(GetOpenFileName(&ofn) == TRUE)
@@ -197,7 +193,15 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
 
   case IDC_TRANSLATE_BUTTON:
     if(command == BN_CLICKED) {
-      CTranslator(*this, _configParser, _condorPath, _fplPath.String(), Convert<unsigned>(_aatTime.Selection())).Run();
+      try
+      {
+        _log.Clear();
+        CTranslator(*this, _configParser, _condorPath, _fplPath.String(), Convert<unsigned>(_aatTime.Selection())).Run();
+      }
+      catch(const Exception &ex)
+      {
+        Error() << ex.what() << std::endl;
+      }
     }
     break;
   }

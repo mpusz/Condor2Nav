@@ -57,43 +57,43 @@ condor2nav::CActiveSync::CActiveSync()
   std::string dllPath("rapi.dll");
   _hInstLib = LoadLibrary(dllPath.c_str()); 
   if(!_hInstLib)
-    throw std::invalid_argument("ERROR: Couldn't open 'rapi.dll' library!!! Please check that ActiveSync is installed correctly.");
+    throw EOperationFailed("ERROR: Couldn't open 'rapi.dll' library!!! Please check that ActiveSync is installed correctly.");
   
   _iface.ceRapiInitEx = (FCeRapiInitEx)GetProcAddress(_hInstLib, "CeRapiInitEx");
   if(!_iface.ceRapiInitEx)
-    throw std::runtime_error("ERROR: Couldn't map CeRapiInitEx() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeRapiInitEx() from 'rapi.dll'!!!");
 
   _iface.ceRapiUninit = (FCeRapiUninit)GetProcAddress(_hInstLib, "CeRapiUninit");
   if(!_iface.ceRapiUninit)
-    throw std::runtime_error("ERROR: Couldn't map CeRapiUninit() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeRapiUninit() from 'rapi.dll'!!!");
 
   _iface.ceGetLastError = (FCeGetLastError)GetProcAddress(_hInstLib, "CeGetLastError");
   if(!_iface.ceGetLastError)
-    throw std::runtime_error("ERROR: Couldn't map CeGetLastError() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeGetLastError() from 'rapi.dll'!!!");
 
   _iface.ceCreateFile = (FCeCreateFile)GetProcAddress(_hInstLib, "CeCreateFile");
   if(!_iface.ceCreateFile)
-    throw std::runtime_error("ERROR: Couldn't map CeCreateFile() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeCreateFile() from 'rapi.dll'!!!");
 
   _iface.ceGetFileSize = (FCeGetFileSize)GetProcAddress(_hInstLib, "CeGetFileSize");
   if(!_iface.ceGetFileSize)
-    throw std::runtime_error("ERROR: Couldn't map CeGetFileSize() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeGetFileSize() from 'rapi.dll'!!!");
 
   _iface.ceReadFile = (FCeReadFile)GetProcAddress(_hInstLib, "CeReadFile");
   if(!_iface.ceReadFile)
-    throw std::runtime_error("ERROR: Couldn't map CeReadFile() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeReadFile() from 'rapi.dll'!!!");
 
   _iface.ceWriteFile = (FCeWriteFile)GetProcAddress(_hInstLib, "CeWriteFile");
   if(!_iface.ceWriteFile)
-    throw std::runtime_error("ERROR: Couldn't map CeWriteFile() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeWriteFile() from 'rapi.dll'!!!");
 
   _iface.ceCloseHandle = (FCeCloseHandle)GetProcAddress(_hInstLib, "CeCloseHandle");
   if(!_iface.ceCloseHandle)
-    throw std::runtime_error("ERROR: Couldn't map CeCloseHandle() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeCloseHandle() from 'rapi.dll'!!!");
 
   _iface.ceCreateDirectory = (FCeCreateDirectory)GetProcAddress(_hInstLib, "CeCreateDirectory");
   if(!_iface.ceCreateDirectory)
-    throw std::runtime_error("ERROR: Couldn't map CeCreateDirectory() from 'rapi.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map CeCreateDirectory() from 'rapi.dll'!!!");
 
   // init RAPI
   RAPIINIT initData = { 0 };
@@ -101,7 +101,7 @@ condor2nav::CActiveSync::CActiveSync()
 
   HRESULT hr = _iface.ceRapiInitEx(&initData);
   if(FAILED(hr))
-    throw std::runtime_error("Cannot initialize ActiveSync connection!!!");
+    throw EOperationFailed("Cannot initialize ActiveSync connection!!!");
 
   DWORD status = WaitForSingleObject(initData.heRapiInit, TIMEOUT);
   if(status == WAIT_OBJECT_0) {
@@ -122,7 +122,7 @@ condor2nav::CActiveSync::CActiveSync()
 
     _iface.ceRapiUninit();
     FreeLibrary(_hInstLib);
-    throw std::runtime_error("ERROR: Cannot initialize ActiveSync interface!!!");
+    throw EOperationFailed("ERROR: Cannot initialize ActiveSync interface!!!");
   }
 }
 
@@ -152,13 +152,13 @@ void condor2nav::CActiveSync::Read(const std::string &src, std::stringstream &st
   std::wstring fileName(src.begin(), src.end());
   HANDLE hSrc = _iface.ceCreateFile(fileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if(hSrc == INVALID_HANDLE_VALUE)
-    throw std::runtime_error("ERROR: Unable to open ActiveSync file '" + src + "'!!!");
+    throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + src + "'!!!");
 
   DWORD numBytes = _iface.ceGetFileSize(hSrc, NULL);
   std::auto_ptr<char> buff(new char[numBytes]);
 
   if(!_iface.ceReadFile(hSrc, buff.get(), numBytes, &numBytes, NULL))
-    throw std::runtime_error("ERROR: Reading ActiveSync file '" + src + "'!!!");
+    throw EOperationFailed("ERROR: Reading ActiveSync file '" + src + "'!!!");
 
   // remove all returns from a file
   std::string buffer(buff.get(), numBytes);
@@ -189,11 +189,11 @@ void condor2nav::CActiveSync::Write(const std::string &dest, const std::string &
   std::wstring destName(dest.begin(), dest.end());
   HANDLE hDest = _iface.ceCreateFile(destName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
   if(hDest == INVALID_HANDLE_VALUE)
-    throw std::runtime_error("ERROR: Unable to open ActiveSync file '" + dest + "'!!!");
+    throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + dest + "'!!!");
 
   DWORD numBytes;
   if(!_iface.ceWriteFile(hDest, buffer.c_str(), buffer.size(), &numBytes, NULL))
-    throw std::runtime_error("ERROR: Writing ActiveSync file '" + dest + "'!!!");
+    throw EOperationFailed("ERROR: Writing ActiveSync file '" + dest + "'!!!");
 
   _iface.ceCloseHandle(hDest);
 }
@@ -210,7 +210,7 @@ void condor2nav::CActiveSync::DirectoryCreate(const std::string &path) const
 {
   std::wstring dirName(path.begin(), path.end());
   if(!_iface.ceCreateDirectory(dirName.c_str(), NULL) && _iface.ceGetLastError() != ERROR_ALREADY_EXISTS)
-    throw std::runtime_error("ERROR: Creating ActiveSync directory '" + path + "'!!!");
+    throw EOperationFailed("ERROR: Creating ActiveSync directory '" + path + "'!!!");
 }
 
 
@@ -230,7 +230,7 @@ bool condor2nav::CActiveSync::FileExists(const std::string &path) const
   if(hDest == INVALID_HANDLE_VALUE) {
     if(_iface.ceGetLastError() == ERROR_FILE_NOT_FOUND)
       return false;
-    throw std::runtime_error("ERROR: Unable to check if file '" + path + "' exists!!!");
+    throw EOperationFailed("ERROR: Unable to check if file '" + path + "' exists!!!");
   }
   else {
     _iface.ceCloseHandle(hDest);

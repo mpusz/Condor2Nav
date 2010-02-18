@@ -29,6 +29,7 @@
 #define __TOOLS_H__
 
 #include <sstream>
+#include <exception>
 
 namespace condor2nav {
 
@@ -98,6 +99,24 @@ namespace condor2nav {
   void DirectoryCreate(const std::string &fileName);
   bool FileExists(const std::string &dirName);
   void FilePathSplit(const std::string &filePath, std::string &dir, std::string &file);
+
+  // exceptions hierarchy
+  class Exception : public std::exception {
+    const std::string _error;
+    Exception &operator=(const Exception &) throw();
+  public:
+    explicit Exception(const std::string &error) throw(): _error(error) {}
+    Exception(const Exception &org) throw(): _error(org._error) {}
+    virtual ~Exception() = 0;
+
+    virtual const char *what() const throw() { return _error.c_str(); }
+  };
+
+  class EOperationFailed : public Exception {
+  public:
+    explicit EOperationFailed(const std::string &error) throw(): Exception(error) {}
+  };
+
 }
 
 
@@ -153,7 +172,7 @@ T condor2nav::Convert(const std::string &str)
   std::stringstream stream(str);
   stream >> value;
   if(stream.fail() && !stream.eof())
-    throw std::runtime_error("Cannot convert '" + str + "' to requested type!!!");
+    throw EOperationFailed("Cannot convert '" + str + "' to requested type!!!");
   return value;
 }
 

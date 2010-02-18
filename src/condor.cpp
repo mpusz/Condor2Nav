@@ -52,27 +52,27 @@ condor2nav::CCondor::CCoordConverter::CCoordConverter(const std::string &condorP
   std::string dllPath(condorPath + "\\NaviCon.dll");
   _hInstLib = LoadLibrary(dllPath.c_str()); 
   if(!_hInstLib)
-    throw std::invalid_argument("ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath + "'!!!");
+    throw EOperationFailed("ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath + "'!!!");
   
   _iface.naviConInit = (FNaviConInit)GetProcAddress(_hInstLib, "NaviConInit");
   if(!_iface.naviConInit)
-    throw std::runtime_error("ERROR: Couldn't map NaviConInit() from 'NaviCon.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map NaviConInit() from 'NaviCon.dll'!!!");
 
   _iface.getMaxX = (FGetMaxX)GetProcAddress(_hInstLib, "GetMaxX");
   if(!_iface.getMaxX)
-    throw std::runtime_error("ERROR: Couldn't map GetMaxX() from 'NaviCon.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map GetMaxX() from 'NaviCon.dll'!!!");
 
   _iface.getMaxY = (FGetMaxY)GetProcAddress(_hInstLib, "GetMaxY");
   if(!_iface.getMaxY)
-    throw std::runtime_error("ERROR: Couldn't map GetMaxY() from 'NaviCon.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map GetMaxY() from 'NaviCon.dll'!!!");
 
   _iface.xyToLon = (FXYToLon)GetProcAddress(_hInstLib, "XYToLon");
   if(!_iface.xyToLon)
-    throw std::runtime_error("ERROR: Couldn't map XYToLon() from 'NaviCon.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map XYToLon() from 'NaviCon.dll'!!!");
 
   _iface.xyToLat = (FXYToLon)GetProcAddress(_hInstLib, "XYToLat");
   if(!_iface.xyToLat)
-    throw std::runtime_error("ERROR: Couldn't map XYToLat() from 'NaviCon.dll'!!!");
+    throw EOperationFailed("ERROR: Couldn't map XYToLat() from 'NaviCon.dll'!!!");
 
   // init coordinates
   std::string trnPath(condorPath + "\\Landscapes\\" + trnName + "\\" + trnName + ".trn");
@@ -155,7 +155,7 @@ std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x
   case FORMAT_DDMMSS:
     return DDFF2DDMMSS(longitude, true);
   default:
-    throw std::out_of_range("Not supported longitude format specified!!!");
+    throw EOperationFailed("Not supported longitude format specified!!!");
   }
 }
 
@@ -182,7 +182,7 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
   case FORMAT_DDMMSS:
     return DDFF2DDMMSS(latitude, false);
   default:
-    throw std::out_of_range("Not supported latitude format specified!!!");
+    throw EOperationFailed("Not supported latitude format specified!!!");
   }
 }
 
@@ -201,8 +201,6 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
 */
 std::string condor2nav::CCondor::InstallPath()
 {
-  return "C:\\Program Files\\Condor";
-
   std::string condorPath;
   HKEY hTestKey;
   if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
@@ -226,7 +224,7 @@ std::string condor2nav::CCondor::InstallPath()
     RegCloseKey(hTestKey);
   }
   else
-    throw std::runtime_error("ERROR: Condor installation not found!!!");
+    throw EOperationFailed("ERROR: Condor installation not found!!!");
 
   return condorPath;
 }
@@ -267,7 +265,7 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
     HANDLE hFind;
     hFind = FindFirstFile((fplPath + "*.fpl").c_str(), &findFileData);
     if(hFind == INVALID_HANDLE_VALUE)
-      throw std::runtime_error("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
+      throw EOperationFailed("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
     else {
       fileName = findFileData.cFileName;
       fileTime = findFileData.ftLastWriteTime;
@@ -279,7 +277,7 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
         }
       }
       if(GetLastError() != ERROR_NO_MORE_FILES)
-        throw std::runtime_error("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
+        throw EOperationFailed("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
       FindClose(hFind);
     }
     fplPath += fileName;
@@ -303,5 +301,5 @@ _taskParser(fplPath),
 _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
 {
   if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) != CONDOR_VERSION_SUPPORTED)
-    throw std::out_of_range("Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!");
+    throw EOperationFailed("Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!");
 }

@@ -104,7 +104,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int
     // create MainDialog window
     HWND hDialog = CreateDialog(hInst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), NULL, (DLGPROC)MainDialogProc);
     if(!hDialog)
-      throw std::runtime_error("Unable to create main application dialog (error: " + condor2nav::Convert(GetLastError()) + ")!!!");
+      throw condor2nav::EOperationFailed("Unable to create main application dialog (error: " + condor2nav::Convert(GetLastError()) + ")!!!");
 
     // process application messages
     MSG msg;
@@ -119,6 +119,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int
     }
     
     return msg.wParam;
+  }
+  catch(const condor2nav::Exception &ex)
+  {
+    MessageBox(0, ex.what(), "Condor2Nav Exception", MB_ICONEXCLAMATION | MB_OK);
   }
   catch(const std::exception &ex)
   {

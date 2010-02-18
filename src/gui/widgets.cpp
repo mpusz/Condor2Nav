@@ -179,7 +179,7 @@ void condor2nav::gui::CWidgetRichEdit::Format(unsigned effectMask, TColor color)
     format.crTextColor = RGB(0, 0, 0);
     break;
   default:
-    throw std::out_of_range("Unsupported color specified (" + Convert(color) + "!!!");
+    throw EOperationFailed("Unsupported color specified (" + Convert(color) + "!!!");
   }
 
   SendMessage(Hwnd(), EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&format);

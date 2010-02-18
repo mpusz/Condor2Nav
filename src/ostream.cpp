@@ -57,7 +57,7 @@ condor2nav::COStream::~COStream()
         {
           std::ofstream stream(FileName().c_str(), std::ios_base::out | std::ios_base::binary);
           if(!stream)
-            throw std::runtime_error("ERROR: Couldn't open file '" + FileName() + "' for writing!!!");
+            throw EOperationFailed("ERROR: Couldn't open file '" + FileName() + "' for writing!!!");
           stream << Buffer().str();
         }
         break;
@@ -70,7 +70,7 @@ condor2nav::COStream::~COStream()
         break;
 
       default:
-        throw std::runtime_error("ERROR: Unknown stream type (" + Convert(Type()) + ")!!!");
+        throw EOperationFailed("ERROR: Unknown stream type (" + Convert(Type()) + ")!!!");
     }
   }
 }

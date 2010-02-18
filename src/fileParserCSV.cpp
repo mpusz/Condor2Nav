@@ -87,7 +87,7 @@ const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(con
     if((**it).at(column) == value)
       return **it;
 
-  throw std::runtime_error("ERROR: Couldn't find value '" + value + "' in column '" + Convert(column) + "' of CSV file '" + Path() + "'!!!");
+  throw EOperationFailed("ERROR: Couldn't find value '" + value + "' in column '" + Convert(column) + "' of CSV file '" + Path() + "'!!!");
 }
 
 

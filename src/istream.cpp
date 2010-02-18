@@ -49,7 +49,7 @@ CStream(fileName)
           stream.clear();
           stream.open(fileName.c_str(), std::ios_base::in | std::ios_base::out);
           if(!stream)
-            throw std::runtime_error("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
+            throw EOperationFailed("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
         }
 
         Buffer() << stream.rdbuf();
@@ -64,7 +64,7 @@ CStream(fileName)
       break;
 
     default:
-      throw std::runtime_error("ERROR: Unknown stream type!!!");
+      throw EOperationFailed("ERROR: Unknown stream type!!!");
   }
 }
 
