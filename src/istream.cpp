@@ -28,7 +28,6 @@
 #include "istream.h"
 #include "activeSync.h"
 #include <fstream>
-#include <iostream>
 
 
 /**

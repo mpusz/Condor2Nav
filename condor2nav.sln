@@ -1,7 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "condor2nav", "condor2nav.vcproj", "{05D74FBE-E04D-4423-B486-D42AF3A3C223}"
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "condor2nav-gui", "src\gui\condor2nav-gui.vcproj", "{463F7C3A-F1E2-42A2-9EA8-CDDB11B0EC81}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1193780C-0BA4-4948-A77C-761E5E3C6E65} = {1193780C-0BA4-4948-A77C-761E5E3C6E65}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "condor2nav", "src\condor2nav.vcproj", "{1193780C-0BA4-4948-A77C-761E5E3C6E65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +14,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{05D74FBE-E04D-4423-B486-D42AF3A3C223}.Debug|Win32.ActiveCfg = Debug|Win32
-		{05D74FBE-E04D-4423-B486-D42AF3A3C223}.Debug|Win32.Build.0 = Debug|Win32
-		{05D74FBE-E04D-4423-B486-D42AF3A3C223}.Release|Win32.ActiveCfg = Release|Win32
-		{05D74FBE-E04D-4423-B486-D42AF3A3C223}.Release|Win32.Build.0 = Release|Win32
+		{463F7C3A-F1E2-42A2-9EA8-CDDB11B0EC81}.Debug|Win32.ActiveCfg = Debug|Win32
+		{463F7C3A-F1E2-42A2-9EA8-CDDB11B0EC81}.Debug|Win32.Build.0 = Debug|Win32
+		{463F7C3A-F1E2-42A2-9EA8-CDDB11B0EC81}.Release|Win32.ActiveCfg = Release|Win32
+		{463F7C3A-F1E2-42A2-9EA8-CDDB11B0EC81}.Release|Win32.Build.0 = Release|Win32
+		{1193780C-0BA4-4948-A77C-761E5E3C6E65}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1193780C-0BA4-4948-A77C-761E5E3C6E65}.Debug|Win32.Build.0 = Debug|Win32
+		{1193780C-0BA4-4948-A77C-761E5E3C6E65}.Release|Win32.ActiveCfg = Release|Win32
+		{1193780C-0BA4-4948-A77C-761E5E3C6E65}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

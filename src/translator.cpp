@@ -26,10 +26,10 @@
 **/
 
 #include "translator.h"
+#include "condor2nav.h"
 #include "condor.h"
 #include "targetXCSoar.h"
 #include "targetLK8000.h"
-#include <iostream>
 
 
 const char *condor2nav::CTranslator::DATA_PATH = "data";
@@ -137,7 +137,8 @@ const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
  * @param fplPath      Condor FPL file to convert path
  * @param aatTime      Minimum time for AAT task
 **/
-condor2nav::CTranslator::CTranslator(const CFileParserINI &configParser, const std::string &condorPath, const std::string &fplPath, unsigned aatTime):
+condor2nav::CTranslator::CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const std::string &condorPath, const std::string &fplPath, unsigned aatTime):
+_app(app),
 _configParser(configParser),
 _condor(condorPath, fplPath),
 _aatTime(aatTime)
@@ -181,38 +182,38 @@ void condor2nav::CTranslator::Run()
 
     // translate scenery data
     if(_configParser.Value("Condor2Nav", "SetSceneryMap") == "1") {
-      std::cout << "Setting scenery map data..." << std::endl;
+      _app.Log() << "Setting scenery map data..." << std::endl;
       target->SceneryMap(sceneryData);
     }
 
     if(_configParser.Value("Condor2Nav", "SetSceneryTime") == "1") {
-      std::cout << "Setting scenery time..." << std::endl;
+      _app.Log() << "Setting scenery time..." << std::endl;
       target->SceneryTime();
     }
   
     // translate task
     if(_configParser.Value("Condor2Nav", "SetTask") == "1") {
-      std::cout << "Setting task data..." << std::endl;
+      _app.Log() << "Setting task data..." << std::endl;
       target->Task(_condor.TaskParser(), _condor.CoordConverter(), sceneryData, _aatTime);
     }
   }
   
   // translate glider data
   if(_configParser.Value("Condor2Nav", "SetGlider") == "1") {
-    std::cout << "Setting glider data..." << std::endl;
+    _app.Log() << "Setting glider data..." << std::endl;
     const CFileParserCSV glidersParser(DATA_PATH + std::string("\\") + GLIDERS_DATA_FILE_NAME);
     target->Glider(glidersParser.Row(_condor.TaskParser().Value("Plane", "Name")));
   }
 
   // translate penalty zones
   if(_configParser.Value("Condor2Nav", "SetPenaltyZones") == "1") {
-    std::cout << "Setting penalty zones..." << std::endl;
+    _app.Log() << "Setting penalty zones..." << std::endl;
     target->PenaltyZones(_condor.TaskParser(), _condor.CoordConverter());
   }
 
   // translate weather
   if(_configParser.Value("Condor2Nav", "SetWeather") == "1") {
-    std::cout << "Setting wheater data..." << std::endl;
+    _app.Log() << "Setting weather data..." << std::endl;
     target->Weather(_condor.TaskParser());
   }
 }
