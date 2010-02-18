@@ -2,7 +2,7 @@
  Condor2Nav
 ============
 
-Version: 1.2 (WIP)
+Version: 2.0 (WIP)
 ==================
 - Condor 1.1.0 registry variables support added
 - LK8000 1.20 support aded (task files format updated)
@@ -11,6 +11,8 @@ Version: 1.2 (WIP)
 - AAT tasks support added
 - Lacking VS redistributable package problem solved
 - FlightPlansPath & RaceResultsPath INI parameters support added
+- GUI added (condor2nav-gui.exe)
+- CLI application renamed (condor2nav-cli.exe)
 
 Version: 1.1
 ============

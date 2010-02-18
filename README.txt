@@ -1,5 +1,5 @@
 ================
- Condor2Nav 1.1
+ Condor2Nav 2.0
 ================
 
 http://sf.net/projects/condor2nav
@@ -20,7 +20,7 @@ accurate.
 
 2. Project state
 ----------------
-Condor2Nav project ahould be production quality now. It is stable and
+Condor2Nav project is of production quality now. It is stable and
 ready to be tested. Please report all the problems you encounter to the
 forum on the project webpage.
 
@@ -33,7 +33,8 @@ anywhere on the hard drive.
 The package contains:
 - README.txt - that readme file
 - CHANGELOG.txt - changes introduced in subsequent releases
-- condor2nav.exe - application executable
+- condor2nav-gui.exe - GUI application executable
+- condor2nav-cli.exe - GUI application executable
 - condor2nav.ini - project configuration
 - data/GliderData.csv - CSV file with gliders information
 - data/SceneryData.csv - CSV file with supported sceneries information
@@ -90,11 +91,14 @@ Open condor2nav.ini file and change the following:
    the translation (Condor task file name can also be provided for each
    translation from the Command Line Interface - see "condor2nav.exe –h"
    for more info).
-2. [OPTIONAL] Condor2Nav is configured to use ActiveSync connection by
+2. [OPTIONAL] If Condor FPL files are sotred in non default location
+   please use [Condor] "FlightPlansPath" and [Condor] "RaceResultsPath"
+   parameters to provide correct paths.
+3. [OPTIONAL] Condor2Nav is configured to use ActiveSync connection by
    default. In case of other translation target (local directory, connected
    flash card) change the application output path ([Condor2Nav] "OutputPath").
-3. [OPTIONAL] In [Condor2Nav] chapter setup which data should be translated.
-4. [OPTIONAL] In case of XCSoar translation and if proposed Condor2Nav data
+4. [OPTIONAL] In [Condor2Nav] chapter setup which data should be translated.
+5. [OPTIONAL] In case of XCSoar translation and if proposed Condor2Nav data
    path on the target device doesn't suite your needs change
    [XCSoar] "Condor2NavDataSubDir".
 
@@ -107,8 +111,13 @@ Open condor2nav.ini file and change the following:
    should be updated or task file full path should be provided from the
    Command Line Interface (see "condor2nav.exe -h" for more info) or a task
    file icon should be drag-and-dropped on the condor2nav icon.
-3. Run condor2nav.exe (it is handful to create a shortcut to application 
-   executable on the Windows desktop).
+3. [OPTIONAL] It is possible to translate Condor task even if saving it on
+   the disk is not allowed by the server. To do that user should join
+   Condor multiplayer race and right after that quit the game. Now Condor2Nav
+   is able to translate the data when it will be run with 'Last Race' option.
+4. Run condor2nav-gui.exe or condor2nav-cli.exe Condor2Nav application
+   (it is handful to create a shortcut to application executable on
+   the Windows desktop).
 
 6.1. XCSoar
 -----------
