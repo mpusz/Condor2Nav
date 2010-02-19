@@ -84,7 +84,7 @@ _error(CLogger::TYPE_ERROR, _log)
   {
     CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath, fplPath);
   }
-  catch(EOperationFailed)
+  catch(const Exception &)
   {
     _fplLastRace.Disable();
   }
