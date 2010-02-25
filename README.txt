@@ -38,8 +38,6 @@ The package contains:
 - condor2nav.ini - project configuration
 - data/GliderData.csv - CSV file with gliders information
 - data/SceneryData.csv - CSV file with supported sceneries information
-- data/Waypoints/*.csv - all supported Condor landscapes waypoints in
-                         WinPilot format
 
 
 4. Additional software

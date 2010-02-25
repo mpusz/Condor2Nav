@@ -63,8 +63,7 @@ namespace condor2nav {
       **/
       enum TSceneriesDataColumns {
         SCENERY_NAME,
-        SCENERY_WAYPOINTS_FILE,
-        SCENERY_XCSOAR_FILE
+        SCENERY_XCM_FILE
       };
 
       /**

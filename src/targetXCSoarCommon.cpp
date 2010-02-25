@@ -64,7 +64,7 @@ CTranslator::CTarget(translator)
 **/
 void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const
 {
-  profileParser.Value("", "MapFile", "\"" + pathPrefix + "\\" + sceneryData.at(SCENERY_XCSOAR_FILE) + "\"");
+  profileParser.Value("", "MapFile", "\"" + pathPrefix + "\\" + sceneryData.at(SCENERY_XCM_FILE) + "\"");
 }
 
 
@@ -345,10 +345,6 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   if(tpNum - 1 > maxTaskPoints)
     throw EOperationFailed("ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!");
 
-  std::auto_ptr<CFileParserCSV> waypointsParser;
-  if(sceneryData.at(SCENERY_WAYPOINTS_FILE) != "")
-    waypointsParser = std::auto_ptr<CFileParserCSV>(new CFileParserCSV("data\\Waypoints\\" + sceneryData.at(SCENERY_WAYPOINTS_FILE)));
-  
   // skip takeoff waypoint
   for(unsigned i=1; i<tpNum; i++) {
     // dump WP file line
