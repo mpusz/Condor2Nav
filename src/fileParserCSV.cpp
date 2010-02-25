@@ -29,6 +29,7 @@
 #include "istream.h"
 #include "ostream.h"
 #include "tools.h"
+#include "traitsNoCase.h"
 #include <string>
 
 
@@ -76,15 +77,16 @@ condor2nav::CFileParserCSV::~CFileParserCSV()
  *
  * @param value  The value to use for searching.
  * @param column The column index to be used for value comparison.
+ * @param nocase Specifies if a search should be case sensitive.
  *
  * @exception std Thrown when requested row is not found.
  *
  * @return Requested row.
 **/
-const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(const std::string &value, unsigned column /* = 0 */) const
+const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(const std::string &value, unsigned column /* = 0 */, bool nocase /* = false */) const
 {
   for(CRowsList::const_iterator it=_rowsList.begin(); it!=_rowsList.end(); ++it)
-    if((**it).at(column) == value)
+    if((**it).at(column) == value || (nocase && (**it).at(column).c_str() == CStringNoCase(value.c_str())))
       return **it;
 
   throw EOperationFailed("ERROR: Couldn't find value '" + value + "' in column '" + Convert(column) + "' of CSV file '" + Path() + "'!!!");

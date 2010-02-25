@@ -180,13 +180,13 @@ void condor2nav::CTranslator::Run()
   
   {
     const CFileParserCSV sceneriesParser(DATA_PATH + std::string("\\") + SCENERIES_DATA_FILE_NAME);
+    const CFileParserCSV::CStringArray &sceneryData = sceneriesParser.Row(_condor.TaskParser().Value("Task", "Landscape"), 0, true);
 
     // set Condor GPS data
     if(_configParser.Value("Condor2Nav", "SetGPS") == "1") {
       _app.Log() << "Setting Condor GPS data..." << std::endl;
       target->Gps();
     }
-    const CFileParserCSV::CStringArray &sceneryData = sceneriesParser.Row(_condor.TaskParser().Value("Task", "Landscape"));
 
     // translate scenery data
     if(_configParser.Value("Condor2Nav", "SetSceneryMap") == "1") {

@@ -53,7 +53,7 @@ namespace condor2nav {
 
     virtual void Dump(const std::string &filePath = "") const;
     
-    const CStringArray &Row(const std::string &value, unsigned column = 0) const;
+    const CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false) const;
     const CRowsList &Rows() const;
 //    void Row(CStringArray &row);
   };
