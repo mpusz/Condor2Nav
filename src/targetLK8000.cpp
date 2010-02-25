@@ -102,6 +102,18 @@ condor2nav::CTargetLK8000::~CTargetLK8000()
 
 
 /**
+ * @brief Sets Condor GPS data.
+ *
+ * Method sets Condor GPS data. 
+**/
+void condor2nav::CTargetLK8000::Gps()
+{
+  _profileParser->Value("", "DeviceA", "\"Condor\"");
+  _profileParser->Value("", "UseGeoidSeparation", "0");
+}
+
+
+/**
 * @brief Sets scenery map. 
 *
 * Method sets scenery map XCM data file according to the Condor landscape name. 

@@ -95,6 +95,13 @@ namespace condor2nav {
       virtual ~CTarget();
 
       /**
+       * @brief Sets Condor GPS data.
+       *
+       * Method sets Condor GPS data. 
+      **/
+      virtual void Gps() = 0;
+
+      /**
        * @brief Sets scenery map. 
        *
        * Method sets scenery map data. 

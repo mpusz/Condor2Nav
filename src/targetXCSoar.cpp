@@ -81,6 +81,17 @@ condor2nav::CTargetXCSoar::~CTargetXCSoar()
 
 
 /**
+ * @brief Sets Condor GPS data.
+ *
+ * Method sets Condor GPS data. 
+**/
+void condor2nav::CTargetXCSoar::Gps()
+{
+  _profileParser->Value("", "DeviceA", "\"Condor\"");
+}
+
+
+/**
 * @brief Sets scenery map. 
 *
 * Method sets scenery map XCM data file according to the Condor landscape name. 

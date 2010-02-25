@@ -14,6 +14,7 @@ Version: 2.0 (WIP)
 - GUI added (condor2nav-gui.exe)
 - CLI application renamed (condor2nav-cli.exe)
 - WingArea support added for LK8000 gliders polar files
+- Condor GPS configuration setting added
 
 Version: 1.1
 ============

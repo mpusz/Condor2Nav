@@ -53,6 +53,7 @@ namespace condor2nav {
     explicit CTargetXCSoar(const CTranslator &translator);
     virtual ~CTargetXCSoar();
 
+    virtual void Gps();
     virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData);
     virtual void SceneryTime();
     virtual void Glider(const CFileParserCSV::CStringArray &gliderData);
