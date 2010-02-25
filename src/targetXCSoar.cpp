@@ -114,7 +114,7 @@ void condor2nav::CTargetXCSoar::SceneryTime()
 **/
 void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
-  GliderProcess(*_profileParser, gliderData, _condor2navDataPath, _outputCondor2NavDataPath);
+  GliderProcess(*_profileParser, gliderData, false, _condor2navDataPath, _outputCondor2NavDataPath);
 }
 
 

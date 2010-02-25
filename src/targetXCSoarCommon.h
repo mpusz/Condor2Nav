@@ -73,7 +73,7 @@ namespace condor2nav {
 
     void SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const;
     void SceneryTimeProcess(CFileParserINI &profileParser) const;
-    void GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
+    void GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, bool wingArea, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
     void TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv,
                      const CFileParserCSV::CStringArray &sceneryData, const std::string &outputTaskFilePath,
                      unsigned aatTime, unsigned maxTaskPoints, unsigned maxStartPoints, FTaskDump taskDumpFunc,

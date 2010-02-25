@@ -13,6 +13,7 @@ Version: 2.0 (WIP)
 - FlightPlansPath & RaceResultsPath INI parameters support added
 - GUI added (condor2nav-gui.exe)
 - CLI application renamed (condor2nav-cli.exe)
+- WingArea support added for LK8000 gliders polar files
 
 Version: 1.1
 ============

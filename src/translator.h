@@ -75,6 +75,7 @@ namespace condor2nav {
         GLIDER_SPEED_MAX,
         GLIDER_DAEC_INDEX,
         GLIDER_WATER_BALLAST_EMPTY_TIME,
+        GLIDER_WING_AREA,
         GLIDER_MASS_DRY_GROSS,
         GLIDER_MAX_WATER_BALLAST,
         GLIDER_SPPED_1,
@@ -82,7 +83,7 @@ namespace condor2nav {
         GLIDER_SPPED_2,
         GLIDER_SINK_2,
         GLIDER_SPPED_3,
-        GLIDER_SINK_3
+        GLIDER_SINK_3,
       };
 
       const CTranslator &Translator() const;

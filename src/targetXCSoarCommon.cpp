@@ -89,10 +89,11 @@ void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profile
 *
 * @param profileParser XCSoar profile file parser.
 * @param gliderData Information describing the glider. 
+* @param wingArea Specifies if glider wing area should be added to polar file
 * @param pathPrefix Polar file subdirectory prefix (in XCSoar format).
 * @param outputPathPrefix Polar file subdirectory prefix (in filesystem format).
 **/
-void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, const std::string &pathPrefix, const std::string &outputPathPrefix) const
+void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, bool wingArea, const std::string &pathPrefix, const std::string &outputPathPrefix) const
 {
   // set WinPilot Polar
   profileParser.Value("", "Polar", "6");
@@ -111,13 +112,19 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
   polarFile << "***************************************************************************************************" << std::endl;
   polarFile << "* " << gliderData.at(GLIDER_NAME) << " WinPilot POLAR file generated with Condor2Nav" << std::endl;
   polarFile << "*" << std::endl;
-  polarFile << "* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3" << std::endl;
+  polarFile << "* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3";
+  if(wingArea)
+    polarFile << ", WingArea[m2]";
+  polarFile << std::endl;
   polarFile << "***************************************************************************************************" << std::endl;
   for(unsigned i=GLIDER_MASS_DRY_GROSS; i<=GLIDER_SINK_3; i++) {
     if(i > GLIDER_MASS_DRY_GROSS)
       polarFile << ",";
     polarFile << gliderData.at(i);
   }
+  if(wingArea)
+    polarFile << "," << gliderData.at(GLIDER_WING_AREA);
+
   polarFile << std::endl;
 
   unsigned ballast(Convert<unsigned>(Condor().TaskParser().Value("Plane", "Water")));

@@ -135,7 +135,7 @@ void condor2nav::CTargetLK8000::SceneryTime()
 **/
 void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
-  GliderProcess(*_profileParser, gliderData, _condor2navDataPath + _outputPolarsSubDir, _outputLK8000DataPath + _outputPolarsSubDir);
+  GliderProcess(*_profileParser, gliderData, true, _condor2navDataPath + _outputPolarsSubDir, _outputLK8000DataPath + _outputPolarsSubDir);
 }
 
 
