@@ -241,6 +241,7 @@ void condor2nav::CTargetXCSoarCommon::TaskDumpLK8000(const std::string &outputTa
     mbstowcs(taskWaypointArray[i].Name, waypointArray[i].name.c_str(), NAME_SIZE);
     mbstowcs(taskWaypointArray[i].Comment, waypointArray[i].comment.c_str(), lk8000::COMMENT_SIZE);
     taskWaypointArray[i].InTask = true;
+    taskWaypointArray[i].Style = 1;
   }
   
   tskFile.Write(reinterpret_cast<const char *>(taskWaypointArray), lk8000::MAXTASKPOINTS * sizeof(lk8000::WAYPOINT));
