@@ -197,7 +197,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       try
       {
         _log.Clear();
-        CTranslator(*this, _configParser, _condorPath, _fplPath.String(), Convert<unsigned>(_aatTime.Selection())).Run();
+        CTranslator(*this, _configParser, _condorPath, _fplPath.String(), _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
       }
       catch(const Exception &ex)
       {
