@@ -1,0 +1,4 @@
+name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc
+"Bex",,,4615.170N,00659.390E,400.0m,2,330,1100.0m,123.50,
+"Sallanches",,,4557.233N,00638.268E,545.0m,2,340,900.0m,123.50,
+"Habere Poche",,,4616.368N,00627.840E,1120.0m,2,20,950.0m,123.50,

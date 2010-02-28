@@ -1,0 +1,8 @@
+name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc
+"Kisogawa",,,3512.540N,13640.680E,3.0m,2,-4,1200.0m,123.50,
+"Ohno",,,3526.916N,13636.132E,23.0m,2,318,1200.0m,123.50,
+"Bunka Center",Bunka Ce,,3513.062N,13638.322E,0.0m,1,,,,
+"Fukuoka Bridge",Fukuoka ,,3513.338N,13637.146E,0.0m,1,,,,
+"Imao Bridge",Imao Bri,,3514.814N,13637.284E,0.0m,1,,,,
+"Nanno Bridge",Nanno Br,,3516.302N,13640.218E,4.0m,1,,,,
+"Shukusha",Shukusha,,3514.826N,13640.512E,5.0m,1,,,,

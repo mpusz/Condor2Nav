@@ -1,0 +1,4 @@
+name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc
+"NorthwestShoreGlidingClub",,,2056.418S,05517.772E,40.0m,2,45,1200.0m,120.0,
+"EastCoastGlidingClub",,,2105.364S,05544.946E,35.0m,2,320,800.0m,121.0,
+"WestCoastGlidingClub",,,2118.378S,05525.002E,35.0m,2,315,1000.0m,122.0,
