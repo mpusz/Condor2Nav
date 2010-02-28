@@ -100,7 +100,7 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
   profileParser.Value("", "PolarFile", "\"" + pathPrefix + std::string("\\") + POLAR_FILE_NAME + std::string("\""));
 
   profileParser.Value("", "AircraftType", "\"" + gliderData.at(GLIDER_NAME) + "\"");
-  profileParser.Value("", "SafteySpeed", Convert(KmH2MS(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)))));
+  profileParser.Value("", "SafteySpeed", Convert(static_cast<unsigned>(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)) * 1000.0 / 3.6 + 0.5)));
   profileParser.Value("", "Handicap", gliderData.at(GLIDER_DAEC_INDEX));
   const std::string &waterBallastEmptyTime = gliderData.at(GLIDER_WATER_BALLAST_EMPTY_TIME);
   profileParser.Value("", "BallastSecsToEmpty", waterBallastEmptyTime == "0" ? "10" : waterBallastEmptyTime);
