@@ -17,7 +17,7 @@ Version: 2.0 (WIP)
 - Condor GPS configuration setting added
 - Case-insensitive scenery name matching implemented
 - Scenery maps for LK8000 generated (include DAT terrain and CUP waypoints file)
-- Glider maximum speed setting fixed
+- Glider maximum speed setting support added for LK8000
 - Alpi3 and WestAlpi sceneries added
 
 Version: 1.1
