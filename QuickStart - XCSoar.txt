@@ -1,0 +1,35 @@
+================
+ Condor2Nav 2.0
+================
+
+http://sf.net/projects/condor2nav
+
+
+I. Instalation
+--------------
+1. Obtain latest Condor2Nav release package from the project website and extract it
+   anywhere on the hard drive.
+2. Obtain XCM map files for all supported sceneries from Condor2Nav project webpage
+   (http://sourceforge.net/projects/condor2nav/files/maps/XCSoar/Maps.zip/download)
+3. Have XCSoar installed and configured on the target device (e.g. PDA, PNA, PC)
+4. Find "XCSoarData" directory created with XCSoar and copy all XCM scenery files to
+   the [XCSoar] "Condor2NavDataSubDir" subdirectory on the target device.
+
+II. Configuration
+-----------------
+1. Open condor2nav.ini file and set:
+a) [Condor2Nav] "Target" to "XCSoar"
+b) [Condor2Nav] "OutputPath" to the parent directory of XCSoarData directory on
+   the target device (data will be copied via ActiveSync connection)
+
+III. Translation
+----------------
+1. Open Condor and save the task for translation as "A" (by default "A" task name is
+   used for translation).
+2. Run condor2nav-gui.exe (it is handful to create a shortcut to application executable
+   on the Windows desktop).
+
+IV. More Details
+----------------
+For more detailed information please look into the README.txt and condor2nav.ini files
+in Condor2Nav main directory.

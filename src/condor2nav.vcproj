@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\README.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\CHANGELOG.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\condor2nav.ini ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\GliderData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\data\SceneryData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;xcopy /D /I /Y ..\data\XCSoar\Waypoints ..\dist\$(ConfigurationName)\condor2nav\data\Waypoints&#x0D;&#x0A;"
+				CommandLine="mkdir ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\README.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\CHANGELOG.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\QuickStart*.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\condor2nav.ini ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\GliderData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\data\SceneryData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -140,7 +140,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\README.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\CHANGELOG.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\condor2nav.ini ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\GliderData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\data\SceneryData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
+				CommandLine="mkdir ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\README.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\CHANGELOG.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\QuickStart*.txt ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\condor2nav.ini ..\dist\$(ConfigurationName)\condor2nav&#x0D;&#x0A;copy /Y ..\data\GliderData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;copy /Y ..\data\SceneryData.csv ..\dist\$(ConfigurationName)\condor2nav\data&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -293,6 +293,14 @@
 		</File>
 		<File
 			RelativePath="..\COPYING.txt"
+			>
+		</File>
+		<File
+			RelativePath="..\QuickStart - LK8000.txt"
+			>
+		</File>
+		<File
+			RelativePath="..\QuickStart - XCSoar.txt"
 			>
 		</File>
 		<File
