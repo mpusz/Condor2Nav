@@ -89,7 +89,7 @@ Open condor2nav.ini file and change the following:
    the translation (Condor task file name can also be provided for each
    translation from the Command Line Interface - see "condor2nav.exe –h"
    for more info).
-2. [OPTIONAL] If Condor FPL files are sotred in non default location
+2. [OPTIONAL] If Condor FPL files are stored in non default location
    please use [Condor] "FlightPlansPath" and [Condor] "RaceResultsPath"
    parameters to provide correct paths.
 3. [OPTIONAL] Condor2Nav is configured to use ActiveSync connection by
