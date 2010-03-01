@@ -201,8 +201,6 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
 */
 std::string condor2nav::CCondor::InstallPath()
 {
-  return "c:\\";
-
   std::string condorPath;
   HKEY hTestKey;
   if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
