@@ -6,7 +6,7 @@ http://sf.net/projects/condor2nav
 
 
 1. Description
---------------
+==============
 Condor2Nav is intended to make Condor (The Competition Soaring Simulator)
 and gliding navigation applications synchronization easier. It is a fully
 automated translator between Condor and navigation applications files
@@ -19,14 +19,14 @@ accurate.
 
 
 2. Project state
-----------------
+================
 Condor2Nav project is of production quality now. It is stable and
 ready to be tested. Please report all the problems you encounter to the
 forum on the project webpage.
 
 
 3. Installation
----------------
+===============
 Obtain latest release package from the project website and extract it
 anywhere on the hard drive.
 
@@ -41,7 +41,7 @@ The package contains:
 
 
 4. Additional software
-----------------------
+======================
 To run the translation you will need to have Condor (The Competition
 Soaring Simulator) on your local computer.
 
@@ -76,7 +76,7 @@ In case of LK8000 translation following steps must be completed:
 
 
 5. Configuration
-----------------
+================
 Condor2Nav is preconfigured to make it work with no issues on any platform
 and at the same time require as small effort for every Condor task
 translation as possible. When using default configuration, below steps marked
@@ -102,7 +102,7 @@ Open condor2nav.ini file and change the following:
 
 
 6. Translation
---------------
+==============
 6.1.a) Default task
 -------------------
 1. Open Condor and save the task for translation. By default "A" task name
@@ -142,7 +142,7 @@ Open condor2nav.ini file and change the following:
   
    
 7. Run Navigation Software
---------------------------
+==========================
 
 7.1.a) XCSoar
 -------------
