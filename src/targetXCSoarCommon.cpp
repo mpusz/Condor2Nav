@@ -205,7 +205,7 @@ void condor2nav::CTargetXCSoarCommon::TaskDumpXCSoar(const std::string &outputTa
 void condor2nav::CTargetXCSoarCommon::TaskDumpLK8000(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
 {
   using namespace lk8000;
-  std::string ver = "LK1" + Convert(lk8000::MAXTASKPOINTS) + Convert(lk8000::MAXSTARTPOINTS);
+  std::string ver = "LK2" + Convert(lk8000::MAXTASKPOINTS) + Convert(lk8000::MAXSTARTPOINTS);
   char version[50] = { 0 };
   sprintf(version, ver.c_str());
 
@@ -238,7 +238,7 @@ void condor2nav::CTargetXCSoarCommon::TaskDumpLK8000(const std::string &outputTa
     taskWaypointArray[i].Longitude = waypointArray[i].longitude;
     taskWaypointArray[i].Altitude = waypointArray[i].altitude;
     taskWaypointArray[i].Flags = waypointArray[i].flags;
-    mbstowcs(taskWaypointArray[i].Name, waypointArray[i].name.c_str(), NAME_SIZE);
+    mbstowcs(taskWaypointArray[i].Name, waypointArray[i].name.c_str(), lk8000::NAME_SIZE);
     mbstowcs(taskWaypointArray[i].Comment, waypointArray[i].comment.c_str(), lk8000::COMMENT_SIZE);
     taskWaypointArray[i].InTask = true;
     taskWaypointArray[i].Style = 1;

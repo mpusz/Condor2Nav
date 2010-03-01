@@ -63,11 +63,12 @@ namespace lk8000 {
 
   const unsigned MAXTASKPOINTS   = 20;
   const unsigned MAXSTARTPOINTS  = 20;
+  const unsigned NAME_SIZE       = 30;
   const unsigned COMMENT_SIZE    = 150;
 
   const unsigned CUPSIZE_COUNTRY = 10;
-  const unsigned CUPSIZE_CODE    = 20;
-  const unsigned CUPSIZE_FREQ    = 20;
+  const unsigned CUPSIZE_CODE    = 15;
+  const unsigned CUPSIZE_FREQ    = 15;
 
 #else
 
@@ -97,23 +98,12 @@ namespace lk8000 {
 
 #ifdef LK8000_VER_1_20
     short Format;
-    wchar_t Code[CUPSIZE_CODE];
-    wchar_t Freq[CUPSIZE_FREQ];
+    wchar_t Code[CUPSIZE_CODE + 1];
+    wchar_t Freq[CUPSIZE_FREQ + 1];
     int   RunwayLen;
     int   RunwayDir;
-    wchar_t Country[CUPSIZE_COUNTRY];
+    wchar_t Country[CUPSIZE_COUNTRY + 1];
     short Style;
-
-    // RESERVED FOR FUTURE USE, CURRENTLY UNUSED
-    wchar_t RESERVED_TCHAR1[10];
-    bool  RESERVED_BOOL1;
-    bool  RESERVED_BOOL2;
-    int   RESERVED_INT1;
-    int   RESERVED_INT2;
-    double RESERVED_DOUBLE1;
-    double RESERVED_DOUBLE2;
-    short RESERVED_SHORT1;
-    short RESERVED_SHORT2;
 #endif
   };
 
