@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file fileParserINI.h
  *
  * @brief Declares the condor2nav::CFileParserINI class. 
-**/
+ */
 
 #ifndef __FILEPARSERINI_H__
 #define __FILEPARSERINI_H__
@@ -42,11 +42,11 @@ namespace condor2nav {
    * provides key=value pairs can be processed with that class. Input file
    * may have those pairs grouped into chapters or provide one plain set
    * of pairs (set "" for chapter name in that case).
-  **/
+   */
   class CFileParserINI : public CFileParser {
     /**
      * @brief Stores key=value pairs.
-    **/
+     */
     struct TKeyValue {
       std::string key;
       std::string value;
@@ -55,7 +55,7 @@ namespace condor2nav {
 
     /**
      * @brief INI file chapter data.
-    **/
+     */
     struct TChapter {
       std::string name;
       CValuesMap valuesMap;

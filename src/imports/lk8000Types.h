@@ -43,7 +43,7 @@ Copyright_License {
  * 
  * Those types are needed to generate LK8000 task files that are in fact
  * application memory dumps.
-**/
+ */
 
 #ifndef __LK8000TYPES_H__
 #define __LK8000TYPES_H__
@@ -52,7 +52,7 @@ Copyright_License {
 
 /**
  * @brief Data imported from LK8000 project.
-**/
+ */
 namespace lk8000 {
  
   using namespace xcsoar;

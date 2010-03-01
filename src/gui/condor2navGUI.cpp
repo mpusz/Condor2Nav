@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,6 +31,27 @@
 #include "translator.h"
 
 
+
+/**
+ * @brief Class constructor.
+ *
+ * @param type         The logger type. 
+ * @param [in,out] log Logging window widget. 
+ */
+condor2nav::gui::CCondor2NavGUI::CLogger::CLogger(TType type, CWidgetRichEdit &log):
+condor2nav::CCondor2Nav::CLogger(type), _log(log)
+{
+
+}
+
+
+/**
+ * @brief Dumps the text to the logger window.
+ *
+ * @param str The string to dump. 
+ *
+ * @exception EOperationFailed Thrown when operation failed to execute. 
+ */
 void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) const
 {
   switch(Type()) {
@@ -50,6 +71,12 @@ void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) cons
 }
 
 
+/**
+ * @brief Class constructor. 
+ *
+ * @param hInst The instance. 
+ * @param hDlg  Handle of the dialog. 
+ */
 condor2nav::gui::CCondor2NavGUI::CCondor2NavGUI(HINSTANCE hInst, HWND hDlg):
 _hDlg(hDlg),
 _condorPath(CCondor::InstallPath()),
@@ -95,12 +122,24 @@ _error(CLogger::TYPE_ERROR, _log)
 }
 
 
+/**
+ * @brief Checks if translation is valid to execute.
+ *
+ * @return true if it succeeds, false if it fails. 
+ */
 bool condor2nav::gui::CCondor2NavGUI::TranslateValid() const
 {
   return (!_fplOther.Selected() || _fplPath.String() != "") && (!_aatOn.Selected() || _aatTime.Selection() != "" || _aatTime.ItemSelected());
 }
 
 
+/**
+ * @brief Processes a command send to the application widget.
+ *
+ * @param hwnd      Handle of the hwnd.
+ * @param controlID Identifier for the control. 
+ * @param command   The command to process.
+ */
 void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int command)
 {
   bool changed = false;

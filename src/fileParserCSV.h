@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file fileParserCSV.h
  *
  * @brief Declares the condor2nav::CFileParserCSV class. 
-**/
+ */
 
 #ifndef __FILEPARSERCSV_H__
 #define __FILEPARSERCSV_H__
@@ -39,7 +39,7 @@ namespace condor2nav {
    * condor2nav::CFileParserCSV is the CSV (Comma Separated Values) type
    * files parser. Any file that provides values separated with commas can
    * be processed with that class.
-  **/
+   */
   class CFileParserCSV : public CFileParser {
   public:
     typedef std::deque<CStringArray *> CRowsList;	///< @brief The list of string arrays. 

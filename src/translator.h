@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file translator.h
  *
  * @brief Declares the translators hierarchy base class (condor2nav::CTranslator). 
-**/
+ */
 
 #ifndef __TRANSLATOR_H__
 #define __TRANSLATOR_H__
@@ -60,7 +60,7 @@ namespace condor2nav {
     protected:
       /**
        * @brief Sceneries data CSV file column names.
-      **/
+       */
       enum TSceneriesDataColumns {
         SCENERY_NAME,
         SCENERY_XCM_FILE
@@ -68,7 +68,7 @@ namespace condor2nav {
 
       /**
        * @brief Gliders data CSV file column names.
-      **/
+       */
       enum TGlidersDataColumns {
         GLIDER_NAME,
         GLIDER_SPEED_MAX,
@@ -98,7 +98,7 @@ namespace condor2nav {
        * @brief Sets Condor GPS data.
        *
        * Method sets Condor GPS data. 
-      **/
+       */
       virtual void Gps() = 0;
 
       /**
@@ -107,14 +107,14 @@ namespace condor2nav {
        * Method sets scenery map data. 
        *
        * @param sceneryData Information describing the scenery. 
-      **/
+       */
       virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData) = 0;
 
       /**
        * @brief Sets time for scenery time zone. 
        *
        * Method sets time for scenery time zone.
-      **/
+       */
       virtual void SceneryTime() = 0;
 
       /**
@@ -123,7 +123,7 @@ namespace condor2nav {
        * Method sets all the data related to the glider.
        *
        * @param gliderData Information describing the glider. 
-      **/
+       */
       virtual void Glider(const CFileParserCSV::CStringArray &gliderData) = 0;
 
       /**
@@ -135,7 +135,7 @@ namespace condor2nav {
        * @param coordConv   Condor coordinates converter.
        * @param sceneryData Information describing the scenery.
        * @param aatTime     Minimum time for AAT task
-      **/
+       */
       virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime) = 0;
 
       /**
@@ -145,7 +145,7 @@ namespace condor2nav {
        *
        * @param taskParser Condor task parser. 
        * @param coordConv  Condor coordinates converter.
-      **/
+       */
       virtual void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) = 0;
 
       /**
@@ -154,7 +154,7 @@ namespace condor2nav {
        * Method sets task weather data (e.g wind).
        *
        * @param taskParser Condor task parser. 
-      **/
+       */
       virtual void Weather(const CFileParserINI &taskParser) = 0;
     };
 

@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file condor.h
  *
  * @brief Declares the condor2nav::CCondor class. 
-**/
+ */
 
 #ifndef __CONDOR_H__
 #define __CONDOR_H__
@@ -40,12 +40,12 @@ namespace condor2nav {
    * condor2nav::CCondor is responsible for storing and handling of Condor
    * (The Soaring Competition Simulator) data. It also provides some
    * tools to interpret that data.
-  **/
+   */
   class CCondor {
   public:
     /**
      * @brief The types of Condor sectors.
-    **/
+     */
     enum TSectorType {
       SECTOR_CLASSIC,	    ///< @brief Line, FAI Sector or Circle.
       SECTOR_WINDOW	      ///< @brief Window. 
@@ -57,7 +57,7 @@ namespace condor2nav {
      * condor2nav::CCondor::CCoordConverter is responsible for
      * Condor map coordinates convertions. It uses NaviCon.dll library
      * provided with every Condor release.
-    **/
+     */
     class CCoordConverter {
       typedef int (WINAPI *FNaviConInit)(const char *trnFile);  ///< @brief NaviCon.dll interface
       typedef float (WINAPI *FXYToLon)(float X, float Y);       ///< @brief NaviCon.dll interface
@@ -67,7 +67,7 @@ namespace condor2nav {
 
       /**
        * @brief NaviCon.dll interface.
-      **/
+       */
       struct TDLLIface {
         FNaviConInit naviConInit;
         FGetMaxX getMaxX;
@@ -81,7 +81,7 @@ namespace condor2nav {
     public:
       /**
        * @brief Coordinate output string format.
-      **/
+       */
       enum TOutputFormat {
 //        FORMAT_DDFF,          ///< @brief Format in form 23.3545645N
         FORMAT_DDMMFF,        ///< @brief Format in form 23:35.454N

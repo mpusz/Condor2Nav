@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file condor.cpp
  *
  * @brief Implements the condor2nav::CCondor class. 
-**/
+ */
 
 #include "condor.h"
 #include "tools.h"
@@ -46,7 +46,7 @@ const char *condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
  *
  * @param condorPath The path to Condor directory
  * @param trnName The name of the terrain used in task
-**/
+ */
 condor2nav::CCondor::CCoordConverter::CCoordConverter(const std::string &condorPath, const std::string &trnName)
 {
   std::string dllPath(condorPath + "\\NaviCon.dll");
@@ -84,7 +84,7 @@ condor2nav::CCondor::CCoordConverter::CCoordConverter(const std::string &condorP
  * @brief Class destructor.
  *
  * condor2nav::CCondor::CCoordConverter class destructor.
-**/
+ */
 condor2nav::CCondor::CCoordConverter::~CCoordConverter()
 {
   FreeLibrary(_hInstLib);
@@ -100,7 +100,7 @@ condor2nav::CCondor::CCoordConverter::~CCoordConverter()
  * @param y The y coordinate. 
  *
  * @return Converted double longitude value.
-**/
+ */
 double condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y) const
 {
   float xVal(condor2nav::Convert<float>(x));
@@ -121,7 +121,7 @@ double condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, con
  * @param y The y coordinate. 
  *
  * @return Converted double latitude value.
-**/
+ */
 double condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y) const
 {
   float xVal(condor2nav::Convert<float>(x));
@@ -145,7 +145,7 @@ double condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, cons
  * @exception std::out_of_range Thrown when unsupported output format is provided. 
  *
  * @return Converted coordinate string. 
-**/
+ */
 std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
   double longitude(Longitude(x, y));
@@ -172,7 +172,7 @@ std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x
  * @exception std::out_of_range Thrown when unsupported output format is provided. 
  *
  * @return Converted coordinate string. 
-**/
+ */
 std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y, TOutputFormat format) const
 {
   double latitude(Latitude(x, y));
@@ -201,6 +201,8 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
 */
 std::string condor2nav::CCondor::InstallPath()
 {
+  return "c:\\";
+
   std::string condorPath;
   HKEY hTestKey;
   if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
@@ -241,7 +243,7 @@ std::string condor2nav::CCondor::InstallPath()
 * @param [in,out] fplPath Full pathname of the FPL file. 
 *
 * @exception std::runtime_error Thrown when FPL file cannot be found.
-**/
+ */
 void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType, const std::string &condorPath, std::string &fplPath)
 {
   if(fplType == CCondor2Nav::TYPE_DEFAULT) {
@@ -295,7 +297,7 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
  * @param fplPath    Condor FPL file to convert path
  *
  * @exception std Thrown when not supported Condor version.
-**/
+ */
 condor2nav::CCondor::CCondor(const std::string &condorPath, const std::string &fplPath):
 _taskParser(fplPath),
 _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))

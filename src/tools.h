@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file condor2nav/src/tools.h
  *
  * @brief Declares common tools. 
-**/
+ */
 
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
@@ -65,7 +65,7 @@ namespace condor2nav {
      * is allocated.
      *
      * @return Stored pointer.
-    **/
+     */
     T *Get()
     {
       if(!_obj)
@@ -101,20 +101,28 @@ namespace condor2nav {
   void FilePathSplit(const std::string &filePath, std::string &dir, std::string &file);
 
   // exceptions hierarchy
+
+  /**
+   * @brief Condor2Nav exception hierarchy base class
+   */
   class Exception : public std::exception {
-    const std::string _error;
+    const std::string _error;	///< @brief The error string
     Exception &operator=(const Exception &) throw();
   public:
-    explicit Exception(const std::string &error) throw(): _error(error) {}
-    Exception(const Exception &org) throw(): _error(org._error) {}
+    explicit Exception(const std::string &error) throw();
+    Exception(const Exception &org) throw();
     virtual ~Exception() = 0;
 
-    virtual const char *what() const throw() { return _error.c_str(); }
+    virtual const char *what() const throw();
   };
 
+
+  /**
+   * @brief Operation failed exception. 
+   */
   class EOperationFailed : public Exception {
   public:
-    explicit EOperationFailed(const std::string &error) throw(): Exception(error) {}
+    explicit EOperationFailed(const std::string &error) throw();
   };
 
 }
@@ -164,7 +172,7 @@ template<class Map> void condor2nav::PurgeMap(Map &container)
  * @exception std Thrown when operation failed.
  *
  * @return The data of specified type.
-**/
+ */
 template<class T>
 T condor2nav::Convert(const std::string &str)
 {
@@ -189,7 +197,7 @@ T condor2nav::Convert(const std::string &str)
  * @exception std Thrown when operation failed.
  *
  * @return The string describing provided data.
-**/
+ */
 template<class T>
 std::string condor2nav::Convert(const T &val)
 {

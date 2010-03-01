@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file istream.cpp
  *
  * @brief Implements the IStream wrapper class. 
-**/
+ */
 
 #include "istream.h"
 #include "activeSync.h"
@@ -36,7 +36,7 @@
  * condor2nav::CIStream class constructor.
  *
  * @param fileName The name of the file to read.
-**/
+ */
 condor2nav::CIStream::CIStream(const std::string &fileName):
 CStream(fileName)
 {
@@ -73,7 +73,7 @@ CStream(fileName)
  * @brief Class destructor.
  *
  * condor2nav::CIStream class destructor.
-**/
+ */
 condor2nav::CIStream::~CIStream()
 {
 }

@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file stream.cpp
  *
  * @brief Implements the Stream wrapper class. 
-**/
+ */
 
 #include "stream.h"
 #include "activeSync.h"
@@ -36,7 +36,7 @@
  * condor2nav::CStream class constructor.
  *
  * @param fileName The name of the file to create.
-**/
+ */
 condor2nav::CStream::CStream(const std::string &fileName):
 _fileName(fileName)
 {
@@ -52,7 +52,7 @@ _fileName(fileName)
  *
  * condor2nav::CStream class destructor. Writes local buffer to
  * a file.
-**/
+ */
 condor2nav::CStream::~CStream()
 {
 }

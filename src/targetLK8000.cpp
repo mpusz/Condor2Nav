@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file targetLK8000.cpp
  *
  * @brief Implements the condor2nav::CTargetLK8000 class. 
-**/
+ */
 
 #include "targetLK8000.h"
 #include "imports/lk8000Types.h"
@@ -45,7 +45,7 @@ const char *condor2nav::CTargetLK8000::LK8000_PROFILE_NAME    = "DEFAULT_PROFILE
  * condor2nav::CTargetLK8000 class constructor.
  *
  * @param translator Configuration INI file parser.
-**/
+ */
 condor2nav::CTargetLK8000::CTargetLK8000(const CTranslator &translator):
 CTargetXCSoarCommon(translator),
 _outputLK8000DataPath(OutputPath() + "\\LK8000")
@@ -94,7 +94,7 @@ _outputLK8000DataPath(OutputPath() + "\\LK8000")
  * @brief Class destructor.
  *
  * condor2nav::CTargetLK8000 class destructor.
-**/
+ */
 condor2nav::CTargetLK8000::~CTargetLK8000()
 {
   _profileParser->Dump(_outputLK8000DataPath + _outputConfigSubDir + std::string("\\") + OUTPUT_PROFILE_NAME);
@@ -105,7 +105,7 @@ condor2nav::CTargetLK8000::~CTargetLK8000()
  * @brief Sets Condor GPS data.
  *
  * Method sets Condor GPS data. 
-**/
+ */
 void condor2nav::CTargetLK8000::Gps()
 {
   _profileParser->Value("", "DeviceA", "\"Condor\"");
@@ -119,7 +119,7 @@ void condor2nav::CTargetLK8000::Gps()
 * Method sets scenery map XCM data file according to the Condor landscape name. 
 *
 * @param sceneryData Information describing the scenery. 
-**/
+ */
 void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
   SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPath + _outputMapsSubDir);
@@ -130,7 +130,7 @@ void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &s
 * @brief Sets time for scenery time zone. 
 *
 * Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.
-**/
+ */
 void condor2nav::CTargetLK8000::SceneryTime()
 {
   SceneryTimeProcess(*_profileParser);
@@ -144,7 +144,7 @@ void condor2nav::CTargetLK8000::SceneryTime()
 * ballast and glider name for the logger.
 *
 * @param gliderData Information describing the glider. 
-**/
+ */
 void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
   GliderProcess(*_profileParser, gliderData, true, _condor2navDataPath + _outputPolarsSubDir, _outputLK8000DataPath + _outputPolarsSubDir);
@@ -160,7 +160,7 @@ void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &glide
 * @param coordConv  Condor coordinates converter.
 * @param sceneryData Information describing the scenery. 
 * @param aatTime     Minimum time for AAT task
-**/
+ */
 void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime)
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("LK8000", "TaskWPFileGenerate")));
@@ -177,7 +177,7 @@ void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCo
 *
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
-**/
+ */
 void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
   PenaltyZonesProcess(*_profileParser, taskParser, coordConv, _condor2navDataPath + _outputAirspacesSubDir, _outputLK8000DataPath + _outputAirspacesSubDir);
@@ -190,7 +190,7 @@ void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, c
 * Method sets the wind data.
 *
 * @param taskParser Condor task parser. 
-**/
+ */
 void condor2nav::CTargetLK8000::Weather(const CFileParserINI &taskParser)
 {
   WeatherProcess(*_profileParser, taskParser);

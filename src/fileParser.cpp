@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file fileParser.cpp
  *
  * @brief Implements the condor2nav::CFileParser class. 
-**/
+ */
 
 #include "fileParser.h"
 #include "tools.h"
@@ -36,7 +36,7 @@
  * condor2nav::CFileParser class constructor.
  *
  * @param filePath The path of the file to parse.
-**/
+ */
 condor2nav::CFileParser::CFileParser(const std::string &filePath):
 _filePath(filePath)
 {
@@ -47,7 +47,7 @@ _filePath(filePath)
  * @brief Class destructor.
  *
  * condor2nav::CFileParser class destructor.
-**/
+ */
 condor2nav::CFileParser::~CFileParser()
 {
 }
@@ -59,7 +59,7 @@ condor2nav::CFileParser::~CFileParser()
  * Method returns the path to the input file.
  * 
  * @return The path to the input file.
-**/
+ */
 const std::string &condor2nav::CFileParser::Path() const
 {
   return _filePath;
@@ -74,7 +74,7 @@ const std::string &condor2nav::CFileParser::Path() const
  * @param [in,out] str The string to cut.
  *
  * @return Cut string.
-**/
+ */
 std::string &condor2nav::CFileParser::WhiteSpacesRemove(std::string &str) const
 {
   if(str != "") {
@@ -96,7 +96,7 @@ std::string &condor2nav::CFileParser::WhiteSpacesRemove(std::string &str) const
  * @param [in,out] value Parsed value. 
  *
  * @exception std Thrown when operation failed.
-**/
+ */
 void condor2nav::CFileParser::LineParseKeyValue(const std::string &line, std::string &key, std::string &value) const
 {
   size_t pos = line.find_first_of("=");
@@ -118,7 +118,7 @@ void condor2nav::CFileParser::LineParseKeyValue(const std::string &line, std::st
  *
  * @param line            The line to parse.
  * @param [in,out] values Parsed values.
-**/
+ */
 void condor2nav::CFileParser::LineParseCSV(const std::string &line, CStringArray &values) const
 {
   size_t pos = 0;

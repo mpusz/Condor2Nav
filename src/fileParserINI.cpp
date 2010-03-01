@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file fileParserINI.cpp
  *
  * @brief Implements the condor2nav::CFileParserINI class. 
-**/
+ */
 
 #include "fileParserINI.h"
 #include "istream.h"
@@ -37,7 +37,7 @@
  * condor2nav::CFileParserINI class constructor.
  *
  * @param filePath The path of the INI file to parse.
-**/
+ */
 condor2nav::CFileParserINI::CFileParserINI(const std::string &filePath):
 CFileParser(filePath)
 {
@@ -94,7 +94,7 @@ CFileParser(filePath)
  * @brief Class destructor. 
  *
  * condor2nav::CFileParserINI class destructor.
-**/
+ */
 condor2nav::CFileParserINI::~CFileParserINI()
 {
   for(CChaptersList::iterator it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
@@ -114,7 +114,7 @@ condor2nav::CFileParserINI::~CFileParserINI()
  * @exception std Thrown when chapter not found.
  *
  * @return Requested chapter.
-**/
+ */
 condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const std::string &chapter)
 {
   for(CChaptersList::iterator it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
@@ -135,7 +135,7 @@ condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const 
  * @exception std Thrown when chapter not found.
  *
  * @return Requested chapter.
-**/
+ */
 const condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const std::string &chapter) const
 {
   for(CChaptersList::const_iterator it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
@@ -158,7 +158,7 @@ const condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(
  * @exception std Thrown when value not found.
  *
  * @return Requested value.
-**/
+ */
 const std::string &condor2nav::CFileParserINI::Value(const std::string &chapter, const std::string &key) const
 {
   const CValuesMap *mapPtr = &_valuesMap;
@@ -180,7 +180,7 @@ const std::string &condor2nav::CFileParserINI::Value(const std::string &chapter,
  * @param chapter The chapter name of the value.
  * @param key     The key name. 
  * @param value   The value to set.
-**/
+ */
 void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::string &key, const std::string &value)
 {
   CValuesMap *mapPtr = &_valuesMap;
@@ -207,7 +207,7 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
  * Method dumps class data to the file in the same format as input file has.
  * 
  * @param filePath Path of the file to create (empty means overwrite input file).
-**/
+ */
 void condor2nav::CFileParserINI::Dump(const std::string &filePath /* = "" */) const
 {
   // open output file

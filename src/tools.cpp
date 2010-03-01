@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file tools.cpp
  *
  * @brief Implements common tools. 
-**/
+ */
 
 #include "tools.h"
 #include "activeSync.h"
@@ -50,7 +50,7 @@ namespace condor2nav {
  * @param longitude @c true - longitude; @c false - latitude. 
  *
  * @return Converted coordinate string.
-**/
+ */
 std::string condor2nav::DDFF2DDMMFF(double value, bool longitude)
 {
   int deg = static_cast<int>(value);
@@ -77,7 +77,7 @@ std::string condor2nav::DDFF2DDMMFF(double value, bool longitude)
  * @param longitude @c true - longitude; @c false - latitude. 
  *
  * @return Converted coordinate string.
-**/
+ */
 std::string condor2nav::DDFF2DDMMSS(double value, bool longitude)
 {
   int deg = static_cast<int>(value);
@@ -99,7 +99,7 @@ std::string condor2nav::DDFF2DDMMSS(double value, bool longitude)
  * @param value The speed value to convert.
  *
  * @return Converted speed.
-**/
+ */
 unsigned condor2nav::KmH2MS(unsigned value)
 {
   return static_cast<unsigned>((value * 10.0 / 36) + 0.5);
@@ -114,7 +114,7 @@ unsigned condor2nav::KmH2MS(unsigned value)
  * @param angle     Angle to convert. 
  *
  * @return Converted angle.
-**/
+ */
 double condor2nav::Deg2Rad(double angle)
 {
   return angle * PI / 180 ;
@@ -129,7 +129,7 @@ double condor2nav::Deg2Rad(double angle)
  * @param angle     Angle to convert. 
  *
  * @return Converted angle.
-**/
+ */
 double condor2nav::Rad2Deg(double angle)
 {
   return angle * 180 / PI;
@@ -236,6 +236,51 @@ void condor2nav::FilePathSplit(const std::string &filePath, std::string &dir, st
 
 
 
+/**
+ * @brief Class constructor. 
+ *
+ * @param error The error string. 
+ */
+condor2nav::Exception::Exception(const std::string &error) throw():
+_error(error)
+{
+
+}
+
+
+/**
+ * @brief Class copy-constructor. 
+ *
+ * @param org The original copy of the class. 
+ */
+condor2nav::Exception::Exception(const Exception &org) throw():
+_error(org._error)
+{
+
+}
+
+
+/**
+ * @brief Class destructor. 
+ */
 condor2nav::Exception::~Exception()
 {
+}
+
+
+/**
+ * @brief Returns exception description.
+ *
+ * @return Exception description. 
+ */
+const char *condor2nav::Exception::what() const throw()
+{
+  return _error.c_str();
+}
+
+
+condor2nav::EOperationFailed::EOperationFailed(const std::string &error) throw():
+Exception(error)
+{
+
 }

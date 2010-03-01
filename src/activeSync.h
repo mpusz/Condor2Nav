@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file activeSync.h
  *
  * @brief Declares the ActiveSync wrapper class. 
-**/
+ */
 
 #ifndef __ACTIVESYNC_H__
 #define __ACTIVESYNC_H__
@@ -73,7 +73,7 @@ namespace condor2nav {
 
     /**
     * @brief rapi.dll interface.
-    **/
+     */
     struct TDLLIface {
       FCeRapiInitEx ceRapiInitEx;
       FCeRapiUninit ceRapiUninit;

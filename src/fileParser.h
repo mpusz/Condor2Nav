@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file fileParser.h
  *
  * @brief Declares the condor2nav::CFileParser class. 
-**/
+ */
 
 #ifndef __FILEPARSER_H__
 #define __FILEPARSER_H__
@@ -40,7 +40,7 @@ namespace condor2nav {
    * it should also be able to dump all its data to the new file of the same
    * format. That class provides also some common parsing tools that may be reused
    * in child classes.
-  **/
+   */
   class CFileParser {
   public:
     typedef std::vector<std::string> CStringArray;	///< @brief The array of strings.
@@ -66,7 +66,7 @@ namespace condor2nav {
      * Method dumps class data to the file in the same format as input file has.
      * 
      * @param filePath Path of the file to create (empty means overwrite input file).
-    **/
+     */
     virtual void Dump(const std::string &filePath = "") const = 0;
 
     const std::string &Path() const;

@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file condor2navCLI.h
  *
  * @brief Declares the condor2nav::CCondor2NavCLI class. 
-**/
+ */
 
 #ifndef __CONDOR2NAV_CLI_H__
 #define __CONDOR2NAV_CLI_H__
@@ -31,41 +31,51 @@
 #include "condor2nav.h"
 
 /**
-* @brief Condor2Nav project namespace.
-**/
+ * @brief Condor2Nav project namespace.
+ */
 namespace condor2nav {
 
+  /**
+   * @brief Condor2Nav CLI interface namespace.
+   */
   namespace cli {
 
     /**
-    * @brief Main project class.
-    *
-    * condor2nav::CCondor2NavCLI is a main project class. It is responsible for
-    * command line handling and running the translation.
-    **/
+     * @brief Main CLI project class.
+     *
+     * condor2nav::CCondor2NavCLI is a main CLI project class. It is responsible for
+     * command line handling and running the translation.
+     */
     class CCondor2NavCLI : public CCondor2Nav {
     public:
+
+      /**
+       * @brief Logger class
+       *
+       * Class is responsible for logging Condor2Nav traces on the console output
+       */
       class CLogger : public CCondor2Nav::CLogger {
         virtual void Dump(const std::string &str) const;
       public:
-        CLogger(TType type): CCondor2Nav::CLogger(type) {}
+        CLogger(TType type);
       };
 
     private:
-      CLogger _normal;
-      CLogger _warning;
-      CLogger _error;
+      CLogger _normal;              ///< @brief Normal logging level logger
+      CLogger _warning;             ///< @brief Warning logging level logger
+      CLogger _error;               ///< @brief Error logging level logger
 
       void Usage() const;
       void CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const;
 
     public:
       CCondor2NavCLI();
-      int Run(int argc, const char *argv[]) const;
 
       virtual const CLogger &Log() const { return _normal; }
       virtual const CLogger &Warning() const { return _warning; }
       virtual const CLogger &Error() const { return _error; }
+
+      int Run(int argc, const char *argv[]) const;
     };
 
   } // namespace cli

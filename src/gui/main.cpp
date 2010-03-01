@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,8 +34,29 @@
 static HINSTANCE hInst = 0;
 
 
-// Message handler for about box.
-INT_PTR CALLBACK AboutDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+namespace condor2nav {
+
+  namespace gui {
+
+    INT_PTR CALLBACK AboutDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+    INT_PTR CALLBACK MainDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
+  }
+
+}
+
+
+/**
+ * @brief Message handler for about box.
+ *
+ * @param hDlg    Handle of the dialog. 
+ * @param message The message to process. 
+ * @param wParam  The wParam field of the message. 
+ * @param lParam  The lParam field of the message. 
+ *
+ * @return true if the message was handled.
+ */
+INT_PTR CALLBACK condor2nav::gui::AboutDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
   switch (message) {
   case WM_INITDIALOG:
@@ -52,7 +73,17 @@ INT_PTR CALLBACK AboutDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 }
 
 
-INT_PTR CALLBACK MainDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+/**
+ * @brief Message handler for main application window.
+ *
+ * @param hDlg    Handle of the dialog. 
+ * @param message The message to process. 
+ * @param wParam  The wParam field of the message. 
+ * @param lParam  The lParam field of the message. 
+ *
+ * @return true if the message was handled.
+ */
+INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
   static condor2nav::gui::CCondor2NavGUI *app = 0;
   switch(message) {
@@ -92,6 +123,18 @@ INT_PTR CALLBACK MainDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 }
 
 
+/**
+ * @brief GUI application main entry point.
+ *
+ * @param hInstance         The instance.
+ * @param hPrevInst         The previous instance. 
+ * @param [in,out] cmdParam If non-null, the command parameter. 
+ * @param cmdShow           Specifies if a command should be shown. 
+ *
+ * @exception condor2nav::EOperationFailed Thrown when operation failed to execute. 
+ *
+ * @return Application exit code. 
+ */
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int cmdShow)
 {
   try
@@ -102,7 +145,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int
     LoadLibrary("RichEd20.dll");
 
     // create MainDialog window
-    HWND hDialog = CreateDialog(hInst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), NULL, (DLGPROC)MainDialogProc);
+    HWND hDialog = CreateDialog(hInst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), NULL, (DLGPROC)condor2nav::gui::MainDialogProc);
     if(!hDialog)
       throw condor2nav::EOperationFailed("Unable to create main application dialog (error: " + condor2nav::Convert(GetLastError()) + ")!!!");
 

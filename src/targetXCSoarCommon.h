@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file targetXCSoarCommon.h
  *
  * @brief Declares the condor2nav::CTargetXCSoarCommon class. 
-**/
+ */
 
 #ifndef __TARGET_XCSOAR_COMMON_H__
 #define __TARGET_XCSOAR_COMMON_H__
@@ -41,11 +41,14 @@ namespace condor2nav {
    *
    * condor2nav::CTranslatorXCSoarCommon class is responsible for Condor data translation
    * to XCSoar (http://www.xcsoar.org) format.
-  **/
+   */
   class CTargetXCSoarCommon : public CTranslator::CTarget {
     unsigned WaypointBearing(double lon1, double lat1, double lon2, double lat2) const;
     
   protected:
+    /**
+     * @brief Waypoint data.
+     */
     struct TWaypoint {
       int number;
       double latitude;

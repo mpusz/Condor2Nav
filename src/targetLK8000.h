@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file targetLK8000.h
  *
  * @brief Declares the condor2nav::CTargetLK8000 class. 
-**/
+ */
 
 #ifndef __TARGET_LK8000_H__
 #define __TARGET_LK8000_H__
@@ -38,7 +38,7 @@ namespace condor2nav {
    *
    * condor2nav::CTranslatorLK8000 class is responsible for Condor data translation
    * to LK8000 (http://www.bware.it/xcsoar) format.
-  **/
+   */
   class CTargetLK8000 : public CTargetXCSoarCommon {
     // dirs
     static const char *AIRSPACES_SUBDIR;         ///< @brief LK8000 airspaces subdirectory. 

@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,13 +23,32 @@
  * @file condor2navCLI.cpp
  *
  * @brief Implements the condor2nav::CCondor2NavCLI class. 
-**/
+ */
 
 #include "condor2navCLI.h"
 #include "translator.h"
 #include <iostream>
 
 
+/**
+ * @brief Class constructor. 
+ *
+ * @param type The logger type. 
+ */
+condor2nav::cli::CCondor2NavCLI::CLogger::CLogger(TType type):
+CCondor2Nav::CLogger(type)
+{
+
+}
+
+
+/**
+ * @brief Dumps the text to the console output. 
+ *
+ * @param str The string to dump. 
+ *
+ * @exception EOperationFailed Thrown when operation failed to execute. 
+ */
 void condor2nav::cli::CCondor2NavCLI::CLogger::Dump(const std::string &str) const
 {
   switch(Type()) {
@@ -46,6 +65,9 @@ void condor2nav::cli::CCondor2NavCLI::CLogger::Dump(const std::string &str) cons
 }
 
 
+/**
+ * @brief Default class constructor.
+ */
 condor2nav::cli::CCondor2NavCLI::CCondor2NavCLI():
 _normal(CLogger::TYPE_NORMAL),
 _warning(CLogger::TYPE_WARNING),
@@ -58,7 +80,7 @@ _error(CLogger::TYPE_ERROR)
  * @brief Prints condor2nav executable usage help. 
  *
  * Method prints condor2nav executable usage help.
-**/
+ */
 void condor2nav::cli::CCondor2NavCLI::Usage() const
 {
   Log() << "Condor2Nav 1.1 Copyright (C) 2009-2010 Mateusz Pusz" << std::endl;
@@ -99,7 +121,7 @@ void condor2nav::cli::CCondor2NavCLI::Usage() const
  * @param [in,out] aatTime Minimum time of the AAT task. 
  *
  * @exception std::runtime_error Thrown when parsing error occurred.
-**/
+ */
 void condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const
 {
   fplType = TYPE_DEFAULT;
@@ -147,7 +169,7 @@ void condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[], TFP
  * @param argv   Array of command-line argument strings. 
  * 
  * @return Application execution result.
-**/
+ */
 int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
 {
   // parse CLI options

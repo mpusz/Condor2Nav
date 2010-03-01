@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file ostream.h
  *
  * @brief Declares the OStream wrapper class. 
-**/
+ */
 
 #ifndef __OSTREAM_H__
 #define __OSTREAM_H__
@@ -52,7 +52,7 @@ namespace condor2nav {
      * @param obj Data to write. 
      *
      * @return Stream instance.
-    **/
+     */
     template<class T>
     friend COStream &operator<<(COStream &stream, const T &obj)
     {
@@ -69,7 +69,7 @@ namespace condor2nav {
      * @param f Functor to write. 
      *
      * @return Stream instance.
-    **/
+     */
     friend COStream &operator<<(COStream &stream, std::ostream &(*f)(std::ostream &))
     {
       stream.Buffer() << f;
@@ -89,7 +89,7 @@ namespace condor2nav {
 * @param num Buffer size. 
 *
 * @return Stream instance.
-**/
+ */
 inline condor2nav::COStream &condor2nav::COStream::Write(const char *buffer, std::streamsize num)
 {
   Buffer().write(buffer, num);

@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file translator.cpp
  *
  * @brief Implements the translators hierarchy base class (condor2nav::CTranslator). 
-**/
+ */
 
 #include "translator.h"
 #include "condor2nav.h"
@@ -47,7 +47,7 @@ const char *condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME = "GliderData.csv";
  * condor2nav::CTranslator::CTarget class constructor.
  *
  * @param translator Translator class.
-**/
+ */
 condor2nav::CTranslator::CTarget::CTarget(const CTranslator &translator):
 _translator(translator),
 _outputPath(_translator._configParser.Value("Condor2Nav", "OutputPath"))
@@ -60,7 +60,7 @@ _outputPath(_translator._configParser.Value("Condor2Nav", "OutputPath"))
  * @brief Class destructor.
  *
  * condor2nav::CTranslator::CTarget class destructor.
-**/
+ */
 condor2nav::CTranslator::CTarget::~CTarget()
 {
 }
@@ -73,7 +73,7 @@ condor2nav::CTranslator::CTarget::~CTarget()
  * if directly provided information is not enough for the translation.
  *
  * @return Translator class. 
-**/
+ */
 const condor2nav::CTranslator &condor2nav::CTranslator::CTarget::Translator() const
 {
   return _translator;
@@ -88,7 +88,7 @@ const condor2nav::CTranslator &condor2nav::CTranslator::CTarget::Translator() co
  * for the translation.
  *
  * @return Configuration INI file parser. 
-**/
+ */
 const condor2nav::CFileParserINI &condor2nav::CTranslator::CTarget::ConfigParser() const
 {
   return _translator._configParser;
@@ -102,7 +102,7 @@ const condor2nav::CFileParserINI &condor2nav::CTranslator::CTarget::ConfigParser
  * if directly provided information is not enough for the translation.
  *
  * @return Condor data. 
-**/
+ */
 const condor2nav::CCondor &condor2nav::CTranslator::CTarget::Condor() const
 {
   return _translator._condor;
@@ -115,7 +115,7 @@ const condor2nav::CCondor &condor2nav::CTranslator::CTarget::Condor() const
  * Method returns translation output directory.
  *
  * @return Translation output directory. 
-**/
+ */
 const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
 {
   return _outputPath;
@@ -129,14 +129,15 @@ const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
 
 /**
  * @brief Class constructor.
+ *        
+ * condor2nav::CTranslator class constructor. 
  *
- * condor2nav::CTranslator class constructor.
- *
- * @param configParser Configuration file parser
- * @param condorPath   The path to Condor
- * @param fplPath      Condor FPL file to convert path
- * @param aatTime      Minimum time for AAT task
-**/
+ * @param app          The application. 
+ * @param configParser Configuration file parser. 
+ * @param condorPath   The path to Condor. 
+ * @param fplPath      Condor FPL file to convert path. 
+ * @param aatTime      Minimum time for AAT task. 
+ */
 condor2nav::CTranslator::CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const std::string &condorPath, const std::string &fplPath, unsigned aatTime):
 _app(app),
 _configParser(configParser),
@@ -152,7 +153,7 @@ _aatTime(aatTime)
  * Method creates Condor data translator target.
  *
  * @return Condor data translator target.
-**/
+ */
 std::auto_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target() const
 {
   std::string target = _configParser.Value("Condor2Nav", "Target");
@@ -170,7 +171,7 @@ std::auto_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target(
  *
  * Method is responsible for Condor data translation. Several
  * translate actions are configured through configuration INI file.
-**/
+ */
 void condor2nav::CTranslator::Run()
 {
   _app.Warning() << "Translation START" << std::endl;

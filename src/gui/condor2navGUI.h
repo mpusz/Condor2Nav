@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,49 +34,64 @@
 
 namespace condor2nav {
 
+  /**
+   * @brief Condor2Nav GUI interface namespace.
+   */
   namespace gui {
 
+    /**
+     * @brief Main GUI project class.
+     *
+     * condor2nav::CCondor2NavGUI is a main GUI project class. It is responsible for
+     * getting needed action from the user and running the translation.
+     */
     class CCondor2NavGUI : public CCondor2Nav {
     public:
+
+      /**
+       * @brief Logger. 
+       *
+       * Class is responsible for logging Condor2Nav traces to the logging window
+       */
       class CLogger : public CCondor2Nav::CLogger {
-        CWidgetRichEdit &_log;
+        CWidgetRichEdit &_log;	              ///< @brief The logging window widget
         virtual void Dump(const std::string &str) const;
       public:
-        CLogger(TType type, CWidgetRichEdit &log):condor2nav::CCondor2Nav::CLogger(type), _log(log) {}
+        CLogger(TType type, CWidgetRichEdit &log);
       };
 
     private:
-      const HWND _hDlg;
-      const std::string _condorPath;
-      const CFileParserINI _configParser;
+      const HWND _hDlg;	                      ///< @brief The dialog handle
+      const std::string _condorPath;	      ///< @brief Full pathname of the Condor directory
+      const CFileParserINI _configParser;	  ///< @brief The INI file configuration parser
 
-      CWidgetRadioButton _fplDefault;
-      CWidgetRadioButton _fplLastRace;
-      CWidgetRadioButton _fplOther;
-      CWidgetButton _fplSelect;
-      CWidgetEdit _fplPath;
+      CWidgetRadioButton _fplDefault;	      ///< @brief The default FPL button
+      CWidgetRadioButton _fplLastRace;        ///< @brief The last race FPL button
+      CWidgetRadioButton _fplOther;           ///< @brief The other FPL path button
+      CWidgetButton _fplSelect;               ///< @brief The FPL path selection button
+      CWidgetEdit _fplPath;                   ///< @brief Currently selected FPL path
 
-      CWidgetRadioButton _aatOff;
-      CWidgetRadioButton _aatOn;
-      CWidgetComboBox _aatTime;
-      CWidget _aatMinutes;
+      CWidgetRadioButton _aatOff;             ///< @brief The AAT task OFF button
+      CWidgetRadioButton _aatOn;              ///< @brief The AAT task ON button
+      CWidgetComboBox _aatTime;               ///< @brief The AAT task minimum time combo box
+      CWidget _aatMinutes;                    ///< @brief The AAT task minimum time minutes label
 
-      CWidgetButton _translate;
+      CWidgetButton _translate;               ///< @brief The Condor2Nav start translation button
 
-      CWidgetRichEdit _log;
+      CWidgetRichEdit _log;                   ///< @brief The Condor2Nav logging window
 
-      CLogger _normal;
-      CLogger _warning;
-      CLogger _error;
+      CLogger _normal;                        ///< @brief Normal logging level logger
+      CLogger _warning;                       ///< @brief Warning logging level logger
+      CLogger _error;                         ///< @brief Error logging level logger
 
       bool TranslateValid() const;
 
     public:
       CCondor2NavGUI(HINSTANCE hInst, HWND hDlg);
 
-      virtual const condor2nav::CCondor2Nav::CLogger &Log() const { return _normal; }
-      virtual const condor2nav::CCondor2Nav::CLogger &Warning() const { return _warning; }
-      virtual const condor2nav::CCondor2Nav::CLogger &Error() const { return _error; }
+      virtual const CLogger &Log() const { return _normal; }
+      virtual const CLogger &Warning() const { return _warning; }
+      virtual const CLogger &Error() const { return _error; }
 
       void Command(HWND hwnd, int controlID, int command);
     };

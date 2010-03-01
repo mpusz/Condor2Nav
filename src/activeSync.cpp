@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file activeSync.cpp
  *
  * @brief Implements the ActiveSync wrapper class. 
-**/
+ */
 
 #include "activeSync.h"
 #include <fstream>
@@ -39,7 +39,7 @@ condor2nav::CDelayedPtr<condor2nav::CActiveSync> condor2nav::CActiveSync::_insta
  * Method returns singleton instance.
  *
  * @return Singleton instance.
-**/
+ */
 condor2nav::CActiveSync &condor2nav::CActiveSync::Instance()
 {
   return *_instance;
@@ -50,7 +50,7 @@ condor2nav::CActiveSync &condor2nav::CActiveSync::Instance()
  * @brief Class constructor.
  *
  * condor2nav::CActiveSync class constructor.
-**/
+ */
 condor2nav::CActiveSync::CActiveSync()
 {
   // obtain RAPI interface
@@ -131,7 +131,7 @@ condor2nav::CActiveSync::CActiveSync()
  * @brief Class destructor.
  *
  * condor2nav::CActiveSync class destructor.
-**/
+ */
 condor2nav::CActiveSync::~CActiveSync()
 {
   _iface.ceRapiUninit();
@@ -146,7 +146,7 @@ condor2nav::CActiveSync::~CActiveSync()
  *
  * @param src Target file path. 
  * @param stream Stream to store file content. 
-**/
+ */
 void condor2nav::CActiveSync::Read(const std::string &src, std::stringstream &stream) const
 {
   std::wstring fileName(src.begin(), src.end());
@@ -183,7 +183,7 @@ void condor2nav::CActiveSync::Read(const std::string &src, std::stringstream &st
  *
  * @param dest Target file path. 
  * @param buffer Buffer with file content. 
-**/
+ */
 void condor2nav::CActiveSync::Write(const std::string &dest, const std::string &buffer) const
 {
   std::wstring destName(dest.begin(), dest.end());
@@ -205,7 +205,7 @@ void condor2nav::CActiveSync::Write(const std::string &dest, const std::string &
  * Method creates directory on the target device.
  *
  * @param path Target directory path. 
-**/
+ */
 void condor2nav::CActiveSync::DirectoryCreate(const std::string &path) const
 {
   std::wstring dirName(path.begin(), path.end());
@@ -222,7 +222,7 @@ void condor2nav::CActiveSync::DirectoryCreate(const std::string &path) const
  * @param path Target file path.
  *
  * @return @p true if file exists.
-**/
+ */
 bool condor2nav::CActiveSync::FileExists(const std::string &path) const
 {
   std::wstring fileName(path.begin(), path.end());

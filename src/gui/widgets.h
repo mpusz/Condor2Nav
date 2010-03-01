@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,12 +32,19 @@ namespace condor2nav {
 
   namespace gui {
 
+    /**
+     * @brief Condor2Nav GUI widgets base
+     *
+     * condor2nav::gui::CWidget is a base for all Condor2Nav GUI widgets. Basically
+     * their role is to be a wrapper over cumbersome Windows API interface.
+     */
     class CWidget {
-      const HWND _hWnd;
-      CWidget(const CWidget &);
-      CWidget &operator=(const CWidget &);
+      const HWND _hWnd;	                      ///< @brief Widget handler
+      CWidget(const CWidget &);               ///< @brief Disallowed
+      CWidget &operator=(const CWidget &);    ///< @brief Disallowed
     public:
       CWidget(HWND hwndParent, int id, bool disabled = false);
+      virtual ~CWidget();
       void Focus() const;
       void Enable() const;
       void Disable() const;
@@ -45,6 +52,11 @@ namespace condor2nav {
     };
 
 
+    /**
+     * @brief Button widget.
+     *
+     * Widget that handles all GUI buttons.
+     */
     class CWidgetButton : public CWidget {
     public:
       CWidgetButton(HWND hwndParent, int id, bool disabled = false);
@@ -72,6 +84,9 @@ namespace condor2nav {
     //};
 
 
+    /**
+     * @brief Radio button widget.
+     */
     class CWidgetRadioButton : public CWidgetButton {
     public:
       CWidgetRadioButton(HWND hwndParent, int id, bool disabled = false);
@@ -80,6 +95,9 @@ namespace condor2nav {
     };
 
 
+    /**
+     * @brief Edit box widget.
+     */
     class CWidgetEdit : public CWidget {
     public:
       CWidgetEdit(HWND hwndParent, int id, bool disabled = false);
@@ -104,6 +122,9 @@ namespace condor2nav {
     };
 
 
+    /**
+     * @brief Combo box widget.
+     */
     class CWidgetComboBox : public CWidget {
     public:
       CWidgetComboBox(HWND hwndParent, int id, bool disabled = false);
@@ -113,8 +134,14 @@ namespace condor2nav {
     };
 
 
+    /**
+     * @brief Rich edit widget. 
+     */
     class CWidgetRichEdit : public CWidget {
     public:
+      /**
+      * @brief Values that represent text color.
+      */
       enum TColor {
         COLOR_AUTO,
         COLOR_RED,
@@ -123,11 +150,20 @@ namespace condor2nav {
         COLOR_BLACK
       };
 
+      /**
+      * @brief Values that represent text effects.
+      */
       enum TEffect {
+        EFFECT_NONE   = 0x00,
         EFFECT_BOLD   = 0x01,
         EFFECT_ITALIC = 0x02,
       };
 
+    private:
+      unsigned _effectMask;	    ///< @brief Current text effect mask
+      TColor _color;	        ///< @brief Current text color
+
+    public:
       CWidgetRichEdit(HWND hwndParent, int id, bool disabled = false);
       void Clear();
       void Format(unsigned effectMask, TColor color);
@@ -139,6 +175,11 @@ namespace condor2nav {
 } // namespace condor2nav
 
 
+/**
+ * @brief Returns handler to current widget.
+ *
+ * @return The handler to current widget.
+ */
 inline HWND condor2nav::gui::CWidget::Hwnd() const
 {
   return _hWnd;

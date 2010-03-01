@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file fileParserCSV.cpp
  *
  * @brief Implements the condor2nav::CFileParserCSV class. 
-**/
+ */
 
 #include "fileParserCSV.h"
 #include "istream.h"
@@ -39,7 +39,7 @@
  * condor2nav::CFileParserCSV class constructor.
  *
  * @param filePath The path of the CSV file to parse.
-**/
+ */
 condor2nav::CFileParserCSV::CFileParserCSV(const std::string &filePath):
 CFileParser(filePath)
 {
@@ -63,7 +63,7 @@ CFileParser(filePath)
  * @brief Class destructor. 
  *
  * condor2nav::CFileParserCSV class destructor.
-**/
+ */
 condor2nav::CFileParserCSV::~CFileParserCSV()
 {
   Purge(_rowsList);
@@ -82,7 +82,7 @@ condor2nav::CFileParserCSV::~CFileParserCSV()
  * @exception std Thrown when requested row is not found.
  *
  * @return Requested row.
-**/
+ */
 const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(const std::string &value, unsigned column /* = 0 */, bool nocase /* = false */) const
 {
   for(CRowsList::const_iterator it=_rowsList.begin(); it!=_rowsList.end(); ++it)
@@ -99,7 +99,7 @@ const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(con
  * Method returns all rows parsed from a CSV file.
  *
  * @return Rows.
-**/
+ */
 const condor2nav::CFileParserCSV::CRowsList &condor2nav::CFileParserCSV::Rows() const
 {
   return _rowsList;
@@ -117,7 +117,7 @@ const condor2nav::CFileParserCSV::CRowsList &condor2nav::CFileParserCSV::Rows() 
  * Method dumps class data to the file in the same format as input file has.
  * 
  * @param filePath Path of the file to create (empty means overwrite input file).
-**/
+ */
 void condor2nav::CFileParserCSV::Dump(const std::string &filePath /* = "" */) const
 {
   std::string path = filePath != "" ? filePath.c_str() : Path().c_str();

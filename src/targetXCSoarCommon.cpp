@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file targetXCSoarCommon.cpp
  *
  * @brief Implements the condor2nav::CTargetXCSoarCommon class. 
-**/
+ */
 
 #include "targetXCSoarCommon.h"
 #include "condor2nav.h"
@@ -46,7 +46,7 @@ const char *condor2nav::CTargetXCSoarCommon::WP_FILE_NAME           = "WP_Condor
  * condor2nav::CTargetXCSoarCommon class constructor.
  *
  * @param translator Configuration INI file parser.
-**/
+ */
 condor2nav::CTargetXCSoarCommon::CTargetXCSoarCommon(const CTranslator &translator):
 CTranslator::CTarget(translator)
 {
@@ -61,7 +61,7 @@ CTranslator::CTarget(translator)
 * @param profileParser XCSoar profile file parser.
 * @param sceneryData Information describing the scenery. 
 * @param pathPrefix Scenery map subdirectory prefix (in XCSoar format).
-**/
+ */
 void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const
 {
   profileParser.Value("", "MapFile", "\"" + pathPrefix + "\\" + sceneryData.at(SCENERY_XCM_FILE) + "\"");
@@ -74,7 +74,7 @@ void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileP
 * Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.
 *
 * @param profileParser XCSoar profile file parser.
-**/
+ */
 void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profileParser) const
 {
   profileParser.Value("", "UTCOffset", "0");
@@ -92,7 +92,7 @@ void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profile
 * @param wingArea Specifies if glider wing area should be added to polar file
 * @param pathPrefix Polar file subdirectory prefix (in XCSoar format).
 * @param outputPathPrefix Polar file subdirectory prefix (in filesystem format).
-**/
+ */
 void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, bool wingArea, const std::string &pathPrefix, const std::string &outputPathPrefix) const
 {
   // set WinPilot Polar
@@ -152,7 +152,7 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
 * @param taskPointArray     Task points array
 * @param startPointArray    Task start points array
 * @param waypointArray      The array of waypoints data.
-**/
+ */
 void condor2nav::CTargetXCSoarCommon::TaskDumpXCSoar(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
 {
   using namespace xcsoar;
@@ -205,7 +205,7 @@ void condor2nav::CTargetXCSoarCommon::TaskDumpXCSoar(const std::string &outputTa
 * @param taskPointArray     Task points array
 * @param startPointArray    Task start points array
 * @param waypointArray      The array of waypoints data.
-**/
+ */
 void condor2nav::CTargetXCSoarCommon::TaskDumpLK8000(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
 {
   using namespace lk8000;
@@ -264,7 +264,7 @@ void condor2nav::CTargetXCSoarCommon::TaskDumpLK8000(const std::string &outputTa
 * @param lat2 Second point latitude.
 *
 * @return The bearing between 2 locations.
-**/
+ */
 unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(double lon1, double lat1, double lon2, double lat2) const
 {
   lon1 = Deg2Rad(lon1);
@@ -298,7 +298,7 @@ unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(double lon1, double la
 * @param taskDumpFunc The function to be used for dumping task files.
 * @param generateWPFile Flag specifying if WP file should be generated.
 * @param wpOutputPathPrefix XCSoar WP subdirectory prefix (in filesystem format).
-**/
+ */
 void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser,
                                                   const CCondor::CCoordConverter &coordConv,
                                                   const CFileParserCSV::CStringArray &sceneryData,
@@ -582,7 +582,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 * @param coordConv  Condor coordinates converter.
 * @param pathPrefix Polar file subdirectory prefix (in XCSoar format).
 * @param outputPathPrefix Polar file subdirectory prefix (in filesystem format).
-**/
+ */
 void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const
 {
   unsigned pzNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "PZCount"));
@@ -628,7 +628,7 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
 *
 * @param profileParser XCSoar profile file parser.
 * @param taskParser Condor task parser. 
-**/
+ */
 void condor2nav::CTargetXCSoarCommon::WeatherProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser) const
 {
   unsigned dir = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindDir")) + 0.5);

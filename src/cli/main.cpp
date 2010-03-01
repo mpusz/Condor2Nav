@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file cli/main.cpp
  *
  * @brief Implements the main() function. 
-**/
+ */
 
 #include "condor2navCLI.h"
 #include "tools.h"
@@ -37,7 +37,7 @@
  * @param argv Array of command-line argument strings. 
  *
  * @return Exit-code for the process - 0 for success, else an error code. 
-**/
+ */
 int main(int argc, const char *argv[])
 {
   try {

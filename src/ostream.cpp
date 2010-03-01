@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file ostream.cpp
  *
  * @brief Implements the OStream wrapper class. 
-**/
+ */
 
 #include "ostream.h"
 #include "activeSync.h"
@@ -36,7 +36,7 @@
  * condor2nav::COStream class constructor.
  *
  * @param fileName The name of the file to create.
-**/
+ */
 condor2nav::COStream::COStream(const std::string &fileName):
 CStream(fileName)
 {
@@ -48,7 +48,7 @@ CStream(fileName)
  *
  * condor2nav::COStream class destructor. Writes local buffer to
  * a file.
-**/
+ */
 condor2nav::COStream::~COStream()
 {
   if(Buffer().str().size()) {

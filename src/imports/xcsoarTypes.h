@@ -43,7 +43,7 @@ Copyright_License {
  * 
  * Those types are needed to generate XCSoar task files that are in fact
  * application memory dumps.
-**/
+ */
 
 #ifndef __XCSOARTYPES_H__
 #define __XCSOARTYPES_H__
@@ -52,7 +52,7 @@ Copyright_License {
 
 /**
  * @brief Data imported from XCSoar project.
-**/
+ */
 namespace xcsoar {
 
   const unsigned MAXTASKPOINTS = 10;

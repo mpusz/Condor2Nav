@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009 Mateusz Pusz
+// Copyright (C) 2009-2010 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * @file targetXCSoar.h
  *
  * @brief Declares the condor2nav::CTargetXCSoar class. 
-**/
+ */
 
 #ifndef __TARGET_XCSOAR_H__
 #define __TARGET_XCSOAR_H__
@@ -38,7 +38,7 @@ namespace condor2nav {
    *
    * condor2nav::CTranslatorXCSoar class is responsible for Condor data translation
    * to XCSoar (http://www.xcsoar.org) format.
-  **/
+   */
   class CTargetXCSoar : public CTargetXCSoarCommon {
     // inputs
     static const char *XCSOAR_PROFILE_NAME;	     ///< @brief XCSoar profile file name to use for input. 
