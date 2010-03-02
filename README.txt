@@ -31,13 +31,15 @@ Obtain latest release package from the project website and extract it
 anywhere on the hard drive.
 
 The package contains:
-- README.txt - that readme file
-- CHANGELOG.txt - changes introduced in subsequent releases
-- condor2nav-gui.exe - GUI application executable
-- condor2nav-cli.exe - GUI application executable
-- condor2nav.ini - project configuration
-- data/GliderData.csv - CSV file with gliders information
-- data/SceneryData.csv - CSV file with supported sceneries information
+ - data/GliderData.csv - CSV file with all Condor gliders information
+ - data/SceneryData.csv - CSV file with supported Condor sceneries information
+ - CHANGELOG.txt - changes introduced in subsequent releases
+ - condor2nav.ini - project configuration
+ - condor2nav-cli.exe - CLI application executable
+ - condor2nav-gui.exe - GUI application executable
+ - QuickStart-LK8000.txt - quick start guide for LK8000 users
+ - QuickStart-XCSoar.txt - quick start guide for XCSoar users
+ - README.txt - that readme file
 
 
 4. Additional software
