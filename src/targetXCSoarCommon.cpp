@@ -355,12 +355,13 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     // dump WP file line
     std::string tpIdxStr(Convert(i));
     std::string name;
+    std::string tpName = taskParser.Value("Task", "TPName" + tpIdxStr);
     if(i == 1)
-      name = "START";
+      name = "S:" + tpName;
     else if(i == tpNum - 1)
-      name = "FINISH";
+      name = "F:" + tpName;
     else
-      name = "TP" + Convert(i - 1);
+      name = Convert(i - 1) + ":" + tpName;
 
     std::string x(taskParser.Value("Task", "TPPosX" + tpIdxStr));
     std::string y(taskParser.Value("Task", "TPPosY" + tpIdxStr));
@@ -372,7 +373,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     if(generateWPFile)
       *wpFile << i << "," << latitudeStr << "," << longitudeStr << ","
               << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M,T," << name << ","
-              << taskParser.Value("Task", "TPName" + tpIdxStr) << std::endl;
+              << tpName << std::endl;
 
     // fill waypoint data
     TWaypoint waypoint;
@@ -382,7 +383,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     waypoint.altitude = Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
     waypoint.flags = xcsoar::WAYPOINT_TURNPOINT;
     waypoint.name = name;
-    waypoint.comment = taskParser.Value("Task", "TPName" + tpIdxStr);
+    waypoint.comment = tpName;
     waypoint.inTask = true;
     waypointArray.push_back(waypoint);
 
