@@ -369,18 +369,19 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     double longitude = coordConv.Longitude(x, y);
     std::string latitudeStr = DDFF2DDMMFF(latitude, false);
     std::string longitudeStr = DDFF2DDMMFF(longitude, true);
+    double minAlt = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
+    double altitude = minAlt ? minAlt : Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
     
     if(generateWPFile)
       *wpFile << i << "," << latitudeStr << "," << longitudeStr << ","
-              << taskParser.Value("Task", "TPPosZ" + tpIdxStr) << "M,T," << name << ","
-              << tpName << std::endl;
+              << altitude << "M,T," << name << "," << tpName << std::endl;
 
     // fill waypoint data
     TWaypoint waypoint;
     taskPointArray[i - 1].Index = waypoint.number = WAYPOINT_INDEX_OFFSET + i;
     waypoint.latitude = latitude;
     waypoint.longitude = longitude;
-    waypoint.altitude = Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
+    waypoint.altitude = altitude;
     waypoint.flags = xcsoar::WAYPOINT_TURNPOINT;
     waypoint.name = name;
     waypoint.comment = tpName;

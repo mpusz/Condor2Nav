@@ -21,6 +21,7 @@ Version: 2.0 (WIP)
 - Alpi3 and WestAlpi sceneries added
 - QuickStart documents added to help new users start with the application
 - Task WPs naming changed
+- Minimum TPs height setting support added
 
 Version: 1.1
 ============
