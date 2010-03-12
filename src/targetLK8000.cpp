@@ -109,6 +109,12 @@ condor2nav::CTargetLK8000::~CTargetLK8000()
 void condor2nav::CTargetLK8000::Gps()
 {
   _profileParser->Value("", "DeviceA", "\"Condor\"");
+
+  // copy deviceA to deviceB
+  _profileParser->Value("", "DeviceB", _profileParser->Value("", "DeviceA"));
+  _profileParser->Value("", "Port2Index", _profileParser->Value("", "PortIndex"));
+  _profileParser->Value("", "Speed2Index", _profileParser->Value("", "SpeedIndex"));
+
   _profileParser->Value("", "UseGeoidSeparation", "0");
 }
 
