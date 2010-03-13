@@ -2,8 +2,8 @@
  Condor2Nav
 ============
 
-Version: 2.0 (WIP)
-==================
+Version: 2.0
+============
 - Condor 1.1.0 registry variables support added
 - LK8000 1.20 support aded (task files format updated)
 - Support for A types waypoint in a task removed (safety altitude was always taken into account)
