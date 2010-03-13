@@ -18,7 +18,7 @@ Version: 2.0 (WIP)
 - Case-insensitive scenery name matching implemented
 - Scenery maps for LK8000 generated (include DAT terrain and CUP waypoints file)
 - Glider maximum speed setting support added for LK8000
-- Alpi3 and WestAlpi sceneries added
+- Romania, Alpi3 and WestAlpi sceneries added
 - QuickStart documents added to help new users start with the application
 - Task WPs naming changed
 - Minimum TPs height setting support added
