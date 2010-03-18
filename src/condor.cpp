@@ -265,7 +265,7 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
     HANDLE hFind;
     hFind = FindFirstFile((fplPath + "*.fpl").c_str(), &findFileData);
     if(hFind == INVALID_HANDLE_VALUE)
-      throw EOperationFailed("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
+      throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath + "'(" + Convert(GetLastError()) + ")!!!");
     else {
       fileName = findFileData.cFileName;
       fileTime = findFileData.ftLastWriteTime;
@@ -277,7 +277,7 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
         }
       }
       if(GetLastError() != ERROR_NO_MORE_FILES)
-        throw EOperationFailed("ERROR: Cannot find last result FPL file (" + Convert(GetLastError()) + ")!!!");
+        throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath + "'(" + Convert(GetLastError()) + ")!!!");
       FindClose(hFind);
     }
     fplPath += fileName;
