@@ -61,9 +61,9 @@ namespace condor2nav {
     };
     typedef std::vector<TWaypoint> CWaypointArray;
 
-    typedef void (CTargetXCSoarCommon::*FTaskDump)(const std::string &, const xcsoar::SETTINGS_TASK &, const xcsoar::TASK_POINT *, const xcsoar::START_POINT *, const CWaypointArray &) const;
-    void TaskDumpXCSoar(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
-    void TaskDumpLK8000(const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
+    typedef void (CTargetXCSoarCommon::*FTaskDump)(CFileParserINI &, const std::string &, const xcsoar::SETTINGS_TASK &, const xcsoar::TASK_POINT *, const xcsoar::START_POINT *, const CWaypointArray &) const;
+    void TaskDumpXCSoar(CFileParserINI &profileParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
+    void TaskDumpLK8000(CFileParserINI &profileParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
 
     // outputs
     static const char *OUTPUT_PROFILE_NAME;      ///< @brief The name of XCSoar profile file to generate. 
