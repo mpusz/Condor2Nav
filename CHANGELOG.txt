@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version: 2.2 (WIP)
+==================
+- GUI error for not existing default Condor FPL file fixed
+
 Version: 2.1
 ============
 - LK8000 1.20b support aded (profile file format updated)

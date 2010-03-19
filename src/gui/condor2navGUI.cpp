@@ -100,13 +100,28 @@ _error(CLogger::TYPE_ERROR, _log)
   SendMessage(hDlg, WM_SETICON, ICON_BIG, LPARAM(LoadIcon(hInst, MAKEINTRESOURCE(IDI_CONDOR2NAV))));
   SendMessage(hDlg, WM_SETICON, ICON_SMALL, LPARAM(LoadIcon(hInst, MAKEINTRESOURCE(IDI_CONDOR2NAV))));
 
+  // set AAT data
+  _aatOff.Select();
+  for(unsigned i=2;i<=20;i++)
+    _aatTime.Add(Convert(i * 15));
+
   // set default task
-  _fplDefault.Select();
   std::string fplPath;
   CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath, fplPath);
-  _fplPath.String(fplPath);
 
-  _condor = std::auto_ptr<CCondor>(new CCondor(_condorPath, fplPath));
+  try {
+    _condor = std::auto_ptr<CCondor>(new CCondor(_condorPath, fplPath));
+    _fplPath.String(fplPath);
+    AATCheck();
+    _fplDefault.Select();
+  }
+  catch(const Exception &)
+  {
+    _fplDefault.Disable();
+    _fplOther.Select();
+    _fplSelect.Enable();
+    _translate.Disable();
+  }
 
   // check if last result is available
   try
@@ -117,13 +132,6 @@ _error(CLogger::TYPE_ERROR, _log)
   {
     _fplLastRace.Disable();
   }
-  
-  _aatOff.Select();
-  for(unsigned i=2;i<=20;i++)
-    _aatTime.Add(Convert(i * 15));
-
-  // set AAT data
-  AATCheck();
 }
 
 
