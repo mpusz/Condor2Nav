@@ -5,6 +5,7 @@
 Version: 2.1 (WIP)
 ==================
 - LK8000 1.20b support aded (profile file format updated)
+- Condor installation path lookout problem fixed
 
 Version: 2.0
 ============

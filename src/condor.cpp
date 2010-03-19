@@ -203,7 +203,16 @@ std::string condor2nav::CCondor::InstallPath()
 {
   std::string condorPath;
   HKEY hTestKey;
-  if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
+
+  if((RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
+    DWORD bufferSize = 0;
+    RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, NULL, &bufferSize);
+    std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
+    RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
+    condorPath = buffer.get();
+    RegCloseKey(hTestKey);
+  }
+  else if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
     // check for Condor 1.1.2
     DWORD bufferSize = 0;
     RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, NULL, &bufferSize);
