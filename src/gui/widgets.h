@@ -60,6 +60,7 @@ namespace condor2nav {
     class CWidgetButton : public CWidget {
     public:
       CWidgetButton(HWND hwndParent, int id, bool disabled = false);
+      void Click() const;
     };
 
 
@@ -131,6 +132,7 @@ namespace condor2nav {
       void Add(const std::string &str) const;
       std::string Selection() const;
       bool ItemSelected() const;
+      void String(const std::string &str) const;
     };
 
 

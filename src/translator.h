@@ -161,7 +161,7 @@ namespace condor2nav {
   private:
     const CCondor2Nav &_app;
     const CFileParserINI &_configParser;          ///< @brief Configuration INI file parser.
-    const CCondor _condor;                        ///< @brief Condor data.
+    const CCondor &_condor;                       ///< @brief Condor data.
     const unsigned _aatTime;                      ///< @brief Minimum time for AAT task
 
     CTranslator(const CTranslator &);                     ///< @brief Disallowed
@@ -175,7 +175,7 @@ namespace condor2nav {
     static const char *SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
     static const char *GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
 
-    CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const std::string &condorPath, const std::string &fplPath, unsigned aatTime);
+    CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const CCondor &condor, unsigned aatTime);
     void Run();
     const CCondor2Nav &App() const { return _app; }
   };

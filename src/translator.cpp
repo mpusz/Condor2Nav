@@ -133,15 +133,14 @@ const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
  * condor2nav::CTranslator class constructor. 
  *
  * @param app          The application. 
- * @param configParser Configuration file parser. 
- * @param condorPath   The path to Condor. 
+ * @param condor       The Condor wrapper.
  * @param fplPath      Condor FPL file to convert path. 
  * @param aatTime      Minimum time for AAT task. 
  */
-condor2nav::CTranslator::CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const std::string &condorPath, const std::string &fplPath, unsigned aatTime):
+condor2nav::CTranslator::CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const CCondor &condor, unsigned aatTime):
 _app(app),
 _configParser(configParser),
-_condor(condorPath, fplPath),
+_condor(condor),
 _aatTime(aatTime)
 {
 }

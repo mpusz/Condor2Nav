@@ -35,6 +35,8 @@
  */
 namespace condor2nav {
 
+  class CCondor;
+
   /**
    * @brief Condor2Nav CLI interface namespace.
    */
@@ -67,6 +69,7 @@ namespace condor2nav {
 
       void Usage() const;
       void CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const;
+      bool AATCheck(const CCondor &condor, unsigned &aatTime) const;
 
     public:
       CCondor2NavCLI();

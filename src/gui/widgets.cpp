@@ -96,6 +96,14 @@ CWidget(hwndParent, id, disabled)
 }
 
 
+/**
+* @brief Generates button click event. 
+*/
+void condor2nav::gui::CWidgetButton::Click() const
+{
+  SendMessage(Hwnd(), BM_CLICK, 0, 0);
+}
+
 
 /**
 * @brief Class constructor. 
@@ -222,6 +230,18 @@ bool condor2nav::gui::CWidgetComboBox::ItemSelected() const
 {
   return SendMessage(Hwnd(), CB_GETCURSEL, 0, 0) != CB_ERR;
 }
+
+
+/**
+ * @brief Sets provided string inside the widget. 
+ *
+ * @param str The string to set. 
+ */
+void condor2nav::gui::CWidgetComboBox::String(const std::string &str) const
+{
+  SendMessage(Hwnd(), WM_SETTEXT, 0, (LPARAM)str.c_str());
+}
+
 
 
 /**

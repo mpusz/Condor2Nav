@@ -27,6 +27,7 @@
 
 #include "condor2navCLI.h"
 #include "translator.h"
+#include "condor.h"
 #include <iostream>
 
 
@@ -93,7 +94,9 @@ void condor2nav::cli::CCondor2NavCLI::Usage() const
   Log() << std::endl;
   Log() << "  -h                    - that help message" << std::endl;
   Log() << "  --aat <TASK_MIN_TIME> - convert a task as AAT with provided Task Minimum Time" << std::endl;
-  Log() << "                          in minutes" << std::endl;
+  Log() << "                          in minutes. AAT task data is automatically detected for" << std::endl;
+  Log() << "                          files directly downloaded from http://condor-club.eu" << std::endl;
+  Log() << "                          so that parameter does not need to be provided." << std::endl;
   Log() << "  --default             - run translation for default FPL file" << std::endl;
   Log() << "                          (Default FPL file name is specified in condor2nav.ini file)" << std::endl;
   Log() << "  --last-race           - convert last flown race" << std::endl;
@@ -104,8 +107,6 @@ void condor2nav::cli::CCondor2NavCLI::Usage() const
   Log() << "  <FPL_PATH>            - full path to Condor FPL file" << std::endl;
   Log() << "                          (The same result can be achieved i.e. by drag-and-drop" << std::endl;
   Log() << "                           of FPL file in Windows Explorer onto condor2nav.exe icon)" << std::endl;
-  Log() << "Running condor2nav.exe with no arguments will provide interactive menu that allows" << std::endl;
-  Log() << "to set required translation options." << std::endl;
 }
 
 
@@ -161,6 +162,48 @@ void condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[], TFP
 
 
 /**
+ * @brief Checks if condor-club AAT task file.
+ *
+ * Method Checks if condor-club AAT task file is provided. It looks for certain entries
+ * that are added by http://condor-club.eu server to the file.
+ *
+ * @param condor Condor wrapper. 
+ * @param aatTime AAT time provided from command line. 
+ * 
+ * @return Operation status.
+ */
+bool condor2nav::cli::CCondor2NavCLI::AATCheck(const CCondor &condor, unsigned &aatTime) const
+{
+  try {
+    const CFileParserINI &taskParser = condor.TaskParser();
+    if(taskParser.Value("Task", "AAT") == "Distance") {
+      Error() << "ERROR: AAT/D tasks are not supported!!!" << std::endl;
+    }
+    else if(taskParser.Value("Task", "AAT") == "Speed") {
+      try {
+        unsigned time = Convert<unsigned>(taskParser.Value("Task", "DesignatedTime"));
+        if(aatTime > 0 && aatTime != time) {
+          Warning() << "WARNING: Provided AAT time (" << aatTime << ") is different than condor-club time (" << time << ")!" << std::endl;
+        }
+        else if(aatTime == 0) {
+          aatTime = time;
+          Log() << "Autodetected AAT time: " << aatTime << " minutes." << std::endl;
+        }
+      }
+      catch(EOperationFailed &) {
+        Error() << "ERROR: Corrupted condor-club task file!!!" << std::endl;
+        return false;
+      }
+    }
+  }
+  catch(EOperationFailed &) {
+  }
+
+  return true;
+}
+
+
+/**
  * @brief Runs translation.
  *
  * Method is responsible for command line handling and running the translation.
@@ -187,8 +230,13 @@ int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
   // create Condor FPL file path
   CCondor::FPLPath(configParser, fplType, condorPath, fplPath);
   
+  // create Condor wrapper
+  CCondor condor(condorPath, fplPath);
+  if(!AATCheck(condor, aatTime))
+    return EXIT_FAILURE;
+
   // run translation
-  CTranslator translator(*this, configParser, condorPath, fplPath, aatTime);
+  CTranslator translator(*this, configParser, condor, aatTime);
   translator.Run();
   
   return EXIT_SUCCESS;

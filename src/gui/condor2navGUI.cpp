@@ -29,7 +29,7 @@
 #include "condor2navGUI.h"
 #include "resource.h"
 #include "translator.h"
-
+#include "condor.h"
 
 
 /**
@@ -106,6 +106,8 @@ _error(CLogger::TYPE_ERROR, _log)
   CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath, fplPath);
   _fplPath.String(fplPath);
 
+  _condor = std::auto_ptr<CCondor>(new CCondor(_condorPath, fplPath));
+
   // check if last result is available
   try
   {
@@ -119,6 +121,36 @@ _error(CLogger::TYPE_ERROR, _log)
   _aatOff.Select();
   for(unsigned i=2;i<=20;i++)
     _aatTime.Add(Convert(i * 15));
+
+  // set AAT data
+  AATCheck();
+}
+
+
+/**
+ * @brief Checks if condor-club AAT task file.
+ *
+ * Method Checks if condor-club AAT task file is provided. It looks for certain entries
+ * that are added by http://condor-club.eu server to the file.
+ */
+void condor2nav::gui::CCondor2NavGUI::AATCheck() const
+{
+  try {
+    const CFileParserINI &taskParser = _condor->TaskParser();
+    if(taskParser.Value("Task", "AAT") == "Distance")
+      Error() << "ERROR: AAT/D tasks are not supported!!!" << std::endl;
+    else if(taskParser.Value("Task", "AAT") == "Speed") {
+      _aatOn.Click();
+      try {
+        _aatTime.String(taskParser.Value("Task", "DesignatedTime"));
+      }
+      catch(EOperationFailed &) {
+        Error() << "ERROR: Corrupted condor-club task file!!!" << std::endl;
+      }
+    }
+  }
+  catch(EOperationFailed &) {
+  }
 }
 
 
@@ -142,6 +174,7 @@ bool condor2nav::gui::CCondor2NavGUI::TranslateValid() const
  */
 void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int command)
 {
+  bool fplChanged = false;
   bool changed = false;
 
   switch(controlID) {
@@ -154,7 +187,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath, fplPath);
       _fplPath.String(fplPath);
 
-      changed = true;
+      fplChanged = true;
     }
     break;
 
@@ -167,7 +200,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath, fplPath);
       _fplPath.String(fplPath);
 
-      changed = true;
+      fplChanged = true;
     }
     break;
 
@@ -202,8 +235,10 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_READONLY;
 
       // Display the Open dialog box. 
-      if(GetOpenFileName(&ofn) == TRUE)
+      if(GetOpenFileName(&ofn) == TRUE) {
         _fplPath.String(ofn.lpstrFile);
+        fplChanged = true;
+      }
 
       changed = true;
     }
@@ -236,7 +271,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       try
       {
         _log.Clear();
-        CTranslator(*this, _configParser, _condorPath, _fplPath.String(), _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
+        CTranslator(*this, _configParser, *_condor, _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
       }
       catch(const Exception &ex)
       {
@@ -246,8 +281,12 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
     break;
   }
 
-  if(changed) {
+  if(changed || fplChanged)
     _log.Clear();
-    TranslateValid() ? _translate.Enable() : _translate.Disable();
+  if(fplChanged) {
+    _condor = std::auto_ptr<CCondor>(new CCondor(_condorPath, _fplPath.String()));
+    AATCheck();
   }
+  if(changed || fplChanged)
+    TranslateValid() ? _translate.Enable() : _translate.Disable();
 }

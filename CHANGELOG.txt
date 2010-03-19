@@ -7,6 +7,7 @@ Version: 2.1 (WIP)
 - LK8000 1.20b support aded (profile file format updated)
 - Condor installation path lookout problem fixed
 - gotland v1.01 scenery added
+- http://condor-club.eu AAT tasks auto detection support added
 
 Version: 2.0
 ============
