@@ -64,7 +64,7 @@ CAPTION "About Condor2Nav"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDI_CONDOR2NAV,IDC_STATIC,14,14,20,20
-    LTEXT           "Condor2Nav 2.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Condor2Nav 2.2",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2009-2010 Mateusz Pusz",IDC_STATIC,42,26,151,8
     DEFPUSHBUTTON   "OK",IDOK,161,74,50,14,WS_GROUP
     LTEXT           "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under GNU GPL conditions.",IDC_STATIC,17,44,187,29

@@ -2,8 +2,8 @@
  Condor2Nav
 ============
 
-Version: 2.2 (WIP)
-==================
+Version: 2.2
+============
 - GUI error for not existing default Condor FPL file fixed
 
 Version: 2.1
