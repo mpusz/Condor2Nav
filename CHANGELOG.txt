@@ -2,8 +2,8 @@
  Condor2Nav
 ============
 
-Version: 2.1 (WIP)
-==================
+Version: 2.1
+============
 - LK8000 1.20b support aded (profile file format updated)
 - Condor installation path lookout problem fixed
 - gotland v1.01 scenery added

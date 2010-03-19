@@ -1,5 +1,5 @@
 ================
- Condor2Nav 2.0
+ Condor2Nav 2.1
 ================
 
 http://sf.net/projects/condor2nav
