@@ -309,6 +309,6 @@ condor2nav::CCondor::CCondor(const std::string &condorPath, const std::string &f
 _taskParser(fplPath),
 _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
 {
-  if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) != CONDOR_VERSION_SUPPORTED)
+  if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) < CONDOR_VERSION_SUPPORTED)
     throw EOperationFailed("Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!");
 }

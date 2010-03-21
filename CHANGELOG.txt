@@ -5,6 +5,7 @@
 Version: 2.3
 ============
 - Task reload problem fixed
+- Condor 1.1.3 support added
 
 Version: 2.2
 ============
