@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version: 2.3
+============
+- Task reload problem fixed
+
 Version: 2.2
 ============
 - GUI error for not existing default Condor FPL file fixed

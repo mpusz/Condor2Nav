@@ -66,7 +66,6 @@ namespace condor2nav {
       const HWND _hDlg;	                      ///< @brief The dialog handle
       const std::string _condorPath;	      ///< @brief Full pathname of the Condor directory
       const CFileParserINI _configParser;	  ///< @brief The INI file configuration parser
-      std::auto_ptr<CCondor> _condor;         ///< @brief The Condor wrapper
 
       CWidgetRadioButton _fplDefault;	      ///< @brief The default FPL button
       CWidgetRadioButton _fplLastRace;        ///< @brief The last race FPL button
@@ -87,7 +86,7 @@ namespace condor2nav {
       CLogger _warning;                       ///< @brief Warning logging level logger
       CLogger _error;                         ///< @brief Error logging level logger
 
-      void AATCheck() const;
+      void AATCheck(const CCondor &condor) const;
       bool TranslateValid() const;
 
     public:
