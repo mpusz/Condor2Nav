@@ -155,8 +155,14 @@ void condor2nav::DirectoryCreate(const std::string &dirName)
     size_t pos = 0;
     while(pos != std::string::npos) {
       pos = dirName.find_first_of("/\\", pos);
-      if(pos == 0) {
-        if(dirName[1] == '\\') {
+      if(dirName[1] == ':' && (pos == 2 || dirName.size() == 2)) {
+        // disk drive prefix
+        if(dirName.size() <= 3)
+          break;
+        pos = dirName.find_first_of("/\\", 3);
+      }
+      else if(pos == 0) {
+        if(dirName.size() > 1 && dirName[1] == '\\') {
           // network path
           pos = dirName.find_first_of("/\\", 2);
           // skip computer name also

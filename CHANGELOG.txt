@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version: 2.4
+============
+- Translate to disk drive path problem fixed
+
 Version: 2.3
 ============
 - Task reload problem fixed
