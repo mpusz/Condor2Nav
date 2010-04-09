@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version: 2.5 (WIP)
+==================
+- FitzRoy v1.00 scenery added
+
 Version: 2.4
 ============
 - Translate to disk drive path problem fixed
