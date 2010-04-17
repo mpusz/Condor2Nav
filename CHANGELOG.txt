@@ -6,6 +6,7 @@ Version: 2.5 (WIP)
 ==================
 - FitzRoy v1.00 scenery added
 - Central_GER v2.0 scenery added
+- SouthWest_GER v1.01 scenery added
 
 Version: 2.4
 ============
