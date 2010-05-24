@@ -84,7 +84,7 @@ _error(CLogger::TYPE_ERROR)
  */
 void condor2nav::cli::CCondor2NavCLI::Usage() const
 {
-  Log() << "Condor2Nav 2.4 Copyright (C) 2009-2010 Mateusz Pusz" << std::endl;
+  Log() << "Condor2Nav 2.5 Copyright (C) 2009-2010 Mateusz Pusz" << std::endl;
   Log() << std::endl;
   Log() << "This program comes with ABSOLUTELY NO WARRANTY. This is free software," << std::endl;
   Log() << "and you are welcome to redistribute it under GNU GPL conditions." << std::endl;
