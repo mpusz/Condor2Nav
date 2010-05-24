@@ -8,6 +8,7 @@ Version: 2.5 (WIP)
 - Central_GER v2.0.1 scenery added
 - SouthWest_GER v1.01 scenery added
 - Slovak Rep v1.0 scenery added
+- EastHungary v2.0 scenery added
 
 Version: 2.4
 ============
