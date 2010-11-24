@@ -43,8 +43,6 @@ namespace condor2nav {
    * to XCSoar (http://www.xcsoar.org) format.
    */
   class CTargetXCSoarCommon : public CTranslator::CTarget {
-    unsigned WaypointBearing(double lon1, double lat1, double lon2, double lat2) const;
-    
   protected:
     /**
      * @brief Waypoint data.
@@ -61,10 +59,6 @@ namespace condor2nav {
     };
     typedef std::vector<TWaypoint> CWaypointArray;
 
-    typedef void (CTargetXCSoarCommon::*FTaskDump)(CFileParserINI &, const std::string &, const xcsoar::SETTINGS_TASK &, const xcsoar::TASK_POINT *, const xcsoar::START_POINT *, const CWaypointArray &) const;
-    void TaskDumpXCSoar(CFileParserINI &profileParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
-    void TaskDumpLK8000(CFileParserINI &profileParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
-
     // outputs
     static const char *OUTPUT_PROFILE_NAME;      ///< @brief The name of XCSoar profile file to generate. 
     static const char *TASK_FILE_NAME;           ///< @brief The name of XCSoar task file to generate. 
@@ -74,12 +68,14 @@ namespace condor2nav {
     static const char *WP_FILE_NAME;             ///< @brief The name of XCSoar WP file with task waypoints.
     static const unsigned WAYPOINT_INDEX_OFFSET = 100000; ///< @brief A big value that should point behind all the waypoints
 
+    unsigned WaypointBearing(double lon1, double lat1, double lon2, double lat2) const;
+    virtual void TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const = 0;
     void SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const;
     void SceneryTimeProcess(CFileParserINI &profileParser) const;
     void GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, bool wingArea, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
     void TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv,
                      const CFileParserCSV::CStringArray &sceneryData, const std::string &outputTaskFilePath,
-                     unsigned aatTime, unsigned maxTaskPoints, unsigned maxStartPoints, FTaskDump taskDumpFunc,
+                     unsigned aatTime, unsigned maxTaskPoints, unsigned maxStartPoints,
                      bool generateWPFile, const std::string &wpOutputPathPrefix) const;
     void PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const;
     void WeatherProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser) const;

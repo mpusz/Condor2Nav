@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="condor2nav"
 	ProjectGUID="{1193780C-0BA4-4948-A77C-761E5E3C6E65}"
 	RootNamespace="condor2nav"
@@ -197,6 +197,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\targetXCSoar6.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\targetXCSoarCommon.cpp"
 				>
 			</File>
@@ -256,6 +260,10 @@
 			</File>
 			<File
 				RelativePath=".\targetXCSoar.h"
+				>
+			</File>
+			<File
+				RelativePath=".\targetXCSoar6.h"
 				>
 			</File>
 			<File

@@ -61,7 +61,9 @@ namespace condor2nav {
     std::string _outputPolarsSubDir;             ///< @brief The subdirectory where output LK8000 polars file should be located
     std::string _outputTaskFilePath;             ///< @brief The path where output LK8000 task file should be located
     std::string _outputWaypointsSubDir;          ///< @brief The subdirectory where output LK8000 waypoints file should be located
-    
+
+    virtual void TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
+
   public:
     explicit CTargetLK8000(const CTranslator &translator);
     virtual ~CTargetLK8000();

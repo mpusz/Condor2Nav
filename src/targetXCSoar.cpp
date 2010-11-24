@@ -27,6 +27,7 @@
 
 #include "targetXCSoar.h"
 #include "imports/xcsoarTypes.h"
+#include "ostream.h"
 
 
 const char *condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME    = "xcsoar-registry.prf";
@@ -78,6 +79,62 @@ condor2nav::CTargetXCSoar::~CTargetXCSoar()
 {
   _profileParser->Dump(_outputCondor2NavDataPath + std::string("\\") + OUTPUT_PROFILE_NAME);
 }
+
+
+/**
+ * @brief Dumps waypoints in XCSoar format. 
+ *
+ * Method dumps waypoints in XCSoar format.
+ *
+ * @param profileParser      XCSoar profile file parser.
+ * @param taskParser         Condor task parser. 
+ * @param outputTaskFilePath The output task file path
+ * @param settingsTask       Task settings
+ * @param taskPointArray     Task points array
+ * @param startPointArray    Task start points array
+ * @param waypointArray      The array of waypoints data.
+ */
+void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
+{
+  using namespace xcsoar;
+
+  COStream tskFile(outputTaskFilePath);
+
+  tskFile.Write(reinterpret_cast<const char *>(taskPointArray), MAXTASKPOINTS * sizeof(TASK_POINT));
+
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATEnabled), sizeof(settingsTask.AATEnabled));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATTaskLength), sizeof(settingsTask.AATTaskLength));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishRadius), sizeof(settingsTask.FinishRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.FinishType), sizeof(settingsTask.FinishType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartRadius), sizeof(settingsTask.StartRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.StartType), sizeof(settingsTask.StartType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorType), sizeof(settingsTask.SectorType));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.SectorRadius), sizeof(settingsTask.SectorRadius));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AutoAdvance), sizeof(settingsTask.AutoAdvance));
+  tskFile.Write(reinterpret_cast<const char *>(&settingsTask.EnableMultipleStartPoints), sizeof(settingsTask.EnableMultipleStartPoints));
+
+  tskFile.Write(reinterpret_cast<const char *>(startPointArray), MAXSTARTPOINTS * sizeof(START_POINT));
+
+  WAYPOINT *taskWaypointArray = new WAYPOINT[MAXTASKPOINTS];
+  memset(taskWaypointArray, 0, MAXTASKPOINTS * sizeof(WAYPOINT));
+  WAYPOINT *startWaypointArray = new WAYPOINT[MAXSTARTPOINTS];
+  memset(startWaypointArray, 0, MAXSTARTPOINTS * sizeof(WAYPOINT));
+
+  for(unsigned i=0; i<waypointArray.size(); i++) {
+    taskWaypointArray[i].Number = waypointArray[i].number;
+    taskWaypointArray[i].Latitude = waypointArray[i].latitude;
+    taskWaypointArray[i].Longitude = waypointArray[i].longitude;
+    taskWaypointArray[i].Altitude = waypointArray[i].altitude;
+    taskWaypointArray[i].Flags = waypointArray[i].flags;
+    mbstowcs(taskWaypointArray[i].Name, waypointArray[i].name.c_str(), NAME_SIZE);
+    mbstowcs(taskWaypointArray[i].Comment, waypointArray[i].comment.c_str(), COMMENT_SIZE);
+    taskWaypointArray[i].InTask = true;
+  }
+  
+  tskFile.Write(reinterpret_cast<const char *>(taskWaypointArray), MAXTASKPOINTS * sizeof(WAYPOINT));
+  tskFile.Write(reinterpret_cast<const char *>(startWaypointArray), MAXSTARTPOINTS * sizeof(WAYPOINT));
+}
+
 
 
 /**
@@ -148,7 +205,7 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("XCSoar", "TaskWPFileGenerate")));
   TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
-              xcsoar::MAXTASKPOINTS, xcsoar::MAXSTARTPOINTS, &CTargetXCSoar::TaskDumpXCSoar,
+              xcsoar::MAXTASKPOINTS, xcsoar::MAXSTARTPOINTS,
               wpFile > 0, _outputCondor2NavDataPath);
 }
  

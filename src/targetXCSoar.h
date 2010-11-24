@@ -49,6 +49,8 @@ namespace condor2nav {
     std::string _condor2navDataPath;             ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar.
     std::string _outputTaskFilePath;             ///< @brief The path where output XCSoar task file should be located
     
+    virtual void TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
+
   public:
     explicit CTargetXCSoar(const CTranslator &translator);
     virtual ~CTargetXCSoar();

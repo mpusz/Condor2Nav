@@ -29,6 +29,7 @@
 #include "condor2nav.h"
 #include "condor.h"
 #include "targetXCSoar.h"
+#include "targetXCSoar6.h"
 #include "targetLK8000.h"
 
 
@@ -156,8 +157,15 @@ _aatTime(aatTime)
 std::auto_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target() const
 {
   std::string target = _configParser.Value("Condor2Nav", "Target");
-  if(target == "XCSoar")
-    return std::auto_ptr<CTarget>(new CTargetXCSoar(*this));
+  if(target == "XCSoar") {
+    std::string version = _configParser.Value("XCSoar", "Version");
+    if(version == "5")
+      return std::auto_ptr<CTarget>(new CTargetXCSoar(*this));
+    else if(version == "6")
+      return std::auto_ptr<CTarget>(new CTargetXCSoar6(*this));
+    else
+      throw EOperationFailed("ERROR: Unknown XCSoar version '" + version + "'!!!");
+  }
   else if(target == "LK8000")
     return std::auto_ptr<CTarget>(new CTargetLK8000(*this));
   else
