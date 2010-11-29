@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version 3.0 (WIP)
+===========
+- XCSoar 6.0 support added
+
 Version: 2.5
 ============
 - FitzRoy v1.00 scenery added
