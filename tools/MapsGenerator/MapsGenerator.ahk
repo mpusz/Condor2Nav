@@ -189,15 +189,12 @@ TerrainDownload(lk8000)
 
 ; ************************ D E P E N D E N C Y   C H E C K S *******************************
 
-RegRead condorPath, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Condor: The Competition Soaring Simulator, DisplayIcon
+RegRead condorDir, HKEY_LOCAL_MACHINE, SOFTWARE\Condor, InstallDir
 If ErrorLevel
 {
 	MsgBox Condor not installed!!!
 	ExitApp
 }
-StringGetPos, pos, condorPath, Condor.exe
-condorDir := SubStr(condorPath, 1, pos - 1)
-
 
 RegRead landscapeEditorPath, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Condor Scenery Toolkit, DisplayIcon
 if ErrorLevel
@@ -207,15 +204,13 @@ if ErrorLevel
 }
 
 
-RegRead zipUninstPath, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7-Zip, UninstallString
+RegRead zipInstPath, HKEY_LOCAL_MACHINE, SOFTWARE\7-Zip, Path
 If ErrorLevel
 {
 	MsgBox 7-zip not installed!!!
 	ExitApp
 }
-StringTrimLeft zipUninstPath, zipUninstPath, 1
-StringTrimRight zipUninstPath, zipUninstPath, 1
-zipAppPath := RegExReplace(zipUninstPath, "Uninstall\.exe$", "7z.exe")
+zipAppPath := %zipInstPath%\7z.exe
 
 
 
@@ -237,6 +232,7 @@ Loop %condorDir%\Landscapes\*, 2
 ; ask which landscape should be translated
 Gui, Add, Text,, Please select desired landscape:
 Gui, Add, DropDownList, VlandscapeName wp, %lanscapesList%
+Gui, Add, Checkbox, VlandscapeName wp, %lanscapesList%
 Gui, Add, Button, default wp, OK
 Gui, Show
 Return
@@ -255,6 +251,7 @@ If landscapeName =
 ; obtain scenery version
 IniRead landscapeVersion, %condorDir%\Landscapes\%landscapeName%\%landscapeName%.ini, General, Version
 
+ExitApp
 
 
 
