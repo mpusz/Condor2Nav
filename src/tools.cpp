@@ -53,11 +53,11 @@ namespace condor2nav {
  */
 std::string condor2nav::DDFF2DDMMFF(double value, bool longitude)
 {
-  int deg = static_cast<int>(value);
-  if(deg < 0)
-    deg = -deg;
-  double min = (value - deg) * 60;
-
+  double absValue = value;
+  if(value < 0)
+    absValue = -absValue;
+  unsigned deg = static_cast<unsigned>(absValue);
+  double min = (absValue - deg) * 60;
   std::stringstream stream;
   stream.setf(std::ios::fixed, std::ios::floatfield);
   stream.setf(std::ios::showpoint);
@@ -80,11 +80,12 @@ std::string condor2nav::DDFF2DDMMFF(double value, bool longitude)
  */
 std::string condor2nav::DDFF2DDMMSS(double value, bool longitude)
 {
-  int deg = static_cast<int>(value);
-  if(deg < 0)
-    deg = -deg;
-  unsigned min = static_cast<unsigned>((value - deg) * 60);
-  unsigned sec = static_cast<unsigned>(((value - deg) * 60 - min) * 60);
+  double absValue = value;
+  if(value < 0)
+    absValue = -absValue;
+  unsigned deg = static_cast<unsigned>(absValue);
+  unsigned min = static_cast<unsigned>((absValue - deg) * 60);
+  unsigned sec = static_cast<unsigned>(((absValue - deg) * 60 - min) * 60);
   std::stringstream stream;
   stream << std::setfill('0') << std::setw(longitude ? 3 : 2) << deg << ":" << std::setw(2) << min << ":" << std::setw(2) << sec << (longitude ? (value > 0 ? "E" : "W") : (value > 0 ? "N" : "S"));
   return stream.str();
