@@ -65,6 +65,12 @@ CTranslator::CTarget(translator)
 void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const
 {
   profileParser.Value("", "MapFile", "\"" + pathPrefix + "\\" + sceneryData.at(SCENERY_XCM_FILE) + "\"");
+
+  // reset landscape specific files in case they were set before profile import
+  // if need user can still assign additionl data with second entries
+  profileParser.Value("", "TerrainFile", "\"\"");
+  profileParser.Value("", "WPFile", "\"\"");
+  profileParser.Value("", "AirfieldFile", "\"\"");
 }
 
 

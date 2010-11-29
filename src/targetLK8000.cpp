@@ -118,7 +118,7 @@ condor2nav::CTargetLK8000::~CTargetLK8000()
 void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
 {
   using namespace lk8000;
-  std::string ver = "LK2" + Convert(lk8000::MAXTASKPOINTS) + Convert(lk8000::MAXSTARTPOINTS);
+  std::string ver = "LK" + Convert(LK_TASK_VERSION) + Convert(lk8000::MAXTASKPOINTS) + Convert(lk8000::MAXSTARTPOINTS);
   char version[50] = { 0 };
   sprintf(version, ver.c_str());
 

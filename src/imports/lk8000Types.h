@@ -57,25 +57,26 @@ namespace lk8000 {
  
   using namespace xcsoar;
 
-#define LK8000_VER_1_20
+#define LK8000_VER_1_24
 
-#ifdef LK8000_VER_1_20
+#ifdef LK8000_VER_1_24
+  const unsigned LK_TASK_VERSION = 3;
+#else
+  const unsigned LK_TASK_VERSION = 2;
+#endif
 
   const unsigned MAXTASKPOINTS   = 20;
   const unsigned MAXSTARTPOINTS  = 20;
   const unsigned NAME_SIZE       = 30;
+#ifdef LK8000_VER_1_24
+  const unsigned COMMENT_SIZE    = 250;
+#else
   const unsigned COMMENT_SIZE    = 150;
+#endif
 
   const unsigned CUPSIZE_COUNTRY = 10;
   const unsigned CUPSIZE_CODE    = 15;
   const unsigned CUPSIZE_FREQ    = 15;
-
-#else
-
-  const unsigned MAXTASKPOINTS = 30;
-  const unsigned MAXSTARTPOINTS = 30;
-
-#endif
 
   struct WAYPOINT
   {
@@ -85,7 +86,11 @@ namespace lk8000 {
     double Altitude;
     int Flags;
     wchar_t Name[NAME_SIZE + 1];
+#ifdef LK8000_VER_1_24
+    wchar_t *Comment;
+#else
     wchar_t Comment[COMMENT_SIZE + 1];
+#endif
     POINT Screen;
     int Zoom;
     BOOL Reachable;
@@ -96,7 +101,6 @@ namespace lk8000 {
     bool FarVisible;
     int FileNum; // which file it is in, or -1 to delete
 
-#ifdef LK8000_VER_1_20
     short Format;
     wchar_t Code[CUPSIZE_CODE + 1];
     wchar_t Freq[CUPSIZE_FREQ + 1];
@@ -104,7 +108,6 @@ namespace lk8000 {
     int   RunwayDir;
     wchar_t Country[CUPSIZE_COUNTRY + 1];
     short Style;
-#endif
   };
 
 }

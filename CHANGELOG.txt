@@ -5,6 +5,7 @@
 Version 3.0 (WIP)
 ===========
 - XCSoar 6.0 support added
+- LK8000 1.24 version support added
 
 Version: 2.5
 ============
