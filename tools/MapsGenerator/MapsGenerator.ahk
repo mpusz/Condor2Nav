@@ -38,6 +38,25 @@ landscapeEditorAirportPropertiesTitle = Airport properties
 
 ; ************************ F U N C T I O N S *******************************
 
+
+Min(a, b)
+{
+	If(a<b)
+		return a
+	Else
+		return b
+}
+
+
+Max(a, b)
+{
+	If(a>b)
+		return a
+	Else
+		return b
+}
+
+
 Coordinates(document, coord, lat, guiPrefix)
 {
 	If(lat) {
@@ -79,7 +98,7 @@ Coordinates(document, coord, lat, guiPrefix)
 }
 
 
-TerrainDownload(lk8000)
+XCSoarTerrainDownload()
 {
 	global landscapeName
 	global landscapeVersion
@@ -87,7 +106,6 @@ TerrainDownload(lk8000)
 	global minLat
 	global maxLon
 	global minLon
-	global LK8000OutputPath
 	global XCSoarOutputPath
 	global fileName
 
@@ -107,29 +125,18 @@ TerrainDownload(lk8000)
 
 	; fill general landscape information
 	document := COM_Invoke(pwb, "Document")
-	If(lk8000)
-	{
-		fileName := "terrain"
-		trnName := fileName
-	}
-	Else
-	{
-		fileName := landscapeName . "_" . landscapeVersion
-		StringReplace trnName, fileName, ., _, All
-		StringReplace trnName, trnName, %A_SPACE%, _, All
-		StringReplace trnName, trnName, -, _, All
-		StringTrimRight trnName, trnName, StrLen(trnName) - 20
-	}
+	fileName := landscapeName . "_" . landscapeVersion
+	StringReplace trnName, fileName, ., _, All
+	StringReplace trnName, trnName, %A_SPACE%, _, All
+	StringReplace trnName, trnName, -, _, All
+	StringTrimRight trnName, trnName, StrLen(trnName) - 20
 	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "areaname"), "Item", 0), "value", trnName)
 	email = user@wp.pl
 	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "email"), "Item", 0), "value", email)
 	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "email_confirm"), "Item", 0), "value", email)
 	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "distance_units"), "Item", 0), "checked", "true")
 	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "selection_method"), "Item", 2), "checked", "true")
-	if(lk8000)
-		COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "generate_xcm"), "Item", 0), "checked", "true")
-	else
-		COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "generate_xcm"), "Item", 1), "checked", "true")
+	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "generate_xcm"), "Item", 1), "checked", "true")
 
 	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByTagName", "FORM"), "Item", 0), "submit")
 	Sleep 1000
@@ -140,8 +147,8 @@ TerrainDownload(lk8000)
 	; fill lanscape coordinates
 	Coordinates(document, maxLat, true, "top")
 	Coordinates(document, minLat, true, "bottom")
-	Coordinates(document, maxLon, false, "left")
-	Coordinates(document, minLon, false, "right")
+	Coordinates(document, maxLon, false, "right")
+	Coordinates(document, minLon, false, "left")
 
 	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByTagName", "FORM"), "Item", 0), "submit")
 	Sleep 5000
@@ -173,10 +180,7 @@ TerrainDownload(lk8000)
 	}
 
 	; download terrain file
-	if(lk8000)
-		terrainPath = %LK8000OutputPath%\Maps\%fileName%.zip
-	else
-		terrainPath = %XCSoarOutputPath%\Maps\%fileName%.xcm
+	terrainPath = %XCSoarOutputPath%\Maps\%fileName%.xcm
 	FileDelete %terrainPath%
 	UrlDownloadToFile http://xcsoar.dd.com.au/cgi-bin/terrain.pl?rm=download_file, %terrainPath%
 
@@ -187,9 +191,104 @@ TerrainDownload(lk8000)
 }
 
 
+atan2(x, y)
+{    ; 4-quadrant atan
+   Return dllcall("msvcrt\atan2","Double",x, "Double",y, "CDECL Double")
+}
+
+
+; calculate haversine distance for linear distance
+haversine_km(lat1, lon1, lat2, lon2)
+{
+	r := 6371
+	d2r := 0.01745329252  ; pi/180
+    dlat := (lat2 - lat1) * d2r
+    dlon := (lon2 - lon1) * d2r
+    a := (sin(dlat/2.0) ** 2) + cos(lat1*d2r) * cos(lat2*d2r) * (sin(dlon/2.0) ** 2)
+    c := 2 * atan2(sqrt(a), sqrt(1-a))
+    d := r * c
+
+    return d
+}
+
+
+LK8000MapTemplate()
+{
+	global landscapeName
+	global landscapeVersion
+	global maxLat
+	global minLat
+	global maxLon
+	global minLon
+	global LK8000OutputPath
+
+	path = %LK8000OutputPath%\Maps\%landscapeName%_%landscapeVersion%.TXT
+	FileDelete %path%
+	FileAppend NAME=%landscapeName%_%landscapeVersion%`n, %path%
+	FileAppend DIR=CONDOR`n, %path%
+	FileAppend `n, %path%
+
+	lonMin := Round(Floor(minLon * 10) / 10, 1)
+	FileAppend LONMIN=%lonMin%`n, %path%
+	lonMax := Round(Ceil(maxLon * 10) / 10, 1)
+	FileAppend LONMAX=%lonMax%`n, %path%
+	latMin := Round(Floor(minLat * 10) / 10, 1)
+	FileAppend LATMIN=%latMin%`n, %path%
+	latMax := Round(Ceil(maxLat * 10) / 10, 1)
+	FileAppend LATMAX=%latMax%`n, %path%
+	FileAppend `n, %path%
+
+	x := haversine_km(latMax, lonMin, latMax, lonMax)
+	y := haversine_km(latMin, lonMin, latMax, lonMin)
+	area := x * y
+
+	res1000 = NO
+	res500 = NO
+	res250 = NO
+	If(area < 270*270)
+		res250 = YES
+	Else If(area < 540*540)
+		res500 = YES
+	Else
+		res1000 = YES
+
+	FileAppend RES1000=%res1000%`n, %path%
+	FileAppend RES500=%res500%`n, %path%
+	FileAppend RES250=%res250%`n, %path%
+	FileAppend RES90=NO`n, %path%
+	FileAppend `n, %path%
+
+	FileAppend TOPOLOGY=YES`n, %path%
+	FileAppend XTOPOLOGY=YES`n, %path%
+	
+	If(lonMin < -30)
+	{
+		If(latMin > 10)
+			mapzone = NAM
+		Else
+			mapzone = SAM
+	}
+	Else If(latMin < 35 && lonMin < 50)
+		mazone = AFR
+	Else If(latMin < -10)
+		mapzone = AUS
+	Else If((latMin >= 35 && lonMin < 40) || (latMin > 50))
+		mapzone = EUR
+	Else
+		mapzone = ASO
+    FileAppend MAPZONE=%mapzone%`n, %path%
+    FileAppend `n, %path%
+
+	FileAppend #REM: Condor landscape: %landscapeName%_%landscapeVersion%`n, %path%
+	
+	return path
+}
+
+
+
 ; ************************ D E P E N D E N C Y   C H E C K S *******************************
 
-RegRead condorDir, HKEY_LOCAL_MACHINE, SOFTWARE\Condor, InstallDir
+RegRead condorDir, HKEY_CURRENT_USER, SOFTWARE\Condor, InstallDir
 If ErrorLevel
 {
 	MsgBox Condor not installed!!!
@@ -204,13 +303,13 @@ if ErrorLevel
 }
 
 
-RegRead zipInstPath, HKEY_LOCAL_MACHINE, SOFTWARE\7-Zip, Path
+RegRead zipInstPath, HKEY_CURRENT_USER, SOFTWARE\7-Zip, Path
 If ErrorLevel
 {
 	MsgBox 7-zip not installed!!!
 	ExitApp
 }
-zipAppPath := %zipInstPath%\7z.exe
+zipAppPath = %zipInstPath%\7z.exe
 
 
 
@@ -232,7 +331,8 @@ Loop %condorDir%\Landscapes\*, 2
 ; ask which landscape should be translated
 Gui, Add, Text,, Please select desired landscape:
 Gui, Add, DropDownList, VlandscapeName wp, %lanscapesList%
-Gui, Add, Checkbox, VlandscapeName wp, %lanscapesList%
+Gui, Add, Checkbox, VXCSoar Checked, XCSoar
+Gui, Add, Checkbox, VLK8000 Checked, LK8000
 Gui, Add, Button, default wp, OK
 Gui, Show
 Return
@@ -248,11 +348,14 @@ If landscapeName =
 	ExitApp
 }
 
+If (XCSoar == 0 && LK8000 == 0)
+{
+    MsgBox You didn't select any translation. Exiting...
+	ExitApp
+}
+
 ; obtain scenery version
 IniRead landscapeVersion, %condorDir%\Landscapes\%landscapeName%\%landscapeName%.ini, General, Version
-
-ExitApp
-
 
 
 ; ************************ G E T   L A N D S C A P E   A I R P O R T S *******************************
@@ -456,67 +559,58 @@ If ErrorLevel
 }
 
 DllCall("NaviCon\NaviConInit", Str, trnPath)
-minLon := DllCall("NaviCon\XYToLon", Float, "0", Float, "0", Float)
-minLat := DllCall("NaviCon\XYToLat", Float, "0", Float, "0", Float)
 maxX := DllCall("NaviCon\GetMaxX", Float)
 maxY := DllCall("NaviCon\GetMaxY", Float)
-maxLon := DllCall("NaviCon\XYToLon", Float, maxX, Float, maxY, Float)
-maxLat := DllCall("NaviCon\XYToLat", Float, maxX, Float, maxY, Float)
+
+minLon1 := DllCall("NaviCon\XYToLon", Float, maxX, Float, maxY, Float)
+minLon2 := DllCall("NaviCon\XYToLon", Float, maxX, Float, "0", Float)
+minLon := Min(minLon1, minLon2)
+
+minLat1 := DllCall("NaviCon\XYToLat", Float, "0", Float, "0", Float)
+minLat2 := DllCall("NaviCon\XYToLat", Float, maxX, Float, "0", Float)
+minLat := Min(minLat1, minLat2)
+
+maxLon1 := DllCall("NaviCon\XYToLon", Float, "0", Float, "0", Float)
+maxLon2 := DllCall("NaviCon\XYToLon", Float, "0", Float, maxY, Float)
+maxLon := Max(maxLon1, maxLon2)
+
+maxLat1 := DllCall("NaviCon\XYToLat", Float, maxX, Float, maxY, Float)
+maxLat2 := DllCall("NaviCon\XYToLat", Float, "0", Float, maxY, Float)
+maxLat := Max(maxLat1, maxLat2)
 
 DllCall("FreeLibrary", "UInt", hModule)  ; To conserve memory, the DLL may be unloaded after using it.
 
-
-#Include include\COM.ahk
-
-XCSoarXcmPath := TerrainDownload(false)
-LK8000TerrainPath := TerrainDownload(true)
-
-
-; ************************ R E P A C K   T E R R A I N   F I L E S *******************************
-
-XCSoarZipPath := RegExReplace(XCSoarXcmPath, "\.xcm$", ".zip")
-XCSoarWaypointsPath = %XCSoarOutputPath%\Maps\waypoints.xcw
-LK8000ZipPath = %LK8000OutputPath%\Maps\%landscapeName%_%landscapeVersion%.zip
-LK8000XcmPath = %LK8000OutputPath%\Maps\%landscapeName%_%landscapeVersion%.xcm
-LK8000WaypointsPath = %LK8000OutputPath%\Maps\waypoints.xcw
-
-FileCopy %datPath%, %XCSoarWaypointsPath%
-FileCopy %cupPath%, %LK8000WaypointsPath%
-FileMove %XCSoarXcmPath%, %XCSoarZipPath%
-
-; remove airspaces
-RunWait %zipAppPath% d "%XCSoarZipPath%" airspace.txt
-
-; create LK8000 copy and remove JP2 terrain
-FileCopy %XCSoarZipPath%, %LK8000ZipPath%
-RunWait %zipAppPath% d "%LK8000ZipPath%" terrain.jp2
-
-; move terrain dat file to proper archive
-RunWait %zipAppPath% e "%LK8000TerrainPath%" terrain-dem.dat
-FileMove terrain-dem.dat, terrain.dat
-FileGetSize datSize, terrain.dat, K
-if(datSize > 9000)
+If %XCSoar%
 {
-	MsgBox 'terrain.dat' size %datSize%kB too big (only 9000kB allowed)!!!
-	ExitApp
+	#Include include\COM.ahk
+	XCSoarXcmPath := XCSoarTerrainDownload()
+
+	; ************************ R E P A C K   T E R R A I N   F I L E S *******************************
+
+	XCSoarZipPath := RegExReplace(XCSoarXcmPath, "\.xcm$", ".zip")
+	XCSoarWaypointsPath = %XCSoarOutputPath%\Maps\waypoints.xcw
+
+	FileCopy %datPath%, %XCSoarWaypointsPath%
+	FileMove %XCSoarXcmPath%, %XCSoarZipPath%
+
+	; remove airspaces
+	RunWait %zipAppPath% d "%XCSoarZipPath%" airspace.txt
+
+	; add waypoints
+	RunWait %zipAppPath% a "%XCSoarZipPath%" "%XCSoarWaypointsPath%"
+
+	FileDelete %XCSoarWaypointsPath%
+	FileMove %XCSoarZipPath%, %XCSoarXcmPath%
 }
-RunWait %zipAppPath% a "%LK8000ZipPath%" terrain.dat
-
-; add waypoints
-RunWait %zipAppPath% a "%XCSoarZipPath%" "%XCSoarWaypointsPath%"
-RunWait %zipAppPath% a "%LK8000ZipPath%" "%LK8000WaypointsPath%"
-
-FileDelete %XCSoarWaypointsPath%
-FileDelete %LK8000WaypointsPath%
-FileDelete terrain.dat
-FileDelete %LK8000TerrainPath%
-FileMove %XCSoarZipPath%, %XCSoarXcmPath%
-FileMove %LK8000ZipPath%, %LK8000XcmPath%
+If %LK8000%
+{
+	LK8000TemplatePath := LK8000MapTemplate()
+}
 
 
 ; ************************ F I N I S H *******************************
 
-MsgBox Landscape translation completed successfully!!!`n`nXCSoar map file: %XCSoarXcmPath%`nXCSoar waypoints file: %datPath%`nLK8000 map file: %LK8000XcmPath%`nLK8000 waypoints file: %cupPath%`n`nDAT size: %datSize%kB
+MsgBox Landscape translation completed successfully!!!`n`nXCSoar map file: %XCSoarXcmPath%`nXCSoar waypoints file: %datPath%`nLK8000 template file: %LK8000TemplatePath%`nLK8000 waypoints file: %cupPath%
 
 ExitApp
 
