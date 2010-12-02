@@ -1,0 +1,6 @@
+name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc
+"Base1",,,4820.742N,11415.750W,913.0m,2,360,80.0m,123.50,
+"Base2",,,4851.426N,11325.795W,1367.0m,2,320,1000.0m,120.25,
+"NewTP",NewTP,,4849.991N,11414.792W,1348.0m,1,,,,
+"NewTP",NewTP,,4849.900N,11429.506W,1666.0m,1,,,,
+"NewTP",NewTP,,4839.486N,11426.804W,1535.0m,1,,,,

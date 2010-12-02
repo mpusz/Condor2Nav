@@ -4,6 +4,7 @@ Alpi3,Alpi3_3.3.xcm
 Alsace,Alsace_1.1.xcm
 Appalachia,Appalachia_1.0.xcm
 bacchus_marsh,bacchus_marsh.xcm
+benabarre,benabarre_1.00.xcm
 British_Columbia,British_Columbia_1.01.xcm
 Catalunya,Catalunya_1.00.xcm
 central_alps,central_alps_1.0.xcm
@@ -17,8 +18,9 @@ EasternAlps2.0,EasternAlps2.0_2.0.xcm
 EastHungary,EastHungary_2.0.xcm
 FitzRoy,FitzRoy_1.00.xcm
 Flying_M_Ranch,Flying_M_Ranch_1.00.xcm
+glaciar,glaciar_1.1.xcm
 Glacier Park,Glacier Park_1.0.xcm
-gotland,gotland_1.01.xcm
+gotland,gotland_1.02.xcm
 Grenoble,Grenoble_1.1.xcm
 Hawaii,Hawaii_1.5.xcm
 Hungary,Hungary_1.00.xcm
@@ -46,20 +48,24 @@ Rieti,Rieti_1.00.xcm
 Rio-Grande,Rio-Grande_2.0.xcm
 RockyMountains,RockyMountains_1.01.xcm
 romania,romania_0.2d.xcm
+Sagarmatha,Sagarmatha_1.00.xcm
 Scotland,Scotland_2.1.xcm
 ScotlandHD,ScotlandHD_HD.xcm
 SEQld,SEQld_0.8.xcm
 Sierra Nevada,Sierra Nevada_1.1.xcm
 Slovak Rep,Slovak Rep_1.0.xcm
-SlovakiaCE,SlovakiaCE_5.01.xcm
+SlovakiaCE,SlovakiaCE_6.0.xcm
 Slovenia,Slovenia_1.03.xcm
 Soaring-Island,Soaring-Island_1.0.xcm
+South_UK_V2,South_UK_V2_2.xcm
 SouthTurkey,SouthTurkey_1.1.xcm
 SouthWest_GER,SouthWest_GER_1.01.xcm
+SouthWest-Poland,SouthWest-Poland_0.5.xcm
 StirlingRanges,StirlingRanges_2.0.xcm
-uk_vfr2,uk_vfr2_1.0 RC1.xcm
+teton,teton_1.00.xcm
+uk_vfr3,uk_vfr3_3.0.xcm
 ulster,ulster_0.1.xcm
 Vysocina2,Vysocina2_1.0.xcm
-WestAlpi,WestAlpi_2.0.xcm
 West_swiss,West_swiss_1.02.xcm
+WestAlpi,WestAlpi_2.0.xcm
 YAlps,YAlps_0.02.xcm
