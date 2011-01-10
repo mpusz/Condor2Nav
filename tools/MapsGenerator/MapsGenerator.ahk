@@ -57,47 +57,6 @@ Max(a, b)
 }
 
 
-Coordinates(document, coord, lat, guiPrefix)
-{
-	If(lat) {
-		If(coord >= 0)
-			letter = N
-		else
-			letter = S
-	}
-	Else {
-		if(coord >= 0)
-			letter = E
-		else
-			letter = W
-	}
-	
-	coord := Abs(coord)
-	deg := Floor(coord)
-	min := Floor((coord - deg) * 60)
-	sec := Round(((coord - deg) * 60 - min) * 60)
-	If(sec = 60)
-	{
-		min := min + 1
-		sec := 0
-	}
-	If(min = 60)
-	{
-		deg := deg + 1
-		min := 0
-	}
-
-	degStr := guiPrefix . "_degrees"
-	minStr := guiPrefix . "_minutes"
-	secStr := guiPrefix . "_seconds"
-	dirStr := guiPrefix . "_direction"
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", degStr), "Item", 0), "value", deg)
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", minStr), "Item", 0), "value", min)
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", secStr), "Item", 0), "value", sec)
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", dirStr), "Item", 0), "value", letter)
-}
-
-
 XCSoarTerrainDownload()
 {
 	global landscapeName
@@ -117,7 +76,7 @@ XCSoarTerrainDownload()
 	Gui, Show, w800 h600, Gui Browser
 	
 	; navigate to terrain generator
-	url := "http://xcsoar.dd.com.au/cgi-bin/terrain.pl"
+	url := "http://www.xcsoar.org/mapgen"
 	COM_Invoke(pwb, "Navigate", url)
 	loop
 		If (rdy := COM_Invoke(pwb, "readyState") = 4)
@@ -130,39 +89,16 @@ XCSoarTerrainDownload()
 	StringReplace trnName, trnName, %A_SPACE%, _, All
 	StringReplace trnName, trnName, -, _, All
 	StringTrimRight trnName, trnName, StrLen(trnName) - 20
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "areaname"), "Item", 0), "value", trnName)
-	email = user@wp.pl
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "email"), "Item", 0), "value", email)
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "email_confirm"), "Item", 0), "value", email)
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "distance_units"), "Item", 0), "checked", "true")
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "selection_method"), "Item", 2), "checked", "true")
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "generate_xcm"), "Item", 1), "checked", "true")
-
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByTagName", "FORM"), "Item", 0), "submit")
-	Sleep 1000
-	loop
-		If (busy := COM_Invoke(pwb, "busy") = false)
-			break
+	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "name"), "Item", 0), "value", trnName)
+	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "selection"), "Item", 0), "checked", "true")
 
 	; fill lanscape coordinates
-	Coordinates(document, maxLat, true, "top")
-	Coordinates(document, minLat, true, "bottom")
-	Coordinates(document, maxLon, false, "right")
-	Coordinates(document, minLon, false, "left")
+	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "top"), "Item", 0), "value", maxLat)
+	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "bottom"), "Item", 0), "value", minLat)
+	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "right"), "Item", 0), "value", maxLon)
+	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "left"), "Item", 0), "value", minLon)
 
 	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByTagName", "FORM"), "Item", 0), "submit")
-	Sleep 5000
-	loop
-		If (busy := COM_Invoke(pwb, "busy") = false)
-			Break
-
-	; select and submit map resolution
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByName", "resolution"), "Item", 2), "checked", "true")
-	COM_Invoke(COM_Invoke(COM_Invoke(document, "getElementsByTagName", "FORM"), "Item", 0), "submit")
-	Sleep 1000
-	loop
-		If (busy := COM_Invoke(pwb, "busy") = false)
-			Break
 
 	; wait for download screen
 	loop
@@ -171,8 +107,18 @@ XCSoarTerrainDownload()
 		{
 			body := COM_Invoke(document, "body")
 			webText := COM_Invoke(body, "innerHTML")
-			IfInString webText, The terrain you generated is ready for download.
+			IfInString webText, is ready to download
 			{
+				link := webText
+				searchStr = <A class=button href="
+				pos := InStr(link, searchStr)
+				len := StrLen(SearchStr)
+				pos := pos + len - 1
+				StringTrimLeft link, link, pos
+				searchStr = ">Download</A>
+				pos := InStr(link, searchStr)
+				StringLeft link, link, pos - 1
+
 				Break
 			}
 		}
@@ -182,7 +128,14 @@ XCSoarTerrainDownload()
 	; download terrain file
 	terrainPath = %XCSoarOutputPath%\Maps\%fileName%.xcm
 	FileDelete %terrainPath%
-	UrlDownloadToFile http://xcsoar.dd.com.au/cgi-bin/terrain.pl?rm=download_file, %terrainPath%
+
+	ErrorLevel := 0
+	UrlDownloadToFile %link%, %terrainPath%
+	If ErrorLevel
+	{
+		MsgBox Error downloading XCSoar Map from '%link%' to '%terrainPath%'!!!
+		ExitApp
+	}
 
 	Gui, Destroy
 	COM_AtlAxWinTerm()
@@ -357,7 +310,7 @@ If (XCSoar == 0 && LK8000 == 0)
 ; obtain scenery version
 IniRead landscapeVersion, %condorDir%\Landscapes\%landscapeName%\%landscapeName%.ini, General, Version
 
-
+	
 ; ************************ G E T   L A N D S C A P E   A I R P O R T S *******************************
 
 datPath = %XCSoarOutputPath%\Waypoints\%landscapeName%_%landscapeVersion%.dat
@@ -613,4 +566,3 @@ If %LK8000%
 MsgBox Landscape translation completed successfully!!!`n`nXCSoar map file: %XCSoarXcmPath%`nXCSoar waypoints file: %datPath%`nLK8000 template file: %LK8000TemplatePath%`nLK8000 waypoints file: %cupPath%
 
 ExitApp
-
