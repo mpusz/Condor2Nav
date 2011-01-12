@@ -89,7 +89,7 @@ suite user's needs. In that case [OPTIONAL] points may be useful.
 Open condor2nav.ini file and change the following:
 1. [OPTIONAL] Change the name of Condor default task file you will use for
    the translation (Condor task file name can also be provided for each
-   translation from the Command Line Interface - see "condor2nav.exe –h"
+   translation from the Command Line Interface - see "condor2nav-cli.exe -h"
    for more info).
 2. [OPTIONAL] If Condor FPL files are stored in non default location
    please use [Condor] "FlightPlansPath" and [Condor] "RaceResultsPath"
@@ -105,6 +105,8 @@ Open condor2nav.ini file and change the following:
 
 6. Translation
 ==============
+6.1. Translation Types
+----------------------
 6.1.a) Default task
 -------------------
 1. Open Condor and save the task for translation. By default "A" task name
@@ -126,40 +128,40 @@ Open condor2nav.ini file and change the following:
    (see "condor2nav-cli.exe -h" for more info) or a task file icon should
    be drag-and-dropped on the condor2nav-cli.exe icon.
    
-6.2. Run
---------
+6.2. Translate
+--------------
 1. Run condor2nav-gui.exe or condor2nav-cli.exe Condor2Nav application
    (it is handful to create a shortcut to application executable on
    the Windows desktop).
 
 6.3.a) XCSoar
 -------------
-1. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the
+2. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the
    [XCSoar] "XCSoarDataPath" copy output data manually to the target directory.
 
 6.3.b) LK8000
 -------------
-1. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the
+2. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the
    [LK8000] "LK8000Path" copy output data manually to the target directory.
   
    
-7. Run Navigation Software
-==========================
+7. Fly
+======
 
 7.1.a) XCSoar
 -------------
 1. Start XCSoar application and select "Condor" profile when asked.
 2. [OPTIONAL] If [XCSoar] "DefaultTaskOverwrite=1" XCSoar will load Condor
    task automatically. Otherwise open "Nav"->"Nav"->"Task Edit",
-   choose "Advanced.."->"File", select "Condor.tsk" and choose "Load".
-3. Open "Config"->"Setup Basic" and choose proper "Ballast" value.
+   choose "Browse", select "Condor.tsk" and selct "Load".
+3. Open "Config"->"Flight Setup" and choose proper "Ballast" value.
    
 7.1.b) LK8000
 -------------
 1. Start LK8000 application and select "Condor" profile when asked.
 2. [OPTIONAL] If [LK8000] "DefaultTaskOverwrite=1" LK8000 will load Condor
    task automatically. Otherwise open "Nav"->"Nav"->"Task Edit",
-   choose "Advanced.."->"File", select "Condor.tsk" and choose "Load".
+   choose "Load" and select "Condor.tsk".
 3. Open "Config"->"Setup Basic" and choose proper "Ballast" value.
 
 7.2. Have fun
