@@ -7,22 +7,17 @@ http://sf.net/projects/condor2nav
 
 1. Description
 ==============
-Condor2Nav is intended to make Condor (The Competition Soaring Simulator)
-and gliding navigation applications synchronization easier. It is a fully
-automated translator between Condor and navigation applications files
+Condor2Nav is making Condor (The Competition Soaring Simulator)and 
+gliding navigation applications synchronization easier. It is a fully
+automated translator between Condor and navigation applications file
 formats.
-
-The main idea of the application is based on the XCondor application made
-by Simon Taylor, however Condor2Nav C++ code is written from the scratch
-and it has (and will have more) new features to make the integration more
-accurate.
 
 
 2. Project state
 ================
 Condor2Nav project is of production quality now. It is stable and
-ready to be tested. Please report all the problems you encounter to the
-forum on the project webpage.
+ready to be used. Please report all the problems you possibly encounter
+on the forum on the project webpage.
 
 
 3. Installation
