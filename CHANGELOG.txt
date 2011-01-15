@@ -19,6 +19,8 @@ Version 3.0
   * uk_vfr3 v3.0
   * Himalaya v1.0
   * Sydney_HunterV v1.0
+- LK8000 dedicated maps support removed
+- All XCSoar maps regenerated for better Condor landscape area coverage
 
 Version: 2.5
 ============
