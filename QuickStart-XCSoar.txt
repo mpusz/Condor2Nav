@@ -1,5 +1,5 @@
 ================
- Condor2Nav 2.5
+ Condor2Nav 3.0
 ================
 
 http://sf.net/projects/condor2nav
@@ -21,6 +21,7 @@ II. Configuration
 a) [Condor2Nav] "Target" to "XCSoar"
 b) [Condor2Nav] "OutputPath" to the parent directory of XCSoarData directory on
    the target device (data will be copied via ActiveSync connection)
+c) [XCSoar] "Version" according to your XCSoar software version
 
 III. Translation
 ----------------

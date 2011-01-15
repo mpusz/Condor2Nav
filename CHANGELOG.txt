@@ -2,7 +2,7 @@
  Condor2Nav
 ============
 
-Version 3.0 (WIP)
+Version 3.0
 ===========
 - XCSoar 6.0 support added
 - LK8000 2.0 support added
