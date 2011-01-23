@@ -10,7 +10,7 @@ I. Instalation
 1. Obtain latest Condor2Nav release package from the project website and extract it
    anywhere on the hard drive.
 2. Obtain XCM map files for all supported sceneries from Condor2Nav project webpage
-   (http://sourceforge.net/projects/condor2nav/files/maps/LK8000/Maps.zip/download)
+   (http://sourceforge.net/projects/condor2nav/files/maps/XCSoar/Maps.zip/download)
 3. Have LK8000 installed and configured on the target device (e.g. PDA, PNA, PC)
 4. Copy all XCM scenery files to the "LK8000/_Maps/condor2nav" subdirectory on
    the target device.
