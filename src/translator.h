@@ -95,6 +95,13 @@ namespace condor2nav {
       virtual ~CTarget();
 
       /**
+       * @brief Returns target name.
+       *
+       * Method returns target name.
+       */
+      virtual const char *Name() const = 0;
+
+      /**
        * @brief Sets Condor GPS data.
        *
        * Method sets Condor GPS data. 

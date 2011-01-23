@@ -68,6 +68,7 @@ namespace condor2nav {
     explicit CTargetLK8000(const CTranslator &translator);
     virtual ~CTargetLK8000();
 
+    virtual const char *Name() const { return "LK8000"; }
     virtual void Gps();
     virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData);
     virtual void SceneryTime();

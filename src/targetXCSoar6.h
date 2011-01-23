@@ -43,6 +43,7 @@ namespace condor2nav {
     virtual void TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
   public:
     explicit CTargetXCSoar6(const CTranslator &translator);
+    virtual const char *Name() const { return "XCSoar 6"; }
   };
 
 }

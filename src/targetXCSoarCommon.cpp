@@ -143,7 +143,7 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
     unsigned xcsoarPercent = ballast * 100 / maxBallast;
     // round it to 5% increment steps
     xcsoarPercent = static_cast<unsigned>((static_cast<float>(xcsoarPercent) + 2.5) / 5) * 5;
-    Translator().App().Warning() << "WARNING: Cannot set initial glider ballast in XCSoar/LK8000 automatically. Please open 'Config'->'Setup Basic' and set '" << xcsoarPercent << "%' for the glider ballast." << std::endl;
+    Translator().App().Warning() << "WARNING: Cannot set initial glider ballast in " << Name() << " automatically. Please open 'Config'->'Setup Basic' and set '" << xcsoarPercent << "%' for the glider ballast." << std::endl;
   }
 }
 
@@ -337,7 +337,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
             }
             settingsTask.SectorType = xcsoar::AST_FAI;
             if(i > 2 && settingsTask.SectorRadius != radius) {
-              Translator().App().Warning() << "WARNING: " << name << ": XCSoar does not support different TPs types. The smallest radius will be used for all FAI sectors. If you advance a sector in XCSoar you will advance it in Condor." << std::endl;
+              Translator().App().Warning() << "WARNING: " << name << ": " << Name() << " does not support different TPs types. The smallest radius will be used for all FAI sectors. If you advance a sector in " << Name() << " you will advance it in Condor." << std::endl;
               settingsTask.SectorRadius = min(settingsTask.SectorRadius, radius);
             }
             else
@@ -354,7 +354,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
             if(i > 2 && settingsTask.SectorType == xcsoar::AST_FAI)
               tpsValid = false;
             else {
-              Translator().App().Warning() << "WARNING: " << name << ": XCSoar does not support line TP type. FAI Sector will be used instead. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
+              Translator().App().Warning() << "WARNING: " << name << ": " << Name() << " does not support line TP type. FAI Sector will be used instead. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
               settingsTask.SectorType = xcsoar::AST_FAI;
               settingsTask.SectorRadius = radius;
             }
@@ -362,7 +362,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
           break;
 
         case 270:
-          Translator().App().Warning() << "WARNING: " << name << ": XCSoar does not support TP with angle '270'. Circle sector will be used instead. Be carefull to advance a waypoint in Condor after it has been advanced by the XCSoar." << std::endl;
+          Translator().App().Warning() << "WARNING: " << name << ": " << Name() << " does not support TP with angle '270'. Circle sector will be used instead. Be carefull to advance a waypoint in Condor after it has been advanced by the " << Name() << "." << std::endl;
         case 360:
           if(i == 1)
             settingsTask.StartType = xcsoar::START_CIRCLE;
@@ -374,7 +374,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
             else {
               settingsTask.SectorType = xcsoar::AST_CIRCLE;
               if(i > 2 && settingsTask.SectorRadius != radius) {
-                Translator().App().Warning() << "WARNING: " << name << ": XCSoar does not support different TPs types. The smallest radius will be used for all circle sectors. If you advance a sector in XCSoar you will advance it in Condor." << std::endl;
+                Translator().App().Warning() << "WARNING: " << name << ": " << Name() << " does not support different TPs types. The smallest radius will be used for all circle sectors. If you advance a sector in " << Name() << " you will advance it in Condor." << std::endl;
                 settingsTask.SectorRadius = min(settingsTask.SectorRadius, radius);
               }
               else
@@ -400,14 +400,14 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
       }
     }
     else if(sectorType == CCondor::SECTOR_WINDOW) {
-      Translator().App().Warning() << "WARNING: " << name << ": XCSoar does not support window TP type. Circle TP will be used and you are responsible for reaching it on correct height and with correct heading." << std::endl;
+      Translator().App().Warning() << "WARNING: " << name << ": " << Name() << " does not support window TP type. Circle TP will be used and you are responsible for reaching it on correct height and with correct heading." << std::endl;
     }
     else
       Translator().App().Error() << "ERROR: Unsupported sector type '" << sectorTypeStr << "' specified for TP '" << name << "'!!!";
   }
 
   if(!tpsValid)
-    Translator().App().Warning() << "WARNING: XCSoar does not support different TPs types. FAI Sector will be used for all sectors. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
+    Translator().App().Warning() << "WARNING: " << Name() << " does not support different TPs types. FAI Sector will be used for all sectors. You may need to manualy advance a waypoint after reaching it in Condor." << std::endl;
 
   // set profile parameters
   // HomeWaypoint
