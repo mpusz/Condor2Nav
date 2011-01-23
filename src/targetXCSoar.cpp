@@ -148,8 +148,13 @@ void condor2nav::CTargetXCSoar::Gps()
   
   // copy deviceA to deviceB
   _profileParser->Value("", "DeviceB", _profileParser->Value("", "DeviceA"));
-  _profileParser->Value("", "Port2Index", _profileParser->Value("", "PortIndex"));
-  _profileParser->Value("", "Speed2Index", _profileParser->Value("", "SpeedIndex"));
+  try {
+    _profileParser->Value("", "Port2Index", _profileParser->Value("", "PortIndex"));
+    _profileParser->Value("", "Speed2Index", _profileParser->Value("", "SpeedIndex"));
+  }
+  catch(const Exception &) {
+    Translator().App().Warning() << "WARNING: COM port for Condor communication probably not set. Please verify that in " << Name() << " System Setup." << std::endl;
+  }
 }
 
 
