@@ -2,6 +2,12 @@
  Condor2Nav
 ============
 
+Version 3.1
+===========
+- 'PortIndex' not defined in PRF file is properly handled now
+- Translator targets names support added
+- Broken link in the documentation fixed
+
 Version 3.0
 ===========
 - XCSoar 6.0 support added
