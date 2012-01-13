@@ -1,5 +1,8 @@
 *.ncb
 *.suo
 *.vcproj.*
+*.sdf
+*.opensdf
+*.user
 Debug
 Release

@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1193780C-0BA4-4948-A77C-761E5E3C6E65}</ProjectGuid>
+    <RootNamespace>condor2nav</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>mkdir ..\dist\$(Configuration)\condor2nav\data
+copy /Y ..\README.txt ..\dist\$(Configuration)\condor2nav
+copy /Y ..\CHANGELOG.txt ..\dist\$(Configuration)\condor2nav
+copy /Y ..\QuickStart*.txt ..\dist\$(Configuration)\condor2nav
+copy /Y ..\data\condor2nav.ini ..\dist\$(Configuration)\condor2nav
+copy /Y ..\data\GliderData.csv ..\dist\$(Configuration)\condor2nav\data
+copy /Y ..\data\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>mkdir ..\dist\$(Configuration)\condor2nav\data
+copy /Y ..\README.txt ..\dist\$(Configuration)\condor2nav
+copy /Y ..\CHANGELOG.txt ..\dist\$(Configuration)\condor2nav
+copy /Y ..\QuickStart*.txt ..\dist\$(Configuration)\condor2nav
+copy /Y ..\data\condor2nav.ini ..\dist\$(Configuration)\condor2nav
+copy /Y ..\data\GliderData.csv ..\dist\$(Configuration)\condor2nav\data
+copy /Y ..\data\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="activeSync.cpp" />
+    <ClCompile Include="condor.cpp" />
+    <ClCompile Include="condor2nav.cpp" />
+    <ClCompile Include="fileParser.cpp" />
+    <ClCompile Include="fileParserCSV.cpp" />
+    <ClCompile Include="fileParserINI.cpp" />
+    <ClCompile Include="istream.cpp" />
+    <ClCompile Include="ostream.cpp" />
+    <ClCompile Include="stream.cpp" />
+    <ClCompile Include="targetLK8000.cpp" />
+    <ClCompile Include="targetXCSoar.cpp" />
+    <ClCompile Include="targetXCSoar6.cpp" />
+    <ClCompile Include="targetXCSoarCommon.cpp" />
+    <ClCompile Include="tools.cpp" />
+    <ClCompile Include="translator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="activeSync.h" />
+    <ClInclude Include="condor.h" />
+    <ClInclude Include="condor2nav.h" />
+    <ClInclude Include="fileParser.h" />
+    <ClInclude Include="fileParserCSV.h" />
+    <ClInclude Include="fileParserINI.h" />
+    <ClInclude Include="istream.h" />
+    <ClInclude Include="ostream.h" />
+    <ClInclude Include="stream.h" />
+    <ClInclude Include="targetLK8000.h" />
+    <ClInclude Include="targetXCSoar.h" />
+    <ClInclude Include="targetXCSoar6.h" />
+    <ClInclude Include="targetXCSoarCommon.h" />
+    <ClInclude Include="tools.h" />
+    <ClInclude Include="traitsNoCase.h" />
+    <ClInclude Include="translator.h" />
+    <ClInclude Include="imports\lk8000Types.h" />
+    <ClInclude Include="imports\xcsoarTypes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\CHANGELOG.txt" />
+    <None Include="..\COPYING.txt" />
+    <None Include="..\QuickStart-LK8000.txt" />
+    <None Include="..\QuickStart-XCSoar.txt" />
+    <None Include="..\README.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

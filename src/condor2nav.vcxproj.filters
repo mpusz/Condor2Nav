@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\imports">
+      <UniqueIdentifier>{67e773b4-6f14-462f-8b3a-25cc4c74d605}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="activeSync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="condor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="condor2nav.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fileParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fileParserCSV.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fileParserINI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="istream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ostream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="targetLK8000.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="targetXCSoar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="targetXCSoar6.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="targetXCSoarCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="translator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="activeSync.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="condor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="condor2nav.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fileParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fileParserCSV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fileParserINI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="istream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ostream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetLK8000.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetXCSoar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetXCSoar6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetXCSoarCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="traitsNoCase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="translator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imports\lk8000Types.h">
+      <Filter>Header Files\imports</Filter>
+    </ClInclude>
+    <ClInclude Include="imports\xcsoarTypes.h">
+      <Filter>Header Files\imports</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\CHANGELOG.txt" />
+    <None Include="..\COPYING.txt" />
+    <None Include="..\QuickStart-LK8000.txt" />
+    <None Include="..\QuickStart-XCSoar.txt" />
+    <None Include="..\README.txt" />
+  </ItemGroup>
+</Project>
