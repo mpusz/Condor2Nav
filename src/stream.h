@@ -48,7 +48,7 @@ namespace condor2nav {
     };
 
   private:
-    const std::string &_fileName;  ///< @brief File name.
+    std::string _fileName;         ///< @brief File name.
     TType _type;                   ///< @brief Stream type. 
     std::stringstream _buffer;     ///< @brief Buffer with file data. 
     
