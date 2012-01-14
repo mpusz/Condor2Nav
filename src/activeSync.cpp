@@ -29,10 +29,6 @@
 #include <fstream>
 #include <memory>
 
-condor2nav::CDelayedPtr<condor2nav::CActiveSync> condor2nav::CActiveSync::_instance;
-
-
-
 /**
  * @brief Returns singleton instance.
  *
@@ -42,7 +38,8 @@ condor2nav::CDelayedPtr<condor2nav::CActiveSync> condor2nav::CActiveSync::_insta
  */
 condor2nav::CActiveSync &condor2nav::CActiveSync::Instance()
 {
-  return *_instance;
+  static CActiveSync instance;
+  return instance;
 }
 
 

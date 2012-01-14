@@ -90,9 +90,6 @@ namespace condor2nav {
 
     static const unsigned TIMEOUT = 5000;        ///< @brief Timeout in ms for ActiveSync initialization. 
 
-    friend class CDelayedPtr<CActiveSync>;
-    static CDelayedPtr<CActiveSync> _instance;   ///< @brief Singleton instance. 
-
     CActiveSync();
     CActiveSync(const CActiveSync &);            ///< @brief Disallowed. 
     CActiveSync &operator=(const CActiveSync &); ///< @brief Disallowed. 
