@@ -53,7 +53,7 @@ CStream(fileName)
     case TYPE_ACTIVE_SYNC:
       {
         CActiveSync &activeSync(CActiveSync::Instance());
-        activeSync.Read(FileName(), Buffer());
+        Buffer().str(activeSync.Read(FileName()));
       }
       break;
 

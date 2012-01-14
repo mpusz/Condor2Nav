@@ -30,10 +30,10 @@
 
 #include <sstream>
 #include <exception>
+#include <Windows.h>
 
 namespace condor2nav {
 
-  // usefull templates
   /**
    * @brief Pointer version of std::less
    *
@@ -47,6 +47,13 @@ namespace condor2nav {
     }
   };
 
+  /**
+   * @brief Deleter for HModule
+   */
+  struct HModuleDeleter {
+    typedef HMODULE pointer;
+    void operator ()(HMODULE hmod) const { ::FreeLibrary(hmod); }
+  };
 
   template<class Seq> void Purge(Seq &container);
   template<class Map> void PurgeMap(Map &container);
