@@ -2,6 +2,10 @@
  Condor2Nav
 ============
 
+Version 3.2 (WIP)
+=================
+- UAC Virtual Store related problems finally fixed
+
 Version 3.1
 ===========
 - 'PortIndex' not defined in PRF file is properly handled now

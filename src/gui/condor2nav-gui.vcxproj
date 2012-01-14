@@ -62,6 +62,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <EnableUAC>false</EnableUAC>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>condor2nav-gui.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -90,6 +91,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <EnableUAC>false</EnableUAC>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>condor2nav-gui.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>

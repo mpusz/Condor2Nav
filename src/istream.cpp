@@ -44,14 +44,8 @@ CStream(fileName)
     case TYPE_LOCAL:
       {
         std::fstream stream(fileName.c_str(), std::ios_base::in);
-        if(!stream) {
-          // it is possible that a file is under Vista VirtualStore so try to look for it
-          stream.clear();
-          stream.open(fileName.c_str(), std::ios_base::in | std::ios_base::out);
-          if(!stream)
-            throw EOperationFailed("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
-        }
-
+        if(!stream)
+          throw EOperationFailed("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
         Buffer() << stream.rdbuf();
       }
       break;
