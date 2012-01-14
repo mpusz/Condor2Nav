@@ -29,6 +29,7 @@
 #define __CONDOR_H__
 
 #include "condor2nav.h"
+#include "nonCopyable.h"
 #include "fileParserINI.h"
 #include <windows.h> 
 
@@ -41,14 +42,14 @@ namespace condor2nav {
    * (The Soaring Competition Simulator) data. It also provides some
    * tools to interpret that data.
    */
-  class CCondor {
+  class CCondor : CNonCopyable {
   public:
     /**
      * @brief The types of Condor sectors.
      */
     enum TSectorType {
       SECTOR_CLASSIC,	    ///< @brief Line, FAI Sector or Circle.
-      SECTOR_WINDOW	      ///< @brief Window. 
+      SECTOR_WINDOW	        ///< @brief Window. 
     };
 
     /**
@@ -58,25 +59,25 @@ namespace condor2nav {
      * Condor map coordinates convertions. It uses NaviCon.dll library
      * provided with every Condor release.
      */
-    class CCoordConverter {
-      typedef int (WINAPI *FNaviConInit)(const char *trnFile);  ///< @brief NaviCon.dll interface
-      typedef float (WINAPI *FXYToLon)(float X, float Y);       ///< @brief NaviCon.dll interface
-      typedef float (WINAPI *FXYToLat)(float X, float Y);       ///< @brief NaviCon.dll interface
-      typedef float (WINAPI *FGetMaxX)();                       ///< @brief NaviCon.dll interface
-      typedef float (WINAPI *FGetMaxY)();                       ///< @brief NaviCon.dll interface
+    class CCoordConverter : CNonCopyable {
+      typedef int   (WINAPI *FNaviConInit)(const char *trnFile);  ///< @brief NaviCon.dll interface
+      typedef float (WINAPI *FXYToLon)(float X, float Y);         ///< @brief NaviCon.dll interface
+      typedef float (WINAPI *FXYToLat)(float X, float Y);         ///< @brief NaviCon.dll interface
+      typedef float (WINAPI *FGetMaxX)();                         ///< @brief NaviCon.dll interface
+      typedef float (WINAPI *FGetMaxY)();                         ///< @brief NaviCon.dll interface
 
       /**
        * @brief NaviCon.dll interface.
        */
       struct TDLLIface {
         FNaviConInit naviConInit;
-        FGetMaxX getMaxX;
-        FGetMaxY getMaxY;
-        FXYToLon xyToLon;
-        FXYToLat xyToLat;
+        FGetMaxX     getMaxX;
+        FGetMaxY     getMaxY;
+        FXYToLon     xyToLon;
+        FXYToLat     xyToLat;
       };
-      HINSTANCE _hInstLib;	  ///< @brief DLL instance. 
-      TDLLIface _iface;	      ///< @brief DLL interface.
+      std::unique_ptr<HMODULE, HModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
+      TDLLIface _iface;	                                   ///< @brief DLL interface.
 
     public:
       /**
@@ -88,7 +89,6 @@ namespace condor2nav {
         FORMAT_DDMMSS         ///< @brief Format in form 23:35:23N
       };
       CCoordConverter(const std::string &condorPath, const std::string &trnName);
-      ~CCoordConverter();
       double Longitude(const std::string &x, const std::string &y) const;
       double Latitude(const std::string &x, const std::string &y) const;
       std::string Longitude(const std::string &x, const std::string &y, TOutputFormat format) const;
@@ -107,7 +107,7 @@ namespace condor2nav {
     static void FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType, const std::string &condorPath, std::string &fplPath);
 
     CCondor(const std::string &condorPath, const std::string &fplPath);
-    const CFileParserINI &TaskParser() const { return _taskParser; }
+    const CFileParserINI &TaskParser() const      { return _taskParser; }
     const CCoordConverter &CoordConverter() const { return _coordConverter; }
   };
 

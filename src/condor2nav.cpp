@@ -26,11 +26,8 @@
  */
 
 #include "condor2nav.h"
-#include "translator.h"
-
 
 const char *condor2nav::CCondor2Nav::CONFIG_FILE_NAME = "condor2nav.ini";
-
 
 /**
  * @brief Class constructor. 
@@ -39,35 +36,6 @@ const char *condor2nav::CCondor2Nav::CONFIG_FILE_NAME = "condor2nav.ini";
  */
 condor2nav::CCondor2Nav::CLogger::CLogger(TType type):
 _type(type)
-{
-
-}
-
-
-/**
- * @brief Class destructor. 
- */
-condor2nav::CCondor2Nav::CLogger::~CLogger()
-{
-
-}
-
-
-/**
- * @brief Returns the type of the logger.
- *
- * @return The type of the logger.
- */
-condor2nav::CCondor2Nav::CLogger::TType condor2nav::CCondor2Nav::CLogger::Type() const
-{
-  return _type;
-}
-
-
-/**
- * @brief Class destructor. 
- */
-condor2nav::CCondor2Nav::~CCondor2Nav()
 {
 
 }

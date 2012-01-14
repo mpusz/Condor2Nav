@@ -28,6 +28,7 @@
 #ifndef __CONDOR2NAV_H__
 #define __CONDOR2NAV_H__
 
+#include "nonCopyable.h"
 #include <sstream>
 
 /**
@@ -43,10 +44,10 @@ namespace condor2nav {
    * condor2nav::CCondor2Nav is a main project class. It is responsible for
    * command line handling and running the translation.
    */
-  class CCondor2Nav {
+  class CCondor2Nav : CNonCopyable {
   public:
     /**
-    * @brief Values that represent different types of supported flight plan types. 
+     * @brief Values that represent different types of supported flight plan types. 
      */
     enum TFPLType {
       TYPE_DEFAULT,	          ///< @brief Default task name (from INI) file will be run. 
@@ -59,7 +60,7 @@ namespace condor2nav {
      *
      * Class is responsible for logging Condor2Nav traces to the output.
      */
-    class CLogger {
+    class CLogger : CNonCopyable {
     public:
       /**
        * @brief Values that represent logger types.
@@ -73,9 +74,6 @@ namespace condor2nav {
     private:
       const TType _type;	  ///< @brief Logger type
 
-      CLogger(const CLogger &);
-      CLogger &operator=(const CLogger &);
-
       /**
        * @brief Dumps the text to the logger output. 
        *
@@ -84,11 +82,11 @@ namespace condor2nav {
       virtual void Dump(const std::string &str) const = 0;
 
     protected:
-      TType Type() const;
+      TType Type() const { return _type; }
 
     public:
       CLogger(TType type);
-      virtual ~CLogger();
+      virtual ~CLogger() {}
       
       /**
       * @brief Provides new traces to a logger. 
@@ -132,7 +130,7 @@ namespace condor2nav {
     static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file.
 
   public:
-    virtual ~CCondor2Nav();
+    virtual ~CCondor2Nav() {}
 
     /**
      * @brief Returns normal logging level logger. 

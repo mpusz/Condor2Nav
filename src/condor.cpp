@@ -30,6 +30,7 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
+#include <boost/filesystem.hpp>
 
 const char *condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
 const char *condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
@@ -47,47 +48,35 @@ const char *condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
  * @param condorPath The path to Condor directory
  * @param trnName The name of the terrain used in task
  */
-condor2nav::CCondor::CCoordConverter::CCoordConverter(const std::string &condorPath, const std::string &trnName)
+condor2nav::CCondor::CCoordConverter::CCoordConverter(const std::string &condorPath, const std::string &trnName):
+_hInstLib(::LoadLibrary(std::string(condorPath + "\\NaviCon.dll").c_str()))
 {
-  std::string dllPath(condorPath + "\\NaviCon.dll");
-  _hInstLib = LoadLibrary(dllPath.c_str()); 
-  if(!_hInstLib)
+  if(!_hInstLib.get())
     throw EOperationFailed("ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath + "'!!!");
   
-  _iface.naviConInit = (FNaviConInit)GetProcAddress(_hInstLib, "NaviConInit");
+  _iface.naviConInit = (FNaviConInit)GetProcAddress(_hInstLib.get(), "NaviConInit");
   if(!_iface.naviConInit)
     throw EOperationFailed("ERROR: Couldn't map NaviConInit() from 'NaviCon.dll'!!!");
 
-  _iface.getMaxX = (FGetMaxX)GetProcAddress(_hInstLib, "GetMaxX");
+  _iface.getMaxX = (FGetMaxX)GetProcAddress(_hInstLib.get(), "GetMaxX");
   if(!_iface.getMaxX)
     throw EOperationFailed("ERROR: Couldn't map GetMaxX() from 'NaviCon.dll'!!!");
 
-  _iface.getMaxY = (FGetMaxY)GetProcAddress(_hInstLib, "GetMaxY");
+  _iface.getMaxY = (FGetMaxY)GetProcAddress(_hInstLib.get(), "GetMaxY");
   if(!_iface.getMaxY)
     throw EOperationFailed("ERROR: Couldn't map GetMaxY() from 'NaviCon.dll'!!!");
 
-  _iface.xyToLon = (FXYToLon)GetProcAddress(_hInstLib, "XYToLon");
+  _iface.xyToLon = (FXYToLon)GetProcAddress(_hInstLib.get(), "XYToLon");
   if(!_iface.xyToLon)
     throw EOperationFailed("ERROR: Couldn't map XYToLon() from 'NaviCon.dll'!!!");
 
-  _iface.xyToLat = (FXYToLon)GetProcAddress(_hInstLib, "XYToLat");
+  _iface.xyToLat = (FXYToLon)GetProcAddress(_hInstLib.get(), "XYToLat");
   if(!_iface.xyToLat)
     throw EOperationFailed("ERROR: Couldn't map XYToLat() from 'NaviCon.dll'!!!");
 
   // init coordinates
   std::string trnPath(condorPath + "\\Landscapes\\" + trnName + "\\" + trnName + ".trn");
   _iface.naviConInit(trnPath.c_str());
-}
-
-
-/**
- * @brief Class destructor.
- *
- * condor2nav::CCondor::CCoordConverter class destructor.
- */
-condor2nav::CCondor::CCoordConverter::~CCoordConverter()
-{
-  FreeLibrary(_hInstLib);
 }
 
 
@@ -207,7 +196,7 @@ std::string condor2nav::CCondor::InstallPath()
   if((RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
     DWORD bufferSize = 0;
     RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, NULL, &bufferSize);
-    std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
+    std::unique_ptr<char> buffer(new char[bufferSize]);
     RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
     condorPath = buffer.get();
     RegCloseKey(hTestKey);
@@ -216,7 +205,7 @@ std::string condor2nav::CCondor::InstallPath()
     // check for Condor 1.1.2
     DWORD bufferSize = 0;
     RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, NULL, &bufferSize);
-    std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
+    std::unique_ptr<char> buffer(new char[bufferSize]);
     RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
     condorPath = buffer.get();
     RegCloseKey(hTestKey);
@@ -227,7 +216,7 @@ std::string condor2nav::CCondor::InstallPath()
     // check for Condor 1.1.0
     DWORD bufferSize = 0;
     RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, NULL, &bufferSize);
-    std::auto_ptr<char> buffer = std::auto_ptr<char>(new char[bufferSize]);
+    std::unique_ptr<char> buffer(new char[bufferSize]);
     RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
     condorPath = buffer.get();
     RegCloseKey(hTestKey);
@@ -268,28 +257,16 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
       fplPath = resultsPathUser + "\\";
 
     // find the latest race result
-    std::string fileName;
-    FILETIME fileTime;
-    WIN32_FIND_DATA findFileData;
-    HANDLE hFind;
-    hFind = FindFirstFile((fplPath + "*.fpl").c_str(), &findFileData);
-    if(hFind == INVALID_HANDLE_VALUE)
+    std::vector<boost::filesystem::path> v;
+    std::copy_if(boost::filesystem::directory_iterator(fplPath), boost::filesystem::directory_iterator(), std::back_inserter(v),
+      [](const boost::filesystem::path &f){ return f.string().find(".fpl") != std::string::npos; });
+    auto result = std::max_element(v.begin(), v.end(),
+      [](const boost::filesystem::path &f1, const boost::filesystem::path &f2)
+    { return boost::filesystem::last_write_time(f1) < boost::filesystem::last_write_time(f2); });
+    if(result != v.end())
+      fplPath = result->string();
+    else
       throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath + "'(" + Convert(GetLastError()) + ")!!!");
-    else {
-      fileName = findFileData.cFileName;
-      fileTime = findFileData.ftLastWriteTime;
-
-      while(FindNextFile(hFind, &findFileData)) {
-        if(CompareFileTime(&findFileData.ftLastWriteTime, &fileTime) > 0) {
-          fileName = findFileData.cFileName;
-          fileTime = findFileData.ftLastWriteTime;
-        }
-      }
-      if(GetLastError() != ERROR_NO_MORE_FILES)
-        throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath + "'(" + Convert(GetLastError()) + ")!!!");
-      FindClose(hFind);
-    }
-    fplPath += fileName;
   }
 }
 
