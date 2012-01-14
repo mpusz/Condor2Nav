@@ -115,6 +115,7 @@ copy /Y ..\data\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data
     <ClInclude Include="fileParserCSV.h" />
     <ClInclude Include="fileParserINI.h" />
     <ClInclude Include="istream.h" />
+    <ClInclude Include="nonCopyable.h" />
     <ClInclude Include="ostream.h" />
     <ClInclude Include="stream.h" />
     <ClInclude Include="targetLK8000.h" />

@@ -115,6 +115,9 @@
     <ClInclude Include="imports\xcsoarTypes.h">
       <Filter>Header Files\imports</Filter>
     </ClInclude>
+    <ClInclude Include="nonCopyable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CHANGELOG.txt" />
