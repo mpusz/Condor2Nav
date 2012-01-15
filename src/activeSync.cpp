@@ -158,7 +158,7 @@ std::string condor2nav::CActiveSync::Read(const std::string &src) const
 
   // remove all returns from a file
   std::string buffer(buff.get(), numBytes);
-  std::remove_if(buffer.begin(), buffer.end(), [](char c){ return c == '\r'; }); 
+  buffer.erase(std::remove_if(buffer.begin(), buffer.end(), [](char c){ return c == '\r'; }), buffer.end()); 
 
   return buffer;
 }
