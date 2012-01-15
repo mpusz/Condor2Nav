@@ -26,6 +26,7 @@
  */
 
 #include "condor.h"
+#include "traitsNoCase.h"
 #include "tools.h"
 #include <fstream>
 #include <iomanip>
@@ -257,13 +258,13 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
       fplPath = resultsPathUser + "\\";
 
     // find the latest race result
-    std::vector<boost::filesystem::path> v;
-    std::copy_if(boost::filesystem::directory_iterator(fplPath), boost::filesystem::directory_iterator(), std::back_inserter(v),
-      [](const boost::filesystem::path &f){ return f.string().find(".fpl") != std::string::npos; });
-    auto result = std::max_element(v.begin(), v.end(),
+    std::vector<boost::filesystem::path> results;
+    std::copy_if(boost::filesystem::directory_iterator(fplPath), boost::filesystem::directory_iterator(), std::back_inserter(results),
+      [](const boost::filesystem::path &f){ return CStringNoCase(f.extension().string().c_str()) == ".fpl"; });
+    auto result = std::max_element(results.begin(), results.end(),
       [](const boost::filesystem::path &f1, const boost::filesystem::path &f2)
     { return boost::filesystem::last_write_time(f1) < boost::filesystem::last_write_time(f2); });
-    if(result != v.end())
+    if(result != results.end())
       fplPath = result->string();
     else
       throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath + "'(" + Convert(GetLastError()) + ")!!!");
