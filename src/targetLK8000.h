@@ -51,7 +51,7 @@ namespace condor2nav {
     // inputs
     static const char *LK8000_PROFILE_NAME;	     ///< @brief LK8000 profile file name to use for input. 
 
-    std::auto_ptr<CFileParserINI> _profileParser;///< @brief LK8000 profile file parser. 
+    std::unique_ptr<CFileParserINI> _profileParser;///< @brief LK8000 profile file parser. 
     const std::string _outputLK8000DataPath;     ///< @brief The path to the output LK8000 directory.
     std::string _condor2navDataPath;             ///< @brief The Condor2Nav destination data directory path (in LK8000 format) on the target device that runs LK8000.
 

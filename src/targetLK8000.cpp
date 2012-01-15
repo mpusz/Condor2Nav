@@ -87,7 +87,7 @@ _outputLK8000DataPath(OutputPath() + "\\LK8000")
         throw EOperationFailed("ERROR: Please copy '" + std::string(LK8000_PROFILE_NAME) + "' file to '" + std::string(CTranslator::DATA_PATH) + "' directory.");
     }
   }
-  _profileParser = std::auto_ptr<CFileParserINI>(new CFileParserINI(profilePath));
+  _profileParser = std::unique_ptr<CFileParserINI>(new CFileParserINI(profilePath));
 }
 
 

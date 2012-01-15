@@ -66,7 +66,7 @@ _outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
         throw EOperationFailed("ERROR: Please copy '" + std::string(XCSOAR_PROFILE_NAME) + "' file to '" + std::string(CTranslator::DATA_PATH) + "' directory.");
     }
   }
-  _profileParser = std::auto_ptr<CFileParserINI>(new CFileParserINI(profilePath));
+  _profileParser = std::unique_ptr<CFileParserINI>(new CFileParserINI(profilePath));
 }
 
 

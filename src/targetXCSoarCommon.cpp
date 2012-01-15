@@ -205,9 +205,9 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 
   std::string wpFileName = wpOutputPathPrefix + std::string("\\") + WP_FILE_NAME;
 
-  std::auto_ptr<COStream> wpFile;
+  std::unique_ptr<COStream> wpFile;
   if(generateWPFile)
-    wpFile = std::auto_ptr<COStream>(new COStream(wpFileName));
+    wpFile = std::unique_ptr<COStream>(new COStream(wpFileName));
 
   // set task settings
   SETTINGS_TASK settingsTask = { 0 };

@@ -175,7 +175,7 @@ std::string condor2nav::gui::CWidgetEdit::String() const
   if(len == 0)
     return "";
   
-  std::auto_ptr<char> buf(new char[len + 1]);
+  std::unique_ptr<char> buf(new char[len + 1]);
   SendMessage(Hwnd(), WM_GETTEXT, (WPARAM)(len + 1), (LPARAM)buf.get());
   return buf.release();
 }

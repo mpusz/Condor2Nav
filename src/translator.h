@@ -174,7 +174,7 @@ namespace condor2nav {
     CTranslator(const CTranslator &);                     ///< @brief Disallowed
     const CTranslator &operator=(const CTranslator &);    ///< @brief Disallowed
 
-    std::auto_ptr<CTarget> Target() const;
+    std::unique_ptr<CTarget> Target() const;
 
   public:
     // inputs

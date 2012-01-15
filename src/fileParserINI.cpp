@@ -65,7 +65,7 @@ CFileParser(filePath)
       if(pos == std::string::npos)
         throw EOperationFailed("ERROR: ']' not found in file line '" + line + "' in '" + Path().string() + "' INI !!!");
       
-      std::auto_ptr<TChapter> chapter(new TChapter);
+      std::unique_ptr<TChapter> chapter(new TChapter);
       chapter->name = line.substr(1, pos - 1);
       Trim(chapter->name);
       currentMap = &chapter->valuesMap;
@@ -82,7 +82,7 @@ CFileParser(filePath)
       throw EOperationFailed("ERROR: Entry '" + key + "' provided more than once in '" + Path().string() + "' INI file!!!");
 
     // add new entry
-    std::auto_ptr<TKeyValue> data(new TKeyValue);
+    std::unique_ptr<TKeyValue> data(new TKeyValue);
     data->key = key;
     data->value = value;
     (*currentMap)[&data->key] = data.release();
@@ -190,7 +190,7 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
   CValuesMap::iterator it = mapPtr->find(&key);
   if(it == mapPtr->end()) {
     // add new entry
-    std::auto_ptr<TKeyValue> data(new TKeyValue);
+    std::unique_ptr<TKeyValue> data(new TKeyValue);
     data->key = key;
     data->value = value;
     (*mapPtr)[&data->key] = data.release();

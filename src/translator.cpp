@@ -154,20 +154,20 @@ _aatTime(aatTime)
  *
  * @return Condor data translator target.
  */
-std::auto_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target() const
+std::unique_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target() const
 {
   std::string target = _configParser.Value("Condor2Nav", "Target");
   if(target == "XCSoar") {
     std::string version = _configParser.Value("XCSoar", "Version");
     if(version == "5")
-      return std::auto_ptr<CTarget>(new CTargetXCSoar(*this));
+      return std::unique_ptr<CTarget>(new CTargetXCSoar(*this));
     else if(version == "6")
-      return std::auto_ptr<CTarget>(new CTargetXCSoar6(*this));
+      return std::unique_ptr<CTarget>(new CTargetXCSoar6(*this));
     else
       throw EOperationFailed("ERROR: Unknown XCSoar version '" + version + "'!!!");
   }
   else if(target == "LK8000")
-    return std::auto_ptr<CTarget>(new CTargetLK8000(*this));
+    return std::unique_ptr<CTarget>(new CTargetLK8000(*this));
   else
     throw EOperationFailed("ERROR: Unknown translation target '" + target + "'!!!");
 }
@@ -184,7 +184,7 @@ void condor2nav::CTranslator::Run()
   _app.Warning() << "Translation START" << std::endl;
 
   // create translation target
-  std::auto_ptr<CTarget> target(Target());
+  std::unique_ptr<CTarget> target(Target());
   
   {
     const CFileParserCSV sceneriesParser(DATA_PATH + std::string("\\") + SCENERIES_DATA_FILE_NAME);
