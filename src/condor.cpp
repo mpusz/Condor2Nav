@@ -201,26 +201,6 @@ boost::filesystem::path condor2nav::CCondor::InstallPath()
     condorPath = buffer.get();
     RegCloseKey(hTestKey);
   }
-  else if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Condor: The Competition Soaring Simulator", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
-    // check for Condor 1.1.2
-    DWORD bufferSize = 0;
-    RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, NULL, &bufferSize);
-    std::unique_ptr<char> buffer(new char[bufferSize]);
-    RegQueryValueEx(hTestKey, "DisplayIcon", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
-    condorPath = buffer.get();
-    RegCloseKey(hTestKey);
-    size_t pos = condorPath.find("Condor.exe");
-    condorPath = condorPath.substr(0, pos - 1);
-  }
-  else if((RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
-    // check for Condor 1.1.0
-    DWORD bufferSize = 0;
-    RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, NULL, &bufferSize);
-    std::unique_ptr<char> buffer(new char[bufferSize]);
-    RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
-    condorPath = buffer.get();
-    RegCloseKey(hTestKey);
-  }
   else
     throw EOperationFailed("ERROR: Condor installation not found!!!");
 
