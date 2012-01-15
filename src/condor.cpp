@@ -31,10 +31,9 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
-#include <boost/filesystem.hpp>
 
-const char *condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
-const char *condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
+const boost::filesystem::path condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
+const boost::filesystem::path condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
 
 
 
@@ -49,11 +48,11 @@ const char *condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
  * @param condorPath The path to Condor directory
  * @param trnName The name of the terrain used in task
  */
-condor2nav::CCondor::CCoordConverter::CCoordConverter(const std::string &condorPath, const std::string &trnName):
-_hInstLib(::LoadLibrary(std::string(condorPath + "\\NaviCon.dll").c_str()))
+condor2nav::CCondor::CCoordConverter::CCoordConverter(const boost::filesystem::path &condorPath, const std::string &trnName):
+_hInstLib(::LoadLibrary((condorPath / "NaviCon.dll").string().c_str()))
 {
   if(!_hInstLib.get())
-    throw EOperationFailed("ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath + "'!!!");
+    throw EOperationFailed("ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath.string() + "'!!!");
   
   _iface.naviConInit = (FNaviConInit)GetProcAddress(_hInstLib.get(), "NaviConInit");
   if(!_iface.naviConInit)
@@ -76,8 +75,8 @@ _hInstLib(::LoadLibrary(std::string(condorPath + "\\NaviCon.dll").c_str()))
     throw EOperationFailed("ERROR: Couldn't map XYToLat() from 'NaviCon.dll'!!!");
 
   // init coordinates
-  std::string trnPath(condorPath + "\\Landscapes\\" + trnName + "\\" + trnName + ".trn");
-  _iface.naviConInit(trnPath.c_str());
+  boost::filesystem::path trnPath(condorPath / "Landscapes" / trnName / (trnName + ".trn"));
+  _iface.naviConInit(trnPath.string().c_str());
 }
 
 
@@ -189,9 +188,9 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
 *
 * @return Path to Condor: The Competition Soaring Simulator
 */
-std::string condor2nav::CCondor::InstallPath()
+boost::filesystem::path condor2nav::CCondor::InstallPath()
 {
-  std::string condorPath;
+  boost::filesystem::path condorPath;
   HKEY hTestKey;
 
   if((RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
@@ -241,25 +240,24 @@ std::string condor2nav::CCondor::InstallPath()
 *
 * @exception std::runtime_error Thrown when FPL file cannot be found.
  */
-void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType, const std::string &condorPath, std::string &fplPath)
+void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType,
+                                  const boost::filesystem::path &condorPath, boost::filesystem::path &fplPath)
 {
   if(fplType == CCondor2Nav::TYPE_DEFAULT) {
-    std::string fplPathUser = configParser.Value("Condor", "FlightPlansPath");
+    boost::filesystem::path fplPathUser = configParser.Value("Condor", "FlightPlansPath");
     if(fplPathUser.empty())
-      fplPath = condorPath + "\\" + FLIGHT_PLANS_PATH + "\\" + configParser.Value("Condor", "DefaultTaskName") + ".fpl";
+      fplPath = condorPath / FLIGHT_PLANS_PATH / (configParser.Value("Condor", "DefaultTaskName") + ".fpl");
     else
-      fplPath = fplPathUser + "\\" + configParser.Value("Condor", "DefaultTaskName") + ".fpl";
+      fplPath = fplPathUser / (configParser.Value("Condor", "DefaultTaskName") + ".fpl");
   }
   else if(fplType == CCondor2Nav::TYPE_RESULT) {
-    std::string resultsPathUser = configParser.Value("Condor", "RaceResultsPath");
-    if(resultsPathUser.empty())
-      fplPath = condorPath + "\\" + RACE_RESULTS_PATH + "\\";
-    else
-      fplPath = resultsPathUser + "\\";
+    boost::filesystem::path resultsPath = configParser.Value("Condor", "RaceResultsPath");
+    if(resultsPath.empty())
+      resultsPath = condorPath / RACE_RESULTS_PATH;
 
     // find the latest race result
     std::vector<boost::filesystem::path> results;
-    std::copy_if(boost::filesystem::directory_iterator(fplPath), boost::filesystem::directory_iterator(), std::back_inserter(results),
+    std::copy_if(boost::filesystem::directory_iterator(resultsPath), boost::filesystem::directory_iterator(), std::back_inserter(results),
       [](const boost::filesystem::path &f){ return CStringNoCase(f.extension().string().c_str()) == ".fpl"; });
     auto result = std::max_element(results.begin(), results.end(),
       [](const boost::filesystem::path &f1, const boost::filesystem::path &f2)
@@ -267,7 +265,7 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
     if(result != results.end())
       fplPath = result->string();
     else
-      throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath + "'(" + Convert(GetLastError()) + ")!!!");
+      throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath.string() + "'(" + Convert(GetLastError()) + ")!!!");
   }
 }
 
@@ -283,7 +281,7 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
  *
  * @exception std Thrown when not supported Condor version.
  */
-condor2nav::CCondor::CCondor(const std::string &condorPath, const std::string &fplPath):
+condor2nav::CCondor::CCondor(const boost::filesystem::path &condorPath, const boost::filesystem::path &fplPath):
 _taskParser(fplPath),
 _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
 {

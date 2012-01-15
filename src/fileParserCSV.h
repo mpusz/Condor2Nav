@@ -48,10 +48,10 @@ namespace condor2nav {
     CRowsList _rowsList;	        ///< @brief The list of file rows.
 
   public:
-    explicit CFileParserCSV(const std::string &filePath);
+    explicit CFileParserCSV(const boost::filesystem::path &filePath);
     ~CFileParserCSV();
 
-    virtual void Dump(const std::string &filePath = "") const;
+    virtual void Dump(const boost::filesystem::path &filePath = "") const;
     
     const CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false) const;
     const CRowsList &Rows() const;

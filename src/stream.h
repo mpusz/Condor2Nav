@@ -29,6 +29,7 @@
 #define __STREAM_H__
 
 #include <sstream>
+#include <boost/filesystem.hpp>
 
 namespace condor2nav {
 
@@ -43,23 +44,23 @@ namespace condor2nav {
      * @brief Stream types
      */
     enum TType {
-      TYPE_LOCAL,            ///< @brief Local path. 
-      TYPE_ACTIVE_SYNC       ///< @brief ActiveSync (remote device) path. 
+      TYPE_LOCAL,                         ///< @brief Local path. 
+      TYPE_ACTIVE_SYNC                    ///< @brief ActiveSync (remote device) path. 
     };
 
   private:
-    std::string _fileName;         ///< @brief File name.
-    TType _type;                   ///< @brief Stream type. 
-    std::stringstream _buffer;     ///< @brief Buffer with file data. 
+    boost::filesystem::path _fileName;    ///< @brief File name.
+    TType _type;                          ///< @brief Stream type. 
+    std::stringstream _buffer;            ///< @brief Buffer with file data. 
     
   protected:
-    const std::string &FileName() const { return _fileName; }
+    const boost::filesystem::path &FileName() const { return _fileName; }
     TType Type() const { return _type; }
     const std::stringstream &Buffer() const { return _buffer; }
     std::stringstream &Buffer() { return _buffer; }
 
   public:
-    CStream(const std::string &fileName);
+    CStream(const boost::filesystem::path &fileName);
     virtual ~CStream() = 0;
   };
 

@@ -37,7 +37,7 @@
  *
  * @param filePath The path of the file to parse.
  */
-condor2nav::CFileParser::CFileParser(const std::string &filePath):
+condor2nav::CFileParser::CFileParser(const boost::filesystem::path &filePath):
 _filePath(filePath)
 {
 }
@@ -60,7 +60,7 @@ condor2nav::CFileParser::~CFileParser()
  * 
  * @return The path to the input file.
  */
-const std::string &condor2nav::CFileParser::Path() const
+const boost::filesystem::path &condor2nav::CFileParser::Path() const
 {
   return _filePath;
 }
@@ -101,7 +101,7 @@ void condor2nav::CFileParser::LineParseKeyValue(const std::string &line, std::st
 {
   size_t pos = line.find_first_of("=");
   if(pos == std::string::npos)
-    throw EOperationFailed("ERROR: '=' sign not found in '" + Path() + "' file line '" + line + "'!!!");
+    throw EOperationFailed("ERROR: '=' sign not found in '" + Path().string() + "' file line '" + line + "'!!!");
   
   key = line.substr(0, pos);
   WhiteSpacesRemove(key);

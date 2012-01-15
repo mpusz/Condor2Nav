@@ -37,7 +37,7 @@
  *
  * @param fileName The name of the file to create.
  */
-condor2nav::COStream::COStream(const std::string &fileName):
+condor2nav::COStream::COStream(const boost::filesystem::path &fileName):
 CStream(fileName)
 {
 }
@@ -57,7 +57,7 @@ condor2nav::COStream::~COStream()
         {
           std::ofstream stream(FileName().c_str(), std::ios_base::out | std::ios_base::binary);
           if(!stream)
-            throw EOperationFailed("ERROR: Couldn't open file '" + FileName() + "' for writing!!!");
+            throw EOperationFailed("ERROR: Couldn't open file '" + FileName().string() + "' for writing!!!");
           stream << Buffer().str();
         }
         break;

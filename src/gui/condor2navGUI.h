@@ -63,28 +63,28 @@ namespace condor2nav {
       };
 
     private:
-      const HWND _hDlg;	                      ///< @brief The dialog handle
-      const std::string _condorPath;	      ///< @brief Full pathname of the Condor directory
-      const CFileParserINI _configParser;	  ///< @brief The INI file configuration parser
+      const HWND _hDlg;	                         ///< @brief The dialog handle
+      const boost::filesystem::path _condorPath; ///< @brief Full pathname of the Condor directory
+      const CFileParserINI _configParser;	     ///< @brief The INI file configuration parser
 
-      CWidgetRadioButton _fplDefault;	      ///< @brief The default FPL button
-      CWidgetRadioButton _fplLastRace;        ///< @brief The last race FPL button
-      CWidgetRadioButton _fplOther;           ///< @brief The other FPL path button
-      CWidgetButton _fplSelect;               ///< @brief The FPL path selection button
-      CWidgetEdit _fplPath;                   ///< @brief Currently selected FPL path
+      CWidgetRadioButton _fplDefault;	         ///< @brief The default FPL button
+      CWidgetRadioButton _fplLastRace;           ///< @brief The last race FPL button
+      CWidgetRadioButton _fplOther;              ///< @brief The other FPL path button
+      CWidgetButton _fplSelect;                  ///< @brief The FPL path selection button
+      CWidgetEdit _fplPath;                      ///< @brief Currently selected FPL path
 
-      CWidgetRadioButton _aatOff;             ///< @brief The AAT task OFF button
-      CWidgetRadioButton _aatOn;              ///< @brief The AAT task ON button
-      CWidgetComboBox _aatTime;               ///< @brief The AAT task minimum time combo box
-      CWidget _aatMinutes;                    ///< @brief The AAT task minimum time minutes label
+      CWidgetRadioButton _aatOff;                ///< @brief The AAT task OFF button
+      CWidgetRadioButton _aatOn;                 ///< @brief The AAT task ON button
+      CWidgetComboBox _aatTime;                  ///< @brief The AAT task minimum time combo box
+      CWidget _aatMinutes;                       ///< @brief The AAT task minimum time minutes label
 
-      CWidgetButton _translate;               ///< @brief The Condor2Nav start translation button
+      CWidgetButton _translate;                  ///< @brief The Condor2Nav start translation button
 
-      CWidgetRichEdit _log;                   ///< @brief The Condor2Nav logging window
+      CWidgetRichEdit _log;                      ///< @brief The Condor2Nav logging window
 
-      CLogger _normal;                        ///< @brief Normal logging level logger
-      CLogger _warning;                       ///< @brief Warning logging level logger
-      CLogger _error;                         ///< @brief Error logging level logger
+      CLogger _normal;                           ///< @brief Normal logging level logger
+      CLogger _warning;                          ///< @brief Warning logging level logger
+      CLogger _error;                            ///< @brief Error logging level logger
 
       void AATCheck(const CCondor &condor) const;
       bool TranslateValid() const;

@@ -37,10 +37,11 @@
  *
  * @param fileName The name of the file to create.
  */
-condor2nav::CStream::CStream(const std::string &fileName):
+condor2nav::CStream::CStream(const boost::filesystem::path &fileName):
 _fileName(fileName)
 {
-  if(fileName.size() > 2 && fileName[0] == '\\' && fileName[1] != '\\')
+  std::string str(fileName.string());
+  if(str.size() > 2 && str[0] == '\\' && str[1] != '\\')
     _type = TYPE_ACTIVE_SYNC;
   else
     _type = TYPE_LOCAL;

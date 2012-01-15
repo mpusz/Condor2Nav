@@ -32,6 +32,7 @@
 #include "tools.h"
 #include <functional>
 #include <memory>
+#include <boost/filesystem.hpp>
 #include <rapi.h>
 
 namespace condor2nav {
@@ -96,10 +97,10 @@ namespace condor2nav {
   public:
     static CActiveSync &Instance();
     ~CActiveSync();
-    std::string Read(const std::string &src) const;
-    void Write(const std::string &dest, const std::string &buffer) const;
-    void DirectoryCreate(const std::string &path) const;
-    bool FileExists(const std::string &path) const;
+    std::string Read(const boost::filesystem::path &src) const;
+    void Write(const boost::filesystem::path &dest, const std::string &buffer) const;
+    void DirectoryCreate(const boost::filesystem::path &path) const;
+    bool FileExists(const boost::filesystem::path &path) const;
   };
 
 }

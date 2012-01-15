@@ -29,6 +29,7 @@
 #define __FILEPARSER_H__
 
 #include <vector>
+#include <boost/filesystem.hpp>
 
 namespace condor2nav {
 
@@ -46,7 +47,7 @@ namespace condor2nav {
     typedef std::vector<std::string> CStringArray;	///< @brief The array of strings.
 
   private:
-    const std::string _filePath;	                  ///< @brief Input file path.
+    const boost::filesystem::path _filePath;	    ///< @brief Input file path.
 
     CFileParser(const CFileParser &);               ///< @brief Disallowed
     CFileParser &operator=(const CFileParser &);    ///< @brief Disallowed
@@ -57,7 +58,7 @@ namespace condor2nav {
     void LineParseCSV(const std::string &line, CStringArray &values) const;
 
   public:
-    explicit CFileParser(const std::string &filePath);
+    explicit CFileParser(const boost::filesystem::path &filePath);
     virtual ~CFileParser();
 
     /**
@@ -67,9 +68,9 @@ namespace condor2nav {
      * 
      * @param filePath Path of the file to create (empty means overwrite input file).
      */
-    virtual void Dump(const std::string &filePath = "") const = 0;
+    virtual void Dump(const boost::filesystem::path &filePath = "") const = 0;
 
-    const std::string &Path() const;
+    const boost::filesystem::path &Path() const;
   };
 
 }

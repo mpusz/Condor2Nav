@@ -40,7 +40,7 @@
  *
  * @param filePath The path of the CSV file to parse.
  */
-condor2nav::CFileParserCSV::CFileParserCSV(const std::string &filePath):
+condor2nav::CFileParserCSV::CFileParserCSV(const boost::filesystem::path &filePath):
 CFileParser(filePath)
 {
   // open CSV file
@@ -89,7 +89,7 @@ const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(con
     if((**it).at(column) == value || (nocase && (**it).at(column).c_str() == CStringNoCase(value.c_str())))
       return **it;
 
-  throw EOperationFailed("ERROR: Couldn't find value '" + value + "' in column '" + Convert(column) + "' of CSV file '" + Path() + "'!!!");
+  throw EOperationFailed("ERROR: Couldn't find value '" + value + "' in column '" + Convert(column) + "' of CSV file '" + Path().string() + "'!!!");
 }
 
 
@@ -118,9 +118,9 @@ const condor2nav::CFileParserCSV::CRowsList &condor2nav::CFileParserCSV::Rows() 
  * 
  * @param filePath Path of the file to create (empty means overwrite input file).
  */
-void condor2nav::CFileParserCSV::Dump(const std::string &filePath /* = "" */) const
+void condor2nav::CFileParserCSV::Dump(const boost::filesystem::path &filePath /* = "" */) const
 {
-  std::string path = filePath != "" ? filePath.c_str() : Path().c_str();
+  boost::filesystem::path path = filePath.empty() ? Path() : filePath;
   COStream outputStream(path);
 
   for(CRowsList::const_iterator it=_rowsList.begin(); it!=_rowsList.end(); ++it) {

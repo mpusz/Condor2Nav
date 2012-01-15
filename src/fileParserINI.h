@@ -69,10 +69,10 @@ namespace condor2nav {
     const TChapter &Chapter(const std::string &chapter) const;
     
   public:
-    explicit CFileParserINI(const std::string &filePath);
+    explicit CFileParserINI(const boost::filesystem::path &filePath);
     ~CFileParserINI();
 
-    virtual void Dump(const std::string &filePath = "") const;
+    virtual void Dump(const boost::filesystem::path &filePath = "") const;
 
     const std::string &Value(const std::string &chapter, const std::string &key) const;
     void Value(const std::string &chapter, const std::string &key, const std::string &value);

@@ -31,7 +31,8 @@
 #include "condor2nav.h"
 #include "nonCopyable.h"
 #include "fileParserINI.h"
-#include <windows.h> 
+#include <boost/filesystem.hpp>
+#include <windows.h>
 
 namespace condor2nav {
 
@@ -88,7 +89,7 @@ namespace condor2nav {
         FORMAT_DDMMFF,        ///< @brief Format in form 23:35.454N
         FORMAT_DDMMSS         ///< @brief Format in form 23:35:23N
       };
-      CCoordConverter(const std::string &condorPath, const std::string &trnName);
+      CCoordConverter(const boost::filesystem::path &condorPath, const std::string &trnName);
       double Longitude(const std::string &x, const std::string &y) const;
       double Latitude(const std::string &x, const std::string &y) const;
       std::string Longitude(const std::string &x, const std::string &y, TOutputFormat format) const;
@@ -97,16 +98,17 @@ namespace condor2nav {
 
   private:
     static const unsigned CONDOR_VERSION_SUPPORTED = 1120;	  ///< @brief Supported Condor version.
-    static const char *FLIGHT_PLANS_PATH;
-    static const char *RACE_RESULTS_PATH;
+    static const boost::filesystem::path FLIGHT_PLANS_PATH;
+    static const boost::filesystem::path RACE_RESULTS_PATH;
     const CFileParserINI _taskParser;	           ///< @brief Condor task file parser. 
     const CCoordConverter _coordConverter;	       ///< @brief Condor map coordinates converter. 
 
   public:
-    static std::string InstallPath();
-    static void FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType, const std::string &condorPath, std::string &fplPath);
+    static boost::filesystem::path InstallPath();
+    static void FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType,
+                        const boost::filesystem::path &condorPath, boost::filesystem::path &fplPath);
 
-    CCondor(const std::string &condorPath, const std::string &fplPath);
+    CCondor(const boost::filesystem::path &condorPath, const boost::filesystem::path &fplPath);
     const CFileParserINI &TaskParser() const      { return _taskParser; }
     const CCoordConverter &CoordConverter() const { return _coordConverter; }
   };

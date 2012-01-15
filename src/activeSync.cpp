@@ -142,19 +142,18 @@ condor2nav::CActiveSync::~CActiveSync()
  * @param src Target file path. 
  * @param stream Stream to store file content. 
  */
-std::string condor2nav::CActiveSync::Read(const std::string &src) const
+std::string condor2nav::CActiveSync::Read(const boost::filesystem::path &src) const
 {
-  std::wstring fileName(src.begin(), src.end());
-  std::shared_ptr<void> hSrc(_iface.ceCreateFile(fileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL),
+  std::shared_ptr<void> hSrc(_iface.ceCreateFile(src.wstring().c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL),
     [this](HANDLE h){ if(h) _iface.ceCloseHandle(h); });
   if(hSrc.get() == INVALID_HANDLE_VALUE)
-    throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + src + "'!!!");
+    throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + src.string() + "'!!!");
 
   DWORD numBytes = _iface.ceGetFileSize(hSrc.get(), NULL);
   std::unique_ptr<char> buff(new char[numBytes]);
 
   if(!_iface.ceReadFile(hSrc.get(), buff.get(), numBytes, &numBytes, NULL))
-    throw EOperationFailed("ERROR: Reading ActiveSync file '" + src + "'!!!");
+    throw EOperationFailed("ERROR: Reading ActiveSync file '" + src.string() + "'!!!");
 
   // remove all returns from a file
   std::string buffer(buff.get(), numBytes);
@@ -172,17 +171,16 @@ std::string condor2nav::CActiveSync::Read(const std::string &src) const
  * @param dest Target file path. 
  * @param buffer Buffer with file content. 
  */
-void condor2nav::CActiveSync::Write(const std::string &dest, const std::string &buffer) const
+void condor2nav::CActiveSync::Write(const boost::filesystem::path &dest, const std::string &buffer) const
 {
-  std::wstring destName(dest.begin(), dest.end());
-  std::shared_ptr<void> hDest(_iface.ceCreateFile(destName.c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL),
+  std::shared_ptr<void> hDest(_iface.ceCreateFile(dest.wstring().c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL),
     [this](HANDLE h){ if(h) _iface.ceCloseHandle(h); });
   if(hDest.get() == INVALID_HANDLE_VALUE)
-    throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + dest + "'!!!");
+    throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + dest.string() + "'!!!");
 
   DWORD numBytes;
   if(!_iface.ceWriteFile(hDest.get(), buffer.c_str(), buffer.size(), &numBytes, NULL))
-    throw EOperationFailed("ERROR: Writing ActiveSync file '" + dest + "'!!!");
+    throw EOperationFailed("ERROR: Writing ActiveSync file '" + dest.string() + "'!!!");
 }
 
 
@@ -193,11 +191,10 @@ void condor2nav::CActiveSync::Write(const std::string &dest, const std::string &
  *
  * @param path Target directory path. 
  */
-void condor2nav::CActiveSync::DirectoryCreate(const std::string &path) const
+void condor2nav::CActiveSync::DirectoryCreate(const boost::filesystem::path &path) const
 {
-  std::wstring dirName(path.begin(), path.end());
-  if(!_iface.ceCreateDirectory(dirName.c_str(), NULL) && _iface.ceGetLastError() != ERROR_ALREADY_EXISTS)
-    throw EOperationFailed("ERROR: Creating ActiveSync directory '" + path + "'!!!");
+  if(!_iface.ceCreateDirectory(path.wstring().c_str(), NULL) && _iface.ceGetLastError() != ERROR_ALREADY_EXISTS)
+    throw EOperationFailed("ERROR: Creating ActiveSync directory '" + path.string() + "'!!!");
 }
 
 
@@ -210,15 +207,14 @@ void condor2nav::CActiveSync::DirectoryCreate(const std::string &path) const
  *
  * @return @p true if file exists.
  */
-bool condor2nav::CActiveSync::FileExists(const std::string &path) const
+bool condor2nav::CActiveSync::FileExists(const boost::filesystem::path &path) const
 {
-  std::wstring fileName(path.begin(), path.end());
-  std::shared_ptr<void> hDest(_iface.ceCreateFile(fileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL),
+  std::shared_ptr<void> hDest(_iface.ceCreateFile(path.wstring().c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL),
     [this](HANDLE h){ if(h) _iface.ceCloseHandle(h); });
   if(hDest.get() == INVALID_HANDLE_VALUE) {
     if(_iface.ceGetLastError() == ERROR_FILE_NOT_FOUND)
       return false;
-    throw EOperationFailed("ERROR: Unable to check if file '" + path + "' exists!!!");
+    throw EOperationFailed("ERROR: Unable to check if file '" + path.string() + "' exists!!!");
   }
   else
     return true;

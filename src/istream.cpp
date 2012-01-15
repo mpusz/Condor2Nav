@@ -37,7 +37,7 @@
  *
  * @param fileName The name of the file to read.
  */
-condor2nav::CIStream::CIStream(const std::string &fileName):
+condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName):
 CStream(fileName)
 {
   switch(Type()) {
@@ -45,7 +45,7 @@ CStream(fileName)
       {
         std::fstream stream(fileName.c_str(), std::ios_base::in);
         if(!stream)
-          throw EOperationFailed("ERROR: Couldn't open file '" + fileName + "' for reading!!!");
+          throw EOperationFailed("ERROR: Couldn't open file '" + fileName.string() + "' for reading!!!");
         Buffer() << stream.rdbuf();
       }
       break;

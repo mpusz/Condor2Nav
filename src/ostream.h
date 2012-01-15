@@ -39,7 +39,7 @@ namespace condor2nav {
    */
   class COStream : public CStream {
   public:
-    COStream(const std::string &fileName);
+    COStream(const boost::filesystem::path &fileName);
     ~COStream();
     COStream &Write(const char *buffer, std::streamsize num);
 

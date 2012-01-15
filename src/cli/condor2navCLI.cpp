@@ -123,7 +123,7 @@ void condor2nav::cli::CCondor2NavCLI::Usage() const
  *
  * @exception std::runtime_error Thrown when parsing error occurred.
  */
-void condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const
+void condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[], TFPLType &fplType, boost::filesystem::path &fplPath, unsigned &aatTime) const
 {
   fplType = TYPE_DEFAULT;
   fplPath = "";
@@ -217,12 +217,12 @@ int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
 {
   // parse CLI options
   TFPLType fplType;
-  std::string fplPath;
+  boost::filesystem::path fplPath;
   unsigned aatTime;
   CLIParse(argc, argv, fplType, fplPath, aatTime);
   
   // obtain Condor installation path
-  std::string condorPath = CCondor::InstallPath();
+  boost::filesystem::path condorPath = CCondor::InstallPath();
   
   // open configuration file
   CFileParserINI configParser(CONFIG_FILE_NAME);

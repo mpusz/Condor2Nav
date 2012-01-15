@@ -38,7 +38,7 @@
  *
  * @param filePath The path of the INI file to parse.
  */
-condor2nav::CFileParserINI::CFileParserINI(const std::string &filePath):
+condor2nav::CFileParserINI::CFileParserINI(const boost::filesystem::path &filePath):
 CFileParser(filePath)
 {
   // open input INI file
@@ -63,7 +63,7 @@ CFileParser(filePath)
       // new chapter
       size_t pos = line.find_first_of("]");
       if(pos == std::string::npos)
-        throw EOperationFailed("ERROR: ']' not found in file line '" + line + "' in '" + Path() + "' INI !!!");
+        throw EOperationFailed("ERROR: ']' not found in file line '" + line + "' in '" + Path().string() + "' INI !!!");
       
       std::auto_ptr<TChapter> chapter(new TChapter);
       chapter->name = line.substr(1, pos - 1);
@@ -79,7 +79,7 @@ CFileParser(filePath)
     LineParseKeyValue(line, key, value);
 
     if(currentMap->find(&key) != currentMap->end())
-      throw EOperationFailed("ERROR: Entry '" + key + "' provided more than once in '" + Path() + "' INI file!!!");
+      throw EOperationFailed("ERROR: Entry '" + key + "' provided more than once in '" + Path().string() + "' INI file!!!");
 
     // add new entry
     std::auto_ptr<TKeyValue> data(new TKeyValue);
@@ -121,7 +121,7 @@ condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const 
     if((*it)->name == chapter)
       return **it;
 
-  throw EOperationFailed("ERROR: Chapter '" + chapter + "' not found in '" + Path() + "' INI file!!!");
+  throw EOperationFailed("ERROR: Chapter '" + chapter + "' not found in '" + Path().string() + "' INI file!!!");
 }
 
 
@@ -142,7 +142,7 @@ const condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(
     if((*it)->name == chapter)
       return **it;
 
-  throw EOperationFailed("ERROR: Chapter '" + chapter + "' not found in '" + Path() + "' INI file!!!");
+  throw EOperationFailed("ERROR: Chapter '" + chapter + "' not found in '" + Path().string() + "' INI file!!!");
 }
 
 
@@ -167,7 +167,7 @@ const std::string &condor2nav::CFileParserINI::Value(const std::string &chapter,
 
   CValuesMap::const_iterator it = mapPtr->find(&key);
   if(it == mapPtr->end())
-    throw EOperationFailed("ERROR: Entry '" + key + "' not found in '" + Path() + "' INI file!!!");
+    throw EOperationFailed("ERROR: Entry '" + key + "' not found in '" + Path().string() + "' INI file!!!");
   return it->second->value;
 }
 
@@ -208,10 +208,10 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
  * 
  * @param filePath Path of the file to create (empty means overwrite input file).
  */
-void condor2nav::CFileParserINI::Dump(const std::string &filePath /* = "" */) const
+void condor2nav::CFileParserINI::Dump(const boost::filesystem::path &filePath /* = "" */) const
 {
   // open output file
-  std::string path = filePath != "" ? filePath.c_str() : Path().c_str();
+  boost::filesystem::path path = filePath.empty() ? Path() : filePath;
   COStream outputStream(path);
 
   // dump global scope

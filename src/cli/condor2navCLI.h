@@ -29,6 +29,7 @@
 #define __CONDOR2NAV_CLI_H__
 
 #include "condor2nav.h"
+#include <boost/filesystem.hpp>
 
 /**
  * @brief Condor2Nav project namespace.
@@ -68,7 +69,7 @@ namespace condor2nav {
       CLogger _error;               ///< @brief Error logging level logger
 
       void Usage() const;
-      void CLIParse(int argc, const char *argv[], TFPLType &fplType, std::string &fplPath, unsigned &aatTime) const;
+      void CLIParse(int argc, const char *argv[], TFPLType &fplType, boost::filesystem::path &fplPath, unsigned &aatTime) const;
       bool AATCheck(const CCondor &condor, unsigned &aatTime) const;
 
     public:
