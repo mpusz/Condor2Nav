@@ -41,6 +41,25 @@ namespace condor2nav {
 
 
 /**
+ * @brief Removes leading and trailing white spaces from string.
+ *
+ * Method removes leading and trailing white spaces from given string.
+ *
+ * @param [in,out] str The string to cut.
+ *
+ * @return Cut string.
+ */
+void condor2nav::Trim(std::string &str)
+{
+  if(str != "") {
+    size_t pos1 = str.find_first_not_of(" ");
+    size_t pos2 = str.find_last_not_of(" ");
+    str = str.substr(pos1, pos2 - pos1 + 1);
+  }
+}
+
+
+/**
  * @brief Converts longitude and latitude coordinates.
  *
  * Method converts longitude and latitude coordinates from DD.FF

@@ -67,7 +67,7 @@ CFileParser(filePath)
       
       std::auto_ptr<TChapter> chapter(new TChapter);
       chapter->name = line.substr(1, pos - 1);
-      WhiteSpacesRemove(chapter->name);
+      Trim(chapter->name);
       currentMap = &chapter->valuesMap;
       _chaptersList.push_back(chapter.release());
       continue;

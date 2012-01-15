@@ -67,26 +67,6 @@ const boost::filesystem::path &condor2nav::CFileParser::Path() const
 
 
 /**
- * @brief Removes leading and trailing white spaces from string.
- *
- * Method removes leading and trailing white spaces from given string.
- *
- * @param [in,out] str The string to cut.
- *
- * @return Cut string.
- */
-std::string &condor2nav::CFileParser::WhiteSpacesRemove(std::string &str) const
-{
-  if(str != "") {
-    size_t pos1 = str.find_first_not_of(" ");
-    size_t pos2 = str.find_last_not_of(" ");
-    str = str.substr(pos1, pos2 - pos1 + 1);
-  }
-  return str;
-}
-
- 
-/**
  * @brief Parses the line as key=value pairs.
  *
  * Method parses the line as key=value pairs.
@@ -104,10 +84,10 @@ void condor2nav::CFileParser::LineParseKeyValue(const std::string &line, std::st
     throw EOperationFailed("ERROR: '=' sign not found in '" + Path().string() + "' file line '" + line + "'!!!");
   
   key = line.substr(0, pos);
-  WhiteSpacesRemove(key);
+  Trim(key);
 
   value = line.substr(pos + 1);
-  WhiteSpacesRemove(value);
+  Trim(value);
 }
 
 
@@ -127,8 +107,8 @@ void condor2nav::CFileParser::LineParseCSV(const std::string &line, CStringArray
     pos = line.find_first_of(",", posOld);
     size_t len = (pos != std::string::npos) ? (pos - posOld) : pos;
     std::string value = line.substr(posOld, len);
-    WhiteSpacesRemove(value);
-    values.push_back(value);
+    Trim(value);
+    values.push_back(std::move(value));
     if(pos != std::string::npos)
       pos++;
   }

@@ -62,6 +62,8 @@ namespace condor2nav {
   template<class T> T Convert(const std::string &str);
   template<class T> std::string Convert(const T &val);
 
+  void Trim(std::string &str);
+
   std::string DDFF2DDMMFF(double value, bool longitude);
   std::string DDFF2DDMMSS(double value, bool longitude);
 

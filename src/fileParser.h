@@ -53,7 +53,6 @@ namespace condor2nav {
     CFileParser &operator=(const CFileParser &);    ///< @brief Disallowed
 
   protected:
-    std::string &WhiteSpacesRemove(std::string &str) const;
     void LineParseKeyValue(const std::string &line, std::string &key, std::string &value) const;
     void LineParseCSV(const std::string &line, CStringArray &values) const;
 
