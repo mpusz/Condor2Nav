@@ -32,10 +32,9 @@
 #include "targetXCSoar6.h"
 #include "targetLK8000.h"
 
-
-const char *condor2nav::CTranslator::DATA_PATH = "data";
-const char *condor2nav::CTranslator::SCENERIES_DATA_FILE_NAME = "SceneryData.csv";
-const char *condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME = "GliderData.csv";
+const boost::filesystem::path condor2nav::CTranslator::DATA_PATH                = "data";
+const boost::filesystem::path condor2nav::CTranslator::SCENERIES_DATA_FILE_NAME = "SceneryData.csv";
+const boost::filesystem::path condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME   = "GliderData.csv";
 
 
 
@@ -117,7 +116,7 @@ const condor2nav::CCondor &condor2nav::CTranslator::CTarget::Condor() const
  *
  * @return Translation output directory. 
  */
-const std::string &condor2nav::CTranslator::CTarget::OutputPath() const
+const boost::filesystem::path &condor2nav::CTranslator::CTarget::OutputPath() const
 {
   return _outputPath;
 }
@@ -187,7 +186,7 @@ void condor2nav::CTranslator::Run()
   std::unique_ptr<CTarget> target(Target());
   
   {
-    const CFileParserCSV sceneriesParser(DATA_PATH + std::string("\\") + SCENERIES_DATA_FILE_NAME);
+    const CFileParserCSV sceneriesParser(DATA_PATH / SCENERIES_DATA_FILE_NAME);
     const CFileParserCSV::CStringArray &sceneryData = sceneriesParser.Row(_condor.TaskParser().Value("Task", "Landscape"), 0, true);
 
     // set Condor GPS data
@@ -217,7 +216,7 @@ void condor2nav::CTranslator::Run()
   // translate glider data
   if(_configParser.Value("Condor2Nav", "SetGlider") == "1") {
     _app.Log() << "Setting glider data..." << std::endl;
-    const CFileParserCSV glidersParser(DATA_PATH + std::string("\\") + GLIDERS_DATA_FILE_NAME);
+    const CFileParserCSV glidersParser(DATA_PATH / GLIDERS_DATA_FILE_NAME);
     target->Glider(glidersParser.Row(_condor.TaskParser().Value("Plane", "Name")));
   }
 

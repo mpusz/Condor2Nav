@@ -41,15 +41,21 @@ namespace condor2nav {
    */
   class CTargetXCSoar : public CTargetXCSoarCommon {
     // inputs
-    static const char *XCSOAR_PROFILE_NAME;	     ///< @brief XCSoar profile file name to use for input. 
+    static const boost::filesystem::path XCSOAR_PROFILE_NAME; ///< @brief XCSoar profile file name to use for input. 
 
-    std::unique_ptr<CFileParserINI> _profileParser;///< @brief XCSoar profile file parser. 
-    const std::string _outputXCSoarDataPath;     ///< @brief The path to the output XCSoarData directory.
-    std::string _outputCondor2NavDataPath;       ///< @brief The path to the output Condor2Nav directory.
-    std::string _condor2navDataPath;             ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar.
-    std::string _outputTaskFilePath;             ///< @brief The path where output XCSoar task file should be located
+    std::unique_ptr<CFileParserINI> _profileParser;           ///< @brief XCSoar profile file parser. 
+    const boost::filesystem::path _outputXCSoarDataPath;      ///< @brief The path to the output XCSoarData directory.
+    boost::filesystem::path _outputCondor2NavDataPath;        ///< @brief The path to the output Condor2Nav directory.
+    boost::filesystem::path _condor2navDataPath;              ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar.
+    boost::filesystem::path _outputTaskFilePath;              ///< @brief The path where output XCSoar task file should be located
     
-    virtual void TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
+    virtual void TaskDump(CFileParserINI &profileParser,
+                          const CFileParserINI &taskParser, 
+                          const boost::filesystem::path &outputTaskFilePath,
+                          const xcsoar::SETTINGS_TASK &settingsTask, 
+                          const xcsoar::TASK_POINT *taskPointArray,
+                          const xcsoar::START_POINT *startPointArray,
+                          const CWaypointArray &waypointArray) const;
 
   public:
     explicit CTargetXCSoar(const CTranslator &translator);

@@ -30,14 +30,14 @@
 #include "ostream.h"
 
 
-const char *condor2nav::CTargetLK8000::AIRSPACES_SUBDIR       = "_Airspaces";
-const char *condor2nav::CTargetLK8000::CONFIG_SUBDIR          = "_Configuration";
-const char *condor2nav::CTargetLK8000::MAPS_SUBDIR            = "_Maps";
-const char *condor2nav::CTargetLK8000::POLARS_SUBDIR          = "_Polars";
-const char *condor2nav::CTargetLK8000::TASKS_SUBDIR           = "_Tasks";
-const char *condor2nav::CTargetLK8000::WAYPOINTS_SUBDIR       = "_Waypoints";
+const boost::filesystem::path condor2nav::CTargetLK8000::AIRSPACES_SUBDIR    = "_Airspaces";
+const boost::filesystem::path condor2nav::CTargetLK8000::CONFIG_SUBDIR       = "_Configuration";
+const boost::filesystem::path condor2nav::CTargetLK8000::MAPS_SUBDIR         = "_Maps";
+const boost::filesystem::path condor2nav::CTargetLK8000::POLARS_SUBDIR       = "_Polars";
+const boost::filesystem::path condor2nav::CTargetLK8000::TASKS_SUBDIR        = "_Tasks";
+const boost::filesystem::path condor2nav::CTargetLK8000::WAYPOINTS_SUBDIR    = "_Waypoints";
 
-const char *condor2nav::CTargetLK8000::LK8000_PROFILE_NAME    = "DEFAULT_PROFILE.prf";
+const boost::filesystem::path condor2nav::CTargetLK8000::LK8000_PROFILE_NAME = "DEFAULT_PROFILE.prf";
 
 
 /**
@@ -49,42 +49,42 @@ const char *condor2nav::CTargetLK8000::LK8000_PROFILE_NAME    = "DEFAULT_PROFILE
  */
 condor2nav::CTargetLK8000::CTargetLK8000(const CTranslator &translator):
 CTargetXCSoarCommon(translator),
-_outputLK8000DataPath(OutputPath() + "\\LK8000")
+_outputLK8000DataPath(OutputPath() / "LK8000")
 {
-  std::string subDir = "\\condor2nav";
+  boost::filesystem::path subDir = "condor2nav";
   _condor2navDataPath = ConfigParser().Value("LK8000", "LK8000Path");
 
-  _outputAirspacesSubDir = std::string("\\") + AIRSPACES_SUBDIR + subDir;
-  _outputConfigSubDir = std::string("\\") + CONFIG_SUBDIR + subDir;
-  _outputMapsSubDir = std::string("\\") + MAPS_SUBDIR + subDir;
-  _outputPolarsSubDir = std::string("\\") + POLARS_SUBDIR + subDir;
-  _outputPolarsSubDir = std::string("\\") + POLARS_SUBDIR + subDir;
-  _outputWaypointsSubDir = std::string("\\") + WAYPOINTS_SUBDIR + subDir;
+  _outputAirspacesSubDir = AIRSPACES_SUBDIR / subDir;
+  _outputConfigSubDir    = CONFIG_SUBDIR / subDir;
+  _outputMapsSubDir      = MAPS_SUBDIR / subDir;
+  _outputPolarsSubDir    = POLARS_SUBDIR / subDir;
+  _outputPolarsSubDir    = POLARS_SUBDIR / subDir;
+  _outputWaypointsSubDir = WAYPOINTS_SUBDIR / subDir;
 
-  DirectoryCreate(_outputLK8000DataPath + _outputAirspacesSubDir);
-  DirectoryCreate(_outputLK8000DataPath + _outputConfigSubDir);
-  DirectoryCreate(_outputLK8000DataPath + _outputMapsSubDir);
-  DirectoryCreate(_outputLK8000DataPath + _outputPolarsSubDir);
-  DirectoryCreate(_outputLK8000DataPath + _outputWaypointsSubDir);
+  DirectoryCreate(_outputLK8000DataPath / _outputAirspacesSubDir);
+  DirectoryCreate(_outputLK8000DataPath / _outputConfigSubDir);
+  DirectoryCreate(_outputLK8000DataPath / _outputMapsSubDir);
+  DirectoryCreate(_outputLK8000DataPath / _outputPolarsSubDir);
+  DirectoryCreate(_outputLK8000DataPath / _outputWaypointsSubDir);
 
-  std::string outputTaskDir;
+  boost::filesystem::path outputTaskDir;
   if(Convert<unsigned>(ConfigParser().Value("LK8000", "DefaultTaskOverwrite"))) {
-    outputTaskDir = _outputLK8000DataPath + std::string("\\") + TASKS_SUBDIR;
-    _outputTaskFilePath = outputTaskDir + std::string("\\") + DEFAULT_TASK_FILE_NAME;
+    outputTaskDir = _outputLK8000DataPath / TASKS_SUBDIR;
+    _outputTaskFilePath = outputTaskDir / DEFAULT_TASK_FILE_NAME;
   }
   else {
-    outputTaskDir = _outputLK8000DataPath + std::string("\\") + TASKS_SUBDIR + subDir;
-    _outputTaskFilePath = outputTaskDir + std::string("\\") + TASK_FILE_NAME;
+    outputTaskDir = _outputLK8000DataPath / TASKS_SUBDIR / subDir;
+    _outputTaskFilePath = outputTaskDir / TASK_FILE_NAME;
   }
   DirectoryCreate(outputTaskDir);
 
-  std::string profilePath = _outputLK8000DataPath + _outputConfigSubDir + std::string("\\") + OUTPUT_PROFILE_NAME;
+  boost::filesystem::path profilePath = _outputLK8000DataPath / _outputConfigSubDir /OUTPUT_PROFILE_NAME;
   if(!FileExists(profilePath)) {
-    profilePath = _outputLK8000DataPath + std::string("\\") + CONFIG_SUBDIR + std::string("\\") + LK8000_PROFILE_NAME;
+    profilePath = _outputLK8000DataPath / CONFIG_SUBDIR / LK8000_PROFILE_NAME;
     if(!FileExists(profilePath)) {
-      profilePath = CTranslator::DATA_PATH + std::string("\\") + LK8000_PROFILE_NAME;
+      profilePath = CTranslator::DATA_PATH / LK8000_PROFILE_NAME;
       if(!FileExists(profilePath))
-        throw EOperationFailed("ERROR: Please copy '" + std::string(LK8000_PROFILE_NAME) + "' file to '" + std::string(CTranslator::DATA_PATH) + "' directory.");
+        throw EOperationFailed("ERROR: Please copy '" + LK8000_PROFILE_NAME.string() + "' file to '" + CTranslator::DATA_PATH.string() + "' directory.");
     }
   }
   _profileParser = std::unique_ptr<CFileParserINI>(new CFileParserINI(profilePath));
@@ -98,7 +98,7 @@ _outputLK8000DataPath(OutputPath() + "\\LK8000")
  */
 condor2nav::CTargetLK8000::~CTargetLK8000()
 {
-  _profileParser->Dump(_outputLK8000DataPath + _outputConfigSubDir + std::string("\\") + OUTPUT_PROFILE_NAME);
+  _profileParser->Dump(_outputLK8000DataPath / _outputConfigSubDir / OUTPUT_PROFILE_NAME);
 }
 
 
@@ -115,7 +115,13 @@ condor2nav::CTargetLK8000::~CTargetLK8000()
  * @param startPointArray    Task start points array
  * @param waypointArray      The array of waypoints data.
  */
-void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
+void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser,
+                                         const CFileParserINI &taskParser,
+                                         const boost::filesystem::path &outputTaskFilePath,
+                                         const xcsoar::SETTINGS_TASK &settingsTask,
+                                         const xcsoar::TASK_POINT *taskPointArray,
+                                         const xcsoar::START_POINT *startPointArray,
+                                         const CWaypointArray &waypointArray) const
 {
   using namespace lk8000;
   std::string ver = "LK" + Convert(LK_TASK_VERSION) + Convert(lk8000::MAXTASKPOINTS) + Convert(lk8000::MAXSTARTPOINTS);
@@ -198,7 +204,7 @@ void condor2nav::CTargetLK8000::Gps()
  */
 void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPath + _outputMapsSubDir);
+  SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPath / _outputMapsSubDir);
 }
 
 
@@ -223,7 +229,7 @@ void condor2nav::CTargetLK8000::SceneryTime()
  */
 void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
-  GliderProcess(*_profileParser, gliderData, true, _condor2navDataPath + _outputPolarsSubDir, _outputLK8000DataPath + _outputPolarsSubDir);
+  GliderProcess(*_profileParser, gliderData, true, _condor2navDataPath / _outputPolarsSubDir, _outputLK8000DataPath / _outputPolarsSubDir);
 }
 
 
@@ -242,7 +248,7 @@ void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCo
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("LK8000", "TaskWPFileGenerate")));
   TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
               lk8000::MAXTASKPOINTS, lk8000::MAXSTARTPOINTS,
-              wpFile > 0, _outputLK8000DataPath + _outputWaypointsSubDir);
+              wpFile > 0, _outputLK8000DataPath / _outputWaypointsSubDir);
 }
  
 
@@ -256,7 +262,7 @@ void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCo
  */
 void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  PenaltyZonesProcess(*_profileParser, taskParser, coordConv, _condor2navDataPath + _outputAirspacesSubDir, _outputLK8000DataPath + _outputAirspacesSubDir);
+  PenaltyZonesProcess(*_profileParser, taskParser, coordConv, _condor2navDataPath / _outputAirspacesSubDir, _outputLK8000DataPath / _outputAirspacesSubDir);
 }
 
 

@@ -165,48 +165,27 @@ double condor2nav::Rad2Deg(double angle)
  *
  * @exception std::runtime_error Operation did not succeed
  */
-void condor2nav::DirectoryCreate(const std::string &dirName)
+void condor2nav::DirectoryCreate(const boost::filesystem::path &dirName)
 {
   bool activeSync = false;
-  if(dirName.size() > 2 && dirName[0] == '\\' && dirName[1] != '\\')
+  std::string str = dirName.string();
+  if(str.size() > 2 && str[0] == '\\' && str[1] != '\\')
     activeSync = true;
 
-  if (!dirName.empty()) {
-    size_t pos = 0;
-    while(pos != std::string::npos) {
-      pos = dirName.find_first_of("/\\", pos);
-      if(dirName[1] == ':' && (pos == 2 || dirName.size() == 2)) {
-        // disk drive prefix
-        if(dirName.size() <= 3)
-          break;
-        pos = dirName.find_first_of("/\\", 3);
+  if(!dirName.empty()) {
+    if(!activeSync) {
+      boost::filesystem::create_directories(dirName);
+    }
+    else {
+      boost::filesystem::path path = dirName;
+      std::vector<boost::filesystem::path> dirs;
+      while(path.parent_path() != "\\") {
+        dirs.push_back(path);
+        path = path.parent_path();
       }
-      else if(pos == 0) {
-        if(dirName.size() > 1 && dirName[1] == '\\') {
-          // network path
-          pos = dirName.find_first_of("/\\", 2);
-          // skip computer name also
-          pos = dirName.find_first_of("/\\", pos + 1);
-        }
-        else {
-          // ActiveSync path
-          pos = dirName.find_first_of("/\\", 1);
-        }
-      }
-      std::string subDir(dirName, 0, pos);
-
-      if(activeSync) {
-        CActiveSync &activeSync(CActiveSync::Instance());
-        activeSync.DirectoryCreate(subDir);
-      }
-      else {
-        DWORD error = ERROR_SUCCESS;
-        if (!::CreateDirectory(subDir.c_str(), 0) && (error = GetLastError()) != ERROR_ALREADY_EXISTS)
-          throw EOperationFailed("Cannot create directory '" + subDir + "' (" + Convert(error) + ")!!!");
-      }
-
-      if(pos != std::string::npos)
-        pos++;
+      CActiveSync &activeSync(CActiveSync::Instance());
+      std::for_each(dirs.crbegin(), dirs.crend(),
+        [&](const boost::filesystem::path &d){ activeSync.DirectoryCreate(d); });
     }
   }
 }
@@ -221,10 +200,11 @@ void condor2nav::DirectoryCreate(const std::string &dirName)
  * 
  * @return Check status
  */
-bool condor2nav::FileExists(const std::string &fileName) 
+bool condor2nav::FileExists(const boost::filesystem::path &fileName) 
 {
   bool activeSync = false;
-  if(fileName.size() > 2 && fileName[0] == '\\' && fileName[1] != '\\')
+  std::string str = fileName.string();
+  if(str.size() > 2 && str[0] == '\\' && str[1] != '\\')
     activeSync = true;
 
   if(activeSync) {
@@ -232,8 +212,7 @@ bool condor2nav::FileExists(const std::string &fileName)
     return activeSync.FileExists(fileName);
   }
   else {
-    std::ifstream file(fileName.c_str());
-    return file.is_open();
+    return boost::filesystem::exists(fileName);
   }
 }
 

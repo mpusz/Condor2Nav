@@ -30,7 +30,7 @@
 #include "ostream.h"
 
 
-const char *condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME    = "xcsoar-registry.prf";
+const boost::filesystem::path condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registry.prf";
 
 
 /**
@@ -42,28 +42,26 @@ const char *condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME    = "xcsoar-registry
  */
 condor2nav::CTargetXCSoar::CTargetXCSoar(const CTranslator &translator):
 CTargetXCSoarCommon(translator),
-_outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
+_outputXCSoarDataPath(OutputPath() / "XCSoarData")
 {
-  std::string subDir = ConfigParser().Value("XCSoar", "Condor2NavDataSubDir");
-  if(subDir != "")
-    subDir = "\\" + subDir;
-  _outputCondor2NavDataPath = _outputXCSoarDataPath + subDir;
-  _condor2navDataPath = ConfigParser().Value("XCSoar", "XCSoarDataPath") + subDir;
+  boost::filesystem::path subDir = ConfigParser().Value("XCSoar", "Condor2NavDataSubDir");
+  _outputCondor2NavDataPath = _outputXCSoarDataPath / subDir;
+  _condor2navDataPath = ConfigParser().Value("XCSoar", "XCSoarDataPath") / subDir;
 
   DirectoryCreate(_outputCondor2NavDataPath);
 
   if(Convert<unsigned>(ConfigParser().Value("XCSoar", "DefaultTaskOverwrite")))
-    _outputTaskFilePath = _outputXCSoarDataPath + std::string("\\") + DEFAULT_TASK_FILE_NAME;
+    _outputTaskFilePath = _outputXCSoarDataPath / DEFAULT_TASK_FILE_NAME;
   else
-    _outputTaskFilePath = _outputCondor2NavDataPath + std::string("\\") + TASK_FILE_NAME;
+    _outputTaskFilePath = _outputCondor2NavDataPath / TASK_FILE_NAME;
 
-  std::string profilePath = _outputCondor2NavDataPath + std::string("\\") + OUTPUT_PROFILE_NAME;
+  boost::filesystem::path profilePath = _outputCondor2NavDataPath / OUTPUT_PROFILE_NAME;
   if(!FileExists(profilePath)) {
-    profilePath = _outputXCSoarDataPath + std::string("\\") + XCSOAR_PROFILE_NAME;
+    profilePath = _outputXCSoarDataPath / XCSOAR_PROFILE_NAME;
     if(!FileExists(profilePath)) {
-      profilePath = CTranslator::DATA_PATH + std::string("\\") + XCSOAR_PROFILE_NAME;
+      profilePath = CTranslator::DATA_PATH / XCSOAR_PROFILE_NAME;
       if(!FileExists(profilePath))
-        throw EOperationFailed("ERROR: Please copy '" + std::string(XCSOAR_PROFILE_NAME) + "' file to '" + std::string(CTranslator::DATA_PATH) + "' directory.");
+        throw EOperationFailed("ERROR: Please copy '" + XCSOAR_PROFILE_NAME.string() + "' file to '" + CTranslator::DATA_PATH.string() + "' directory.");
     }
   }
   _profileParser = std::unique_ptr<CFileParserINI>(new CFileParserINI(profilePath));
@@ -77,7 +75,7 @@ _outputXCSoarDataPath(OutputPath() + "\\XCSoarData")
  */
 condor2nav::CTargetXCSoar::~CTargetXCSoar()
 {
-  _profileParser->Dump(_outputCondor2NavDataPath + std::string("\\") + OUTPUT_PROFILE_NAME);
+  _profileParser->Dump(_outputCondor2NavDataPath / OUTPUT_PROFILE_NAME);
 }
 
 
@@ -94,7 +92,13 @@ condor2nav::CTargetXCSoar::~CTargetXCSoar()
  * @param startPointArray    Task start points array
  * @param waypointArray      The array of waypoints data.
  */
-void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
+void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
+                                         const CFileParserINI &taskParser,
+                                         const boost::filesystem::path &outputTaskFilePath,
+                                         const xcsoar::SETTINGS_TASK &settingsTask,
+                                         const xcsoar::TASK_POINT *taskPointArray,
+                                         const xcsoar::START_POINT *startPointArray,
+                                         const CWaypointArray &waypointArray) const
 {
   using namespace xcsoar;
 

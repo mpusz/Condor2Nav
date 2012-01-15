@@ -56,7 +56,13 @@ CTargetXCSoar(translator)
  * @param startPointArray    Task start points array
  * @param waypointArray      The array of waypoints data.
  */
-void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const
+void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
+                                          const CFileParserINI &taskParser,
+                                          const boost::filesystem::path &outputTaskFilePath,
+                                          const xcsoar::SETTINGS_TASK &settingsTask,
+                                          const xcsoar::TASK_POINT *taskPointArray,
+                                          const xcsoar::START_POINT *startPointArray,
+                                          const CWaypointArray &waypointArray) const
 {
   using namespace xcsoar;
 

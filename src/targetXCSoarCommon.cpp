@@ -33,12 +33,12 @@
 #include <cmath>
 
 
-const char *condor2nav::CTargetXCSoarCommon::OUTPUT_PROFILE_NAME    = "Condor.prf";
-const char *condor2nav::CTargetXCSoarCommon::TASK_FILE_NAME         = "Condor.tsk";
-const char *condor2nav::CTargetXCSoarCommon::DEFAULT_TASK_FILE_NAME = "Default.tsk";
-const char *condor2nav::CTargetXCSoarCommon::POLAR_FILE_NAME        = "Polar_Condor.plr";
-const char *condor2nav::CTargetXCSoarCommon::AIRSPACES_FILE_NAME    = "A_Condor.txt";
-const char *condor2nav::CTargetXCSoarCommon::WP_FILE_NAME           = "WP_CondorTask.dat";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::OUTPUT_PROFILE_NAME    = "Condor.prf";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::TASK_FILE_NAME         = "Condor.tsk";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::DEFAULT_TASK_FILE_NAME = "Default.tsk";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::POLAR_FILE_NAME        = "Polar_Condor.plr";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::AIRSPACES_FILE_NAME    = "A_Condor.txt";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::WP_FILE_NAME           = "WP_CondorTask.dat";
 
 /**
  * @brief Class constructor.
@@ -62,9 +62,9 @@ CTranslator::CTarget(translator)
 * @param sceneryData Information describing the scenery. 
 * @param pathPrefix Scenery map subdirectory prefix (in XCSoar format).
  */
-void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const std::string &pathPrefix) const
+void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const boost::filesystem::path &pathPrefix) const
 {
-  profileParser.Value("", "MapFile", "\"" + pathPrefix + "\\" + sceneryData.at(SCENERY_XCM_FILE) + "\"");
+  profileParser.Value("", "MapFile", "\"" + (pathPrefix / sceneryData.at(SCENERY_XCM_FILE)).string() + "\"");
 
   // reset landscape specific files in case they were set before profile import
   // if need user can still assign additionl data with second entries
@@ -99,11 +99,12 @@ void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profile
 * @param pathPrefix Polar file subdirectory prefix (in XCSoar format).
 * @param outputPathPrefix Polar file subdirectory prefix (in filesystem format).
  */
-void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, bool wingArea, const std::string &pathPrefix, const std::string &outputPathPrefix) const
+void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, bool wingArea,
+                                                    const boost::filesystem::path &pathPrefix, const boost::filesystem::path &outputPathPrefix) const
 {
   // set WinPilot Polar
   profileParser.Value("", "Polar", "6");
-  profileParser.Value("", "PolarFile", "\"" + pathPrefix + std::string("\\") + POLAR_FILE_NAME + std::string("\""));
+  profileParser.Value("", "PolarFile", "\"" + (pathPrefix / POLAR_FILE_NAME).string() + "\"");
 
   profileParser.Value("", "AircraftType", "\"" + gliderData.at(GLIDER_NAME) + "\"");
   if(wingArea)
@@ -116,7 +117,7 @@ void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParse
   profileParser.Value("", "BallastSecsToEmpty", waterBallastEmptyTime == "0" ? "10" : waterBallastEmptyTime);
 
   // create polar file
-  std::string polarFileName = outputPathPrefix + std::string("\\") + POLAR_FILE_NAME;
+  boost::filesystem::path polarFileName = outputPathPrefix / POLAR_FILE_NAME;
   COStream polarFile(polarFileName);
 
   polarFile << "***************************************************************************************************" << std::endl;
@@ -196,14 +197,14 @@ unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(double lon1, double la
 void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser,
                                                   const CCondor::CCoordConverter &coordConv,
                                                   const CFileParserCSV::CStringArray &sceneryData,
-                                                  const std::string &outputTaskFilePath,
+                                                  const boost::filesystem::path &outputTaskFilePath,
                                                   unsigned aatTime,
                                                   unsigned maxTaskPoints, unsigned maxStartPoints,
-                                                  bool generateWPFile, const std::string &wpOutputPathPrefix) const
+                                                  bool generateWPFile, const boost::filesystem::path &wpOutputPathPrefix) const
 {
   using namespace xcsoar;
 
-  std::string wpFileName = wpOutputPathPrefix + std::string("\\") + WP_FILE_NAME;
+  boost::filesystem::path wpFileName = wpOutputPathPrefix / WP_FILE_NAME;
 
   std::unique_ptr<COStream> wpFile;
   if(generateWPFile)
@@ -478,7 +479,11 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 * @param pathPrefix Polar file subdirectory prefix (in XCSoar format).
 * @param outputPathPrefix Polar file subdirectory prefix (in filesystem format).
  */
-void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const std::string &pathPrefix, const std::string &outputPathPrefix) const
+void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profileParser,
+                                                          const CFileParserINI &taskParser,
+                                                          const CCondor::CCoordConverter &coordConv,
+                                                          const boost::filesystem::path &pathPrefix,
+                                                          const boost::filesystem::path &outputPathPrefix) const
 {
   unsigned pzNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "PZCount"));
   if(pzNum == 0) {
@@ -486,8 +491,8 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
     return;
   }
   
-  profileParser.Value("", "AirspaceFile", "\"" + pathPrefix + std::string("\\") + AIRSPACES_FILE_NAME + std::string("\""));
-  std::string airspacesFileName = outputPathPrefix + std::string("\\") + AIRSPACES_FILE_NAME;
+  profileParser.Value("", "AirspaceFile", "\"" + (pathPrefix / AIRSPACES_FILE_NAME).string() + std::string("\""));
+  boost::filesystem::path airspacesFileName = outputPathPrefix / AIRSPACES_FILE_NAME;
   COStream airspacesFile(airspacesFileName);
 
   airspacesFile << "*******************************************************" << std::endl;

@@ -52,8 +52,6 @@ namespace condor2nav {
      */
     class CTarget {
       const CTranslator &_translator;               ///< @brief Translator class
-      const std::string _outputPath;                ///< @brief Translation output directory
-
       CTarget(const CTarget &);                     ///< @brief Disallowed
       const CTarget &operator=(const CTarget &);    ///< @brief Disallowed
 
@@ -88,7 +86,7 @@ namespace condor2nav {
       const CTranslator &Translator() const;
       const CFileParserINI &ConfigParser() const;
       const CCondor &Condor() const;
-      const std::string &OutputPath() const;
+      const boost::filesystem::path &OutputPath() const;
 
     public:
       explicit CTarget(const CTranslator &translator);
@@ -167,20 +165,18 @@ namespace condor2nav {
 
   private:
     const CCondor2Nav &_app;
-    const CFileParserINI &_configParser;          ///< @brief Configuration INI file parser.
-    const CCondor &_condor;                       ///< @brief Condor data.
-    const unsigned _aatTime;                      ///< @brief Minimum time for AAT task
-
     CTranslator(const CTranslator &);                     ///< @brief Disallowed
     const CTranslator &operator=(const CTranslator &);    ///< @brief Disallowed
+    const CCondor &_condor;                               ///< @brief Condor data.
+    const unsigned _aatTime;                              ///< @brief Minimum time for AAT task
 
     std::unique_ptr<CTarget> Target() const;
 
   public:
     // inputs
-    static const char *DATA_PATH;                 ///< @brief Application data directory path. 
-    static const char *SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
-    static const char *GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
+    static const boost::filesystem::path DATA_PATH;                 ///< @brief Application data directory path. 
+    static const boost::filesystem::path SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
+    static const boost::filesystem::path GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
 
     CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const CCondor &condor, unsigned aatTime);
     void Run();

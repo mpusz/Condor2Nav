@@ -41,28 +41,31 @@ namespace condor2nav {
    */
   class CTargetLK8000 : public CTargetXCSoarCommon {
     // dirs
-    static const char *AIRSPACES_SUBDIR;         ///< @brief LK8000 airspaces subdirectory. 
-    static const char *CONFIG_SUBDIR;            ///< @brief LK8000 configuration subdirectory. 
-    static const char *MAPS_SUBDIR;              ///< @brief LK8000 maps subdirectory. 
-    static const char *POLARS_SUBDIR;            ///< @brief LK8000 polars subdirectory. 
-    static const char *TASKS_SUBDIR;             ///< @brief LK8000 tasks subdirectory.
-    static const char *WAYPOINTS_SUBDIR;         ///< @brief LK8000 waypoints subdirectory.
+    static const boost::filesystem::path AIRSPACES_SUBDIR;  ///< @brief LK8000 airspaces subdirectory. 
+    static const boost::filesystem::path CONFIG_SUBDIR;     ///< @brief LK8000 configuration subdirectory. 
+    static const boost::filesystem::path MAPS_SUBDIR;       ///< @brief LK8000 maps subdirectory. 
+    static const boost::filesystem::path POLARS_SUBDIR;     ///< @brief LK8000 polars subdirectory. 
+    static const boost::filesystem::path TASKS_SUBDIR;      ///< @brief LK8000 tasks subdirectory.
+    static const boost::filesystem::path WAYPOINTS_SUBDIR;  ///< @brief LK8000 waypoints subdirectory.
 
     // inputs
-    static const char *LK8000_PROFILE_NAME;	     ///< @brief LK8000 profile file name to use for input. 
+    static const boost::filesystem::path LK8000_PROFILE_NAME;  ///< @brief LK8000 profile file name to use for input. 
 
-    std::unique_ptr<CFileParserINI> _profileParser;///< @brief LK8000 profile file parser. 
-    const std::string _outputLK8000DataPath;     ///< @brief The path to the output LK8000 directory.
-    std::string _condor2navDataPath;             ///< @brief The Condor2Nav destination data directory path (in LK8000 format) on the target device that runs LK8000.
+    std::unique_ptr<CFileParserINI> _profileParser;      ///< @brief LK8000 profile file parser. 
+    const boost::filesystem::path _outputLK8000DataPath; ///< @brief The path to the output LK8000 directory.
+    boost::filesystem::path _condor2navDataPath;         ///< @brief The Condor2Nav destination data directory path (in LK8000 format) on the target device that runs LK8000.
 
-    std::string _outputAirspacesSubDir;          ///< @brief The subdirectory where output LK8000 airspaces file should be located
-    std::string _outputConfigSubDir;             ///< @brief The subdirectory where Condor maps files should be located
-    std::string _outputMapsSubDir;               ///< @brief The subdirectory where output LK8000 airspaces file should be located
-    std::string _outputPolarsSubDir;             ///< @brief The subdirectory where output LK8000 polars file should be located
-    std::string _outputTaskFilePath;             ///< @brief The path where output LK8000 task file should be located
-    std::string _outputWaypointsSubDir;          ///< @brief The subdirectory where output LK8000 waypoints file should be located
+    boost::filesystem::path _outputAirspacesSubDir;      ///< @brief The subdirectory where output LK8000 airspaces file should be located
+    boost::filesystem::path _outputConfigSubDir;         ///< @brief The subdirectory where Condor maps files should be located
+    boost::filesystem::path _outputMapsSubDir;           ///< @brief The subdirectory where output LK8000 airspaces file should be located
+    boost::filesystem::path _outputPolarsSubDir;         ///< @brief The subdirectory where output LK8000 polars file should be located
+    boost::filesystem::path _outputTaskFilePath;         ///< @brief The path where output LK8000 task file should be located
+    boost::filesystem::path _outputWaypointsSubDir;      ///< @brief The subdirectory where output LK8000 waypoints file should be located
 
-    virtual void TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const std::string &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
+    virtual void TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser,
+      const boost::filesystem::path &outputTaskFilePath, const xcsoar::SETTINGS_TASK &settingsTask, 
+      const xcsoar::TASK_POINT *taskPointArray, const xcsoar::START_POINT *startPointArray,
+      const CWaypointArray &waypointArray) const;
 
   public:
     explicit CTargetLK8000(const CTranslator &translator);

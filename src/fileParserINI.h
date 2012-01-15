@@ -62,8 +62,8 @@ namespace condor2nav {
     };
     typedef std::deque<TChapter *> CChaptersList;	  ///< @brief The list of INI file chapters.
 
-    CValuesMap _valuesMap;	                 ///< @brief The map of plain key=value pairs. 
-    CChaptersList _chaptersList;             ///< @brief The list of chapters and their data found in the file.
+    CValuesMap _valuesMap;	                          ///< @brief The map of plain key=value pairs. 
+    CChaptersList _chaptersList;                      ///< @brief The list of chapters and their data found in the file.
 
     TChapter &Chapter(const std::string &chapter);
     const TChapter &Chapter(const std::string &chapter) const;

@@ -30,6 +30,7 @@
 
 #include <sstream>
 #include <exception>
+#include <boost/filesystem.hpp>
 #include <Windows.h>
 
 namespace condor2nav {
@@ -73,8 +74,8 @@ namespace condor2nav {
   double Rad2Deg(double angle);
 
   // disk operations
-  void DirectoryCreate(const std::string &fileName);
-  bool FileExists(const std::string &dirName);
+  void DirectoryCreate(const boost::filesystem::path &dirName);
+  bool FileExists(const boost::filesystem::path &fileName);
   // exceptions hierarchy
 
   /**
