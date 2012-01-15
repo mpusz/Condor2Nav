@@ -42,14 +42,13 @@ namespace condor2nav {
    */
   class CFileParserCSV : public CFileParser {
   public:
-    typedef std::deque<CStringArray *> CRowsList;	///< @brief The list of string arrays. 
+    typedef std::deque<CStringArray> CRowsList;	 ///< @brief The list of string arrays. 
 
   private:
-    CRowsList _rowsList;	        ///< @brief The list of file rows.
+    CRowsList _rowsList;	                     ///< @brief The list of file rows.
 
   public:
     explicit CFileParserCSV(const boost::filesystem::path &filePath);
-    ~CFileParserCSV();
 
     virtual void Dump(const boost::filesystem::path &filePath = "") const;
     
