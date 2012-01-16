@@ -88,68 +88,6 @@ void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profile
 
 
 /**
-* @brief Set glider data. 
-*
-* Method created and sets glider polar file, handicap, safety speed, the time to empty the water
-* ballast and glider name for the logger.
-*
-* @param profileParser XCSoar profile file parser.
-* @param gliderData Information describing the glider. 
-* @param wingArea Specifies if glider wing area should be added to polar file
-* @param pathPrefix Polar file subdirectory prefix (in XCSoar format).
-* @param outputPathPrefix Polar file subdirectory prefix (in filesystem format).
- */
-void condor2nav::CTargetXCSoarCommon::GliderProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &gliderData, bool wingArea,
-                                                    const boost::filesystem::path &pathPrefix, const boost::filesystem::path &outputPathPrefix) const
-{
-  // set WinPilot Polar
-  profileParser.Value("", "Polar", "6");
-  profileParser.Value("", "PolarFile", "\"" + (pathPrefix / POLAR_FILE_NAME).string() + "\"");
-
-  profileParser.Value("", "AircraftType", "\"" + gliderData.at(GLIDER_NAME) + "\"");
-  if(wingArea)
-    // LK8000
-    profileParser.Value("", "SafteySpeed", Convert(static_cast<unsigned>(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)) * 1000.0 / 3.6 + 0.5)));
-  else
-    profileParser.Value("", "SafteySpeed", Convert(KmH2MS(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)))));
-  profileParser.Value("", "Handicap", gliderData.at(GLIDER_DAEC_INDEX));
-  const std::string &waterBallastEmptyTime = gliderData.at(GLIDER_WATER_BALLAST_EMPTY_TIME);
-  profileParser.Value("", "BallastSecsToEmpty", waterBallastEmptyTime == "0" ? "10" : waterBallastEmptyTime);
-
-  // create polar file
-  boost::filesystem::path polarFileName = outputPathPrefix / POLAR_FILE_NAME;
-  COStream polarFile(polarFileName);
-
-  polarFile << "***************************************************************************************************" << std::endl;
-  polarFile << "* " << gliderData.at(GLIDER_NAME) << " WinPilot POLAR file generated with Condor2Nav" << std::endl;
-  polarFile << "*" << std::endl;
-  polarFile << "* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3";
-  if(wingArea)
-    polarFile << ", WingArea[m2]";
-  polarFile << std::endl;
-  polarFile << "***************************************************************************************************" << std::endl;
-  for(unsigned i=GLIDER_MASS_DRY_GROSS; i<=GLIDER_SINK_3; i++) {
-    if(i > GLIDER_MASS_DRY_GROSS)
-      polarFile << ",";
-    polarFile << gliderData.at(i);
-  }
-  if(wingArea)
-    polarFile << "," << gliderData.at(GLIDER_WING_AREA);
-
-  polarFile << std::endl;
-
-  unsigned ballast(Convert<unsigned>(Condor().TaskParser().Value("Plane", "Water")));
-  unsigned maxBallast(Convert<unsigned>(gliderData.at(GLIDER_MAX_WATER_BALLAST)));
-  if(maxBallast > 0 && ballast > 0) {
-    unsigned xcsoarPercent = ballast * 100 / maxBallast;
-    // round it to 5% increment steps
-    xcsoarPercent = static_cast<unsigned>((static_cast<float>(xcsoarPercent) + 2.5) / 5) * 5;
-    Translator().App().Warning() << "WARNING: Cannot set initial glider ballast in " << Name() << " automatically. Please open 'Config'->'Setup Basic' and set '" << xcsoarPercent << "%' for the glider ballast." << std::endl;
-  }
-}
-
-
-/**
 * @brief Calculates the bearing between 2 locations.
 *
 * Method calculates the bearing between 2 locations.

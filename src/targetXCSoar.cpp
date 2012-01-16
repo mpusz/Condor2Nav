@@ -196,7 +196,40 @@ void condor2nav::CTargetXCSoar::SceneryTime()
  */
 void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
-  GliderProcess(*_profileParser, gliderData, false, _condor2navDataPath, _outputCondor2NavDataPath);
+  // set WinPilot Polar
+  _profileParser->Value("", "Polar", "6");
+  _profileParser->Value("", "PolarFile", "\"" + (_condor2navDataPath / POLAR_FILE_NAME).string() + "\"");
+
+  _profileParser->Value("", "AircraftType", "\"" + gliderData.at(GLIDER_NAME) + "\"");
+  _profileParser->Value("", "SafteySpeed", Convert(KmH2MS(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)))));
+  _profileParser->Value("", "Handicap", gliderData.at(GLIDER_DAEC_INDEX));
+  const std::string &waterBallastEmptyTime = gliderData.at(GLIDER_WATER_BALLAST_EMPTY_TIME);
+  _profileParser->Value("", "BallastSecsToEmpty", waterBallastEmptyTime == "0" ? "10" : waterBallastEmptyTime);
+
+  // create polar file
+  boost::filesystem::path polarFileName = _outputCondor2NavDataPath / POLAR_FILE_NAME;
+  COStream polarFile(polarFileName);
+
+  polarFile << "***************************************************************************************************" << std::endl;
+  polarFile << "* " << gliderData.at(GLIDER_NAME) << " WinPilot POLAR file generated with Condor2Nav" << std::endl;
+  polarFile << "*" << std::endl;
+  polarFile << "* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3" << std::endl;
+  polarFile << "***************************************************************************************************" << std::endl;
+  for(unsigned i=GLIDER_MASS_DRY_GROSS; i<=GLIDER_SINK_3; i++) {
+    if(i > GLIDER_MASS_DRY_GROSS)
+      polarFile << ",";
+    polarFile << gliderData.at(i);
+  }
+  polarFile << std::endl;
+
+  unsigned ballast(Convert<unsigned>(Condor().TaskParser().Value("Plane", "Water")));
+  unsigned maxBallast(Convert<unsigned>(gliderData.at(GLIDER_MAX_WATER_BALLAST)));
+  if(maxBallast > 0 && ballast > 0) {
+    unsigned xcsoarPercent = ballast * 100 / maxBallast;
+    // round it to 5% increment steps
+    xcsoarPercent = static_cast<unsigned>((static_cast<float>(xcsoarPercent) + 2.5) / 5) * 5;
+    Translator().App().Warning() << "WARNING: Cannot set initial glider ballast in " << Name() << " automatically. Please open 'Config'->'Setup Basic' and set '" << xcsoarPercent << "%' for the glider ballast." << std::endl;
+  }
 }
 
 

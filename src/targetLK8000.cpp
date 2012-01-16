@@ -251,7 +251,40 @@ void condor2nav::CTargetLK8000::SceneryTime()
  */
 void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
-  GliderProcess(*_profileParser, gliderData, true, _condor2navDataPath / _outputPolarsSubDir, _outputLK8000DataPath / _outputPolarsSubDir);
+  _aircraftParser->Value("", "AircraftCategory1", "\"0\"");
+  _aircraftParser->Value("", "PolarFile1", "\"" + (_condor2navDataPath / _outputPolarsSubDir / POLAR_FILE_NAME).string() + "\"");
+  _aircraftParser->Value("", "SafteySpeed1", Convert(static_cast<unsigned>(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)) * 1000.0 / 3.6 + 0.5)));
+  _aircraftParser->Value("", "Handicap1", gliderData.at(GLIDER_DAEC_INDEX));
+  const std::string &waterBallastEmptyTime = gliderData.at(GLIDER_WATER_BALLAST_EMPTY_TIME);
+  _aircraftParser->Value("", "BallastSecsToEmpty1", waterBallastEmptyTime == "0" ? "10" : waterBallastEmptyTime);
+  _aircraftParser->Value("", "AircraftType1", "\"" + gliderData.at(GLIDER_NAME) + "\"");
+  _aircraftParser->Value("", "AircraftRego1", "\"\"");
+  _aircraftParser->Value("", "CompetitionClass1", "\"" + Condor().TaskParser().Value("Plane", "Class") + "\"");
+
+  // create polar file
+  boost::filesystem::path polarFileName = _outputLK8000DataPath / _outputPolarsSubDir / POLAR_FILE_NAME;
+  COStream polarFile(polarFileName);
+
+  polarFile << "*****************************************************************************************************************" << std::endl;
+  polarFile << "* " << gliderData.at(GLIDER_NAME) << " LK8000 POLAR file generated with Condor2Nav" << std::endl;
+  polarFile << "*" << std::endl;
+  polarFile << "* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3, WingArea[m2]" << std::endl;
+  polarFile << "*****************************************************************************************************************" << std::endl;
+  for(unsigned i=GLIDER_MASS_DRY_GROSS; i<=GLIDER_SINK_3; i++) {
+    if(i > GLIDER_MASS_DRY_GROSS)
+      polarFile << ",";
+    polarFile << gliderData.at(i);
+  }
+  polarFile << "," << gliderData.at(GLIDER_WING_AREA) << std::endl;
+
+  unsigned ballast(Convert<unsigned>(Condor().TaskParser().Value("Plane", "Water")));
+  unsigned maxBallast(Convert<unsigned>(gliderData.at(GLIDER_MAX_WATER_BALLAST)));
+  if(maxBallast > 0 && ballast > 0) {
+    unsigned percent = ballast * 100 / maxBallast;
+    // round it to 5% increment steps
+    percent = static_cast<unsigned>((static_cast<float>(percent) + 2.5) / 5) * 5;
+    Translator().App().Warning() << "WARNING: Cannot set initial glider ballast in " << Name() << " automatically. Please open 'Config'->'Setup Basic' and set '" << percent << "%' for the glider ballast." << std::endl;
+  }
 }
 
 
