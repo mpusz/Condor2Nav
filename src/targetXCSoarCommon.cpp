@@ -36,9 +36,9 @@
 const boost::filesystem::path condor2nav::CTargetXCSoarCommon::OUTPUT_PROFILE_NAME    = "Condor.prf";
 const boost::filesystem::path condor2nav::CTargetXCSoarCommon::TASK_FILE_NAME         = "Condor.tsk";
 const boost::filesystem::path condor2nav::CTargetXCSoarCommon::DEFAULT_TASK_FILE_NAME = "Default.tsk";
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::POLAR_FILE_NAME        = "Polar_Condor.plr";
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::AIRSPACES_FILE_NAME    = "A_Condor.txt";
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::WP_FILE_NAME           = "WP_CondorTask.dat";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::POLAR_FILE_NAME        = "Condor.plr";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::AIRSPACES_FILE_NAME    = "Condor.txt";
+const boost::filesystem::path condor2nav::CTargetXCSoarCommon::WP_FILE_NAME           = "Condor.dat";
 
 /**
  * @brief Class constructor.
