@@ -210,15 +210,8 @@ void condor2nav::CTargetLK8000::Gps()
 {
   _systemParser->Value("", "DeviceA", "\"Condor\"");
 
-  // copy deviceA to deviceB
-  _profileParser->Value("", "DeviceB", _profileParser->Value("", "DeviceA"));
-  try {
-    _profileParser->Value("", "Port2Index", _profileParser->Value("", "PortIndex"));
-    _profileParser->Value("", "Speed2Index", _profileParser->Value("", "SpeedIndex"));
-  }
-  catch(const Exception &) {
-    Translator().App().Warning() << "WARNING: COM port for Condor communication probably not set. Please verify that in " << Name() << " System Setup." << std::endl;
-  }
+  // disable DeviceB
+  _systemParser->Value("", "DeviceB", "\"\"");
 
   _systemParser->Value("", "UseGeoidSeparation", "0");
 }
