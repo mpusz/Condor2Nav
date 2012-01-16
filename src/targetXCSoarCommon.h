@@ -95,7 +95,6 @@ namespace condor2nav {
                              const CCondor::CCoordConverter &coordConv,
                              const boost::filesystem::path &pathPrefix,
                              const boost::filesystem::path &outputPathPrefix) const;
-    void WeatherProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser) const;
 
   public:
     explicit CTargetXCSoarCommon(const CTranslator &translator);

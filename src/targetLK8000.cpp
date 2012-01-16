@@ -330,5 +330,5 @@ void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, c
  */
 void condor2nav::CTargetLK8000::Weather(const CFileParserINI &taskParser)
 {
-  WeatherProcess(*_systemParser, taskParser);
+  // nothing to do here
 }

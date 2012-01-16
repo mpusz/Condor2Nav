@@ -275,5 +275,8 @@ void condor2nav::CTargetXCSoar::PenaltyZones(const CFileParserINI &taskParser, c
  */
 void condor2nav::CTargetXCSoar::Weather(const CFileParserINI &taskParser)
 {
-  WeatherProcess(*_profileParser, taskParser);
+  unsigned dir = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindDir")) + 0.5);
+  unsigned speed = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindSpeed")) + 0.5);
+  _profileParser->Value("", "WindBearing", Convert(dir));
+  _profileParser->Value("", "WindSpeed", Convert(speed));
 }

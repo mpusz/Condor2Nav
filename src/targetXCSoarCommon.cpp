@@ -459,23 +459,6 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
 }
 
 
-/**
-* @brief Sets weather data. 
-*
-* Method sets the wind data.
-*
-* @param profileParser XCSoar profile file parser.
-* @param taskParser Condor task parser. 
- */
-void condor2nav::CTargetXCSoarCommon::WeatherProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser) const
-{
-  unsigned dir = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindDir")) + 0.5);
-  unsigned speed = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindSpeed")) + 0.5);
-  profileParser.Value("", "WindBearing", Convert(dir));
-  profileParser.Value("", "WindSpeed", Convert(speed));
-}
-
-
 //
 //Print info about:
 //1. Copy
