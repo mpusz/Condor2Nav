@@ -51,7 +51,7 @@ condor2nav::CActiveSync &condor2nav::CActiveSync::Instance()
  * condor2nav::CActiveSync class constructor.
  */
 condor2nav::CActiveSync::CActiveSync():
-_hInstLib(::LoadLibrary("rapi.dll"))
+_hInstLib(::LoadLibrary("rapi.dll")), _rapi(false, CRapiDeleter(_iface))
 {
   if(!_hInstLib.get())
     throw EOperationFailed("ERROR: Couldn't open 'rapi.dll' library!!! Please check that ActiveSync is installed correctly.");
@@ -96,10 +96,11 @@ _hInstLib(::LoadLibrary("rapi.dll"))
   RAPIINIT initData = { 0 };
   initData.cbSize = sizeof(initData);
 
-  HRESULT hr = _iface.ceRapiInitEx(&initData);
-  if(FAILED(hr))
+  _rapi.reset(!FAILED(_iface.ceRapiInitEx(&initData)));
+  if(!_rapi.get())
     throw EOperationFailed("Cannot initialize ActiveSync connection!!!");
 
+  HRESULT hr;
   DWORD status = WaitForSingleObject(initData.heRapiInit, TIMEOUT);
   if(status == WAIT_OBJECT_0) {
     // heRapiInit signaled:
@@ -117,20 +118,8 @@ _hInstLib(::LoadLibrary("rapi.dll"))
       hr = HRESULT_FROM_WIN32(GetLastError());
     }
 
-    _iface.ceRapiUninit();
     throw EOperationFailed("ERROR: Cannot initialize ActiveSync interface!!!");
   }
-}
-
-
-/**
- * @brief Class destructor.
- *
- * condor2nav::CActiveSync class destructor.
- */
-condor2nav::CActiveSync::~CActiveSync()
-{
-  _iface.ceRapiUninit();
 }
 
 

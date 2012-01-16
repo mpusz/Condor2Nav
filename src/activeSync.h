@@ -89,14 +89,22 @@ namespace condor2nav {
       FCeCreateDirectory ceCreateDirectory;
     };
 
-    static const unsigned TIMEOUT = 5000;                ///< @brief Timeout in ms for ActiveSync initialization. 
+    struct CRapiDeleter {
+      typedef bool pointer;
+      TDLLIface *_iface;
+      CRapiDeleter(TDLLIface &iface): _iface(&iface) {}
+      void operator()(bool status) const { _iface->ceRapiUninit(); }
+    };
 
-    std::unique_ptr<HMODULE, HModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
-    TDLLIface _iface;	                                 ///< @brief DLL interface.
+    static const unsigned TIMEOUT = 5000;                 ///< @brief Timeout in ms for ActiveSync initialization. 
+
+    std::unique_ptr<HMODULE, CHModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
+    TDLLIface _iface;	                                  ///< @brief DLL interface.
+    std::unique_ptr<bool, CRapiDeleter> _rapi;            ///< @brief RAPI RAII wrapper. 
+
     CActiveSync();
   public:
     static CActiveSync &Instance();
-    ~CActiveSync();
     std::string Read(const boost::filesystem::path &src) const;
     void Write(const boost::filesystem::path &dest, const std::string &buffer) const;
     void DirectoryCreate(const boost::filesystem::path &path) const;

@@ -77,8 +77,8 @@ namespace condor2nav {
         FXYToLon     xyToLon;
         FXYToLat     xyToLat;
       };
-      std::unique_ptr<HMODULE, HModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
-      TDLLIface _iface;	                                   ///< @brief DLL interface.
+      std::unique_ptr<HMODULE, CHModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
+      TDLLIface _iface;	                                    ///< @brief DLL interface.
 
     public:
       /**

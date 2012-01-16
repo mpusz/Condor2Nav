@@ -51,7 +51,7 @@ namespace condor2nav {
   /**
    * @brief Deleter for HModule
    */
-  struct HModuleDeleter {
+  struct CHModuleDeleter {
     typedef HMODULE pointer;
     void operator ()(HMODULE hmod) const { ::FreeLibrary(hmod); }
   };
