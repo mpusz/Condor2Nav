@@ -37,7 +37,10 @@ const boost::filesystem::path condor2nav::CTargetLK8000::POLARS_SUBDIR       = "
 const boost::filesystem::path condor2nav::CTargetLK8000::TASKS_SUBDIR        = "_Tasks";
 const boost::filesystem::path condor2nav::CTargetLK8000::WAYPOINTS_SUBDIR    = "_Waypoints";
 
-const boost::filesystem::path condor2nav::CTargetLK8000::LK8000_PROFILE_NAME = "DEFAULT_PROFILE.prf";
+const boost::filesystem::path condor2nav::CTargetLK8000::DEFAULT_SYSTEM_PROFILE_NAME   = "DEFAULT_PROFILE.prf";
+const boost::filesystem::path condor2nav::CTargetLK8000::DEFAULT_AIRCRAFT_PROFILE_NAME = "DEFAULT_AIRCRAFT.acf";
+
+const boost::filesystem::path condor2nav::CTargetLK8000::OUTPUT_AIRCRAFT_PROFILE_NAME  = "Condor.acf";
 
 
 /**
@@ -54,15 +57,14 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
   boost::filesystem::path subDir = "condor2nav";
   _condor2navDataPath = ConfigParser().Value("LK8000", "LK8000Path");
 
+  // prepare directory names
   _outputAirspacesSubDir = AIRSPACES_SUBDIR / subDir;
-  _outputConfigSubDir    = CONFIG_SUBDIR / subDir;
   _outputMapsSubDir      = MAPS_SUBDIR / subDir;
-  _outputPolarsSubDir    = POLARS_SUBDIR / subDir;
   _outputPolarsSubDir    = POLARS_SUBDIR / subDir;
   _outputWaypointsSubDir = WAYPOINTS_SUBDIR / subDir;
 
+  // create directories
   DirectoryCreate(_outputLK8000DataPath / _outputAirspacesSubDir);
-  DirectoryCreate(_outputLK8000DataPath / _outputConfigSubDir);
   DirectoryCreate(_outputLK8000DataPath / _outputMapsSubDir);
   DirectoryCreate(_outputLK8000DataPath / _outputPolarsSubDir);
   DirectoryCreate(_outputLK8000DataPath / _outputWaypointsSubDir);
@@ -78,16 +80,42 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
   }
   DirectoryCreate(outputTaskDir);
 
-  boost::filesystem::path profilePath = _outputLK8000DataPath / _outputConfigSubDir /OUTPUT_PROFILE_NAME;
-  if(!FileExists(profilePath)) {
-    profilePath = _outputLK8000DataPath / CONFIG_SUBDIR / LK8000_PROFILE_NAME;
-    if(!FileExists(profilePath)) {
-      profilePath = CTranslator::DATA_PATH / LK8000_PROFILE_NAME;
-      if(!FileExists(profilePath))
-        throw EOperationFailed("ERROR: Please copy '" + LK8000_PROFILE_NAME.string() + "' file to '" + CTranslator::DATA_PATH.string() + "' directory.");
+  boost::filesystem::path outputConfigDir;
+  bool profilesOverwrite = Convert<unsigned>(ConfigParser().Value("LK8000", "DefaultProfilesOverwrite")) != 0;
+  if(profilesOverwrite) {
+    outputConfigDir = _outputLK8000DataPath / CONFIG_SUBDIR;
+    _outputSystemProfilePath = outputConfigDir / DEFAULT_SYSTEM_PROFILE_NAME;
+    _outputAircraftProfilePath = outputConfigDir / DEFAULT_AIRCRAFT_PROFILE_NAME;
+  }
+  else {
+    outputConfigDir = _outputLK8000DataPath / CONFIG_SUBDIR / subDir;
+    _outputSystemProfilePath = outputConfigDir / OUTPUT_PROFILE_NAME;
+    _outputAircraftProfilePath = outputConfigDir / OUTPUT_AIRCRAFT_PROFILE_NAME;
+  }
+  DirectoryCreate(outputConfigDir);
+
+  // init profile files parsers
+  boost::filesystem::path systemPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_PROFILE_NAME;
+  if(profilesOverwrite || !FileExists(systemPath)) {
+    systemPath = _outputLK8000DataPath / CONFIG_SUBDIR / DEFAULT_SYSTEM_PROFILE_NAME;
+    if(!FileExists(systemPath)) {
+      systemPath = CTranslator::DATA_PATH / DEFAULT_SYSTEM_PROFILE_NAME;
+      if(!FileExists(systemPath))
+        throw EOperationFailed("ERROR: Please copy '" + DEFAULT_SYSTEM_PROFILE_NAME.string() + "' file to '" + CTranslator::DATA_PATH.string() + "' directory.");
     }
   }
-  _profileParser = std::unique_ptr<CFileParserINI>(new CFileParserINI(profilePath));
+  _systemParser.reset(new CFileParserINI(systemPath));
+
+  boost::filesystem::path aircraftPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_AIRCRAFT_PROFILE_NAME;
+  if(profilesOverwrite || !FileExists(aircraftPath)) {
+    aircraftPath = _outputLK8000DataPath / CONFIG_SUBDIR / DEFAULT_AIRCRAFT_PROFILE_NAME;
+    if(!FileExists(aircraftPath)) {
+      aircraftPath = CTranslator::DATA_PATH / DEFAULT_AIRCRAFT_PROFILE_NAME;
+      if(!FileExists(aircraftPath))
+        throw EOperationFailed("ERROR: Please copy '" + DEFAULT_AIRCRAFT_PROFILE_NAME.string() + "' file to '" + CTranslator::DATA_PATH.string() + "' directory.");
+    }
+  }
+  _aircraftParser.reset(new CFileParserINI(aircraftPath));
 }
 
 
@@ -98,7 +126,8 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
  */
 condor2nav::CTargetLK8000::~CTargetLK8000()
 {
-  _profileParser->Dump(_outputLK8000DataPath / _outputConfigSubDir / OUTPUT_PROFILE_NAME);
+  _systemParser->Dump(_outputLK8000DataPath / _outputSystemProfilePath);
+  _aircraftParser->Dump(_outputLK8000DataPath / _outputAircraftProfilePath);
 }
 
 
@@ -179,7 +208,7 @@ void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser,
  */
 void condor2nav::CTargetLK8000::Gps()
 {
-  _profileParser->Value("", "DeviceA", "\"Condor\"");
+  _systemParser->Value("", "DeviceA", "\"Condor\"");
 
   // copy deviceA to deviceB
   _profileParser->Value("", "DeviceB", _profileParser->Value("", "DeviceA"));
@@ -191,7 +220,7 @@ void condor2nav::CTargetLK8000::Gps()
     Translator().App().Warning() << "WARNING: COM port for Condor communication probably not set. Please verify that in " << Name() << " System Setup." << std::endl;
   }
 
-  _profileParser->Value("", "UseGeoidSeparation", "0");
+  _systemParser->Value("", "UseGeoidSeparation", "0");
 }
 
 
@@ -204,7 +233,7 @@ void condor2nav::CTargetLK8000::Gps()
  */
 void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPath / _outputMapsSubDir);
+  SceneryMapProcess(*_systemParser, sceneryData, _condor2navDataPath / _outputMapsSubDir);
 }
 
 
@@ -215,7 +244,7 @@ void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &s
  */
 void condor2nav::CTargetLK8000::SceneryTime()
 {
-  SceneryTimeProcess(*_profileParser);
+  SceneryTimeProcess(*_systemParser);
 }
 
 
@@ -246,7 +275,7 @@ void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &glide
 void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime)
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("LK8000", "TaskWPFileGenerate")));
-  TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
+  TaskProcess(*_systemParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
               lk8000::MAXTASKPOINTS, lk8000::MAXSTARTPOINTS,
               wpFile > 0, _outputLK8000DataPath / _outputWaypointsSubDir);
 }
@@ -262,7 +291,7 @@ void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCo
  */
 void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  PenaltyZonesProcess(*_profileParser, taskParser, coordConv, _condor2navDataPath / _outputAirspacesSubDir, _outputLK8000DataPath / _outputAirspacesSubDir);
+  PenaltyZonesProcess(*_systemParser, taskParser, coordConv, _condor2navDataPath / _outputAirspacesSubDir, _outputLK8000DataPath / _outputAirspacesSubDir);
 }
 
 
@@ -275,5 +304,5 @@ void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, c
  */
 void condor2nav::CTargetLK8000::Weather(const CFileParserINI &taskParser)
 {
-  WeatherProcess(*_profileParser, taskParser);
+  WeatherProcess(*_systemParser, taskParser);
 }
