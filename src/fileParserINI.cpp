@@ -55,7 +55,7 @@ CFileParser(filePath)
     if(pos == std::string::npos)
       continue;
 
-    if(line[pos] == ';')
+    if(line[pos] == ';' || line[pos] == '#')
       // skip comment
       continue;
 
