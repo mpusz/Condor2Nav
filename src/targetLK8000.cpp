@@ -260,6 +260,7 @@ void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &glide
   _aircraftParser->Value("", "AircraftType1", "\"" + gliderData.at(GLIDER_NAME) + "\"");
   _aircraftParser->Value("", "AircraftRego1", "\"\"");
   _aircraftParser->Value("", "CompetitionClass1", "\"" + Condor().TaskParser().Value("Plane", "Class") + "\"");
+  _aircraftParser->Value("", "CompetitionID1", "\"\"");
 
   // create polar file
   auto polarFileName = _outputLK8000DataPath / _outputPolarsSubDir / POLAR_FILE_NAME;
