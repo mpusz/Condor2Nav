@@ -96,6 +96,13 @@ namespace condor2nav {
       void operator()(bool status) const { _iface->ceRapiUninit(); }
     };
 
+    struct CRapiHandleDeleter {
+      typedef HANDLE pointer;
+      const TDLLIface *_iface;
+      CRapiHandleDeleter(const TDLLIface &iface): _iface(&iface) {}
+      void operator()(HANDLE handle) const { _iface->ceCloseHandle(handle); }
+    };
+
     static const unsigned TIMEOUT = 5000;                 ///< @brief Timeout in ms for ActiveSync initialization. 
 
     std::unique_ptr<HMODULE, CHModuleDeleter> _hInstLib;  ///< @brief DLL instance. 

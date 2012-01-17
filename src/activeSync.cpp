@@ -133,8 +133,14 @@ _hInstLib(::LoadLibrary("rapi.dll")), _rapi(false, CRapiDeleter(_iface))
  */
 std::string condor2nav::CActiveSync::Read(const boost::filesystem::path &src) const
 {
-  std::shared_ptr<void> hSrc(_iface.ceCreateFile(src.wstring().c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL),
-    [this](HANDLE h){ if(h) _iface.ceCloseHandle(h); });
+  std::unique_ptr<HANDLE, CRapiHandleDeleter> hSrc(_iface.ceCreateFile(src.wstring().c_str(),
+                                                                       GENERIC_READ,
+                                                                       FILE_SHARE_READ,
+                                                                       NULL,
+                                                                       OPEN_EXISTING,
+                                                                       FILE_ATTRIBUTE_NORMAL,
+                                                                       NULL),
+                                                   CRapiHandleDeleter(_iface));
   if(hSrc.get() == INVALID_HANDLE_VALUE)
     throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + src.string() + "'!!!");
 
@@ -162,8 +168,14 @@ std::string condor2nav::CActiveSync::Read(const boost::filesystem::path &src) co
  */
 void condor2nav::CActiveSync::Write(const boost::filesystem::path &dest, const std::string &buffer) const
 {
-  std::shared_ptr<void> hDest(_iface.ceCreateFile(dest.wstring().c_str(), GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL),
-    [this](HANDLE h){ if(h) _iface.ceCloseHandle(h); });
+  std::unique_ptr<HANDLE, CRapiHandleDeleter> hDest(_iface.ceCreateFile(dest.wstring().c_str(),
+                                                                        GENERIC_WRITE,
+                                                                        FILE_SHARE_READ,
+                                                                        NULL,
+                                                                        CREATE_ALWAYS,
+                                                                        FILE_ATTRIBUTE_NORMAL,
+                                                                        NULL),
+                                                    CRapiHandleDeleter(_iface));
   if(hDest.get() == INVALID_HANDLE_VALUE)
     throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + dest.string() + "'!!!");
 
@@ -198,8 +210,14 @@ void condor2nav::CActiveSync::DirectoryCreate(const boost::filesystem::path &pat
  */
 bool condor2nav::CActiveSync::FileExists(const boost::filesystem::path &path) const
 {
-  std::shared_ptr<void> hDest(_iface.ceCreateFile(path.wstring().c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL),
-    [this](HANDLE h){ if(h) _iface.ceCloseHandle(h); });
+  std::unique_ptr<HANDLE, CRapiHandleDeleter> hDest(_iface.ceCreateFile(path.wstring().c_str(),
+                                                                        GENERIC_READ,
+                                                                        FILE_SHARE_READ,
+                                                                        NULL,
+                                                                        OPEN_EXISTING,
+                                                                        FILE_ATTRIBUTE_NORMAL,
+                                                                        NULL),
+                                                    CRapiHandleDeleter(_iface));
   if(hDest.get() == INVALID_HANDLE_VALUE) {
     if(_iface.ceGetLastError() == ERROR_FILE_NOT_FOUND)
       return false;
