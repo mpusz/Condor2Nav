@@ -233,9 +233,9 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       // use the contents of szFile to initialize itself.
       ofn.lpstrFile[0] = '\0';
       ofn.nMaxFile = sizeof(szFile);
-      ofn.lpstrFileTitle = NULL;
+      ofn.lpstrFileTitle = nullptr;
       ofn.nMaxFileTitle = 0;
-      ofn.lpstrInitialDir = NULL;
+      ofn.lpstrInitialDir = nullptr;
       ofn.lpstrTitle = "Open Condor FPL file";
       ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_READONLY;
 

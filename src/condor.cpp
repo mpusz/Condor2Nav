@@ -195,9 +195,9 @@ boost::filesystem::path condor2nav::CCondor::InstallPath()
 
   if((RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
     DWORD bufferSize = 0;
-    RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, NULL, &bufferSize);
+    RegQueryValueEx(hTestKey, "InstallDir", nullptr, nullptr, nullptr, &bufferSize);
     std::unique_ptr<char> buffer(new char[bufferSize]);
-    RegQueryValueEx(hTestKey, "InstallDir", NULL, NULL, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
+    RegQueryValueEx(hTestKey, "InstallDir", nullptr, nullptr, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
     condorPath = buffer.get();
     RegCloseKey(hTestKey);
   }

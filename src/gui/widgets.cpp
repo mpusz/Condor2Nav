@@ -329,5 +329,5 @@ void condor2nav::gui::CWidgetRichEdit::Append(const std::string &text)
   cr.cpMax = -1;
   SendMessage(Hwnd(), EM_EXSETSEL, 0, (LPARAM)&cr);
   SendMessage(Hwnd(), EM_REPLACESEL, 0, (LPARAM)text.c_str());
-  SendMessage(Hwnd(), WM_VSCROLL, SB_BOTTOM, NULL);
+  SendMessage(Hwnd(), WM_VSCROLL, SB_BOTTOM, 0);
 }

@@ -31,7 +31,7 @@
 #include "resource.h"
 #include <exception>
 
-static HINSTANCE hInst = 0;
+static HINSTANCE hInst = nullptr;
 
 
 namespace condor2nav {
@@ -85,7 +85,7 @@ INT_PTR CALLBACK condor2nav::gui::AboutDialogProc(HWND hDlg, UINT message, WPARA
  */
 INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  static condor2nav::gui::CCondor2NavGUI *app = 0;
+  static condor2nav::gui::CCondor2NavGUI *app = nullptr;
   switch(message) {
   case WM_INITDIALOG:
     app = new condor2nav::gui::CCondor2NavGUI(hInst, hDlg);
@@ -144,14 +144,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int
     std::unique_ptr<HMODULE, condor2nav::CHModuleDeleter> _richEditLib(::LoadLibrary("RichEd20.dll"));
 
     // create MainDialog window
-    HWND hDialog = CreateDialog(hInst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), NULL, (DLGPROC)condor2nav::gui::MainDialogProc);
+    HWND hDialog = CreateDialog(hInst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), nullptr, (DLGPROC)condor2nav::gui::MainDialogProc);
     if(!hDialog)
       throw condor2nav::EOperationFailed("Unable to create main application dialog (error: " + condor2nav::Convert(GetLastError()) + ")!!!");
 
     // process application messages
     MSG msg;
     int status;
-    while((status = GetMessage(&msg, NULL, 0, 0)) != 0) {
+    while((status = GetMessage(&msg, nullptr, 0, 0)) != 0) {
       if(status == -1)
         return EXIT_FAILURE;
       if(!IsDialogMessage(hDialog, &msg)) {
