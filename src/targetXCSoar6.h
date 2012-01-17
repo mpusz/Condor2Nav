@@ -42,10 +42,10 @@ namespace condor2nav {
   class CTargetXCSoar6 : public CTargetXCSoar {
     virtual void TaskDump(CFileParserINI &profileParser, const CFileParserINI &taskParser, const boost::filesystem::path &outputTaskFilePath,
                           const xcsoar::SETTINGS_TASK &settingsTask, const xcsoar::TASK_POINT *taskPointArray,
-                          const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const;
+                          const xcsoar::START_POINT *startPointArray, const CWaypointArray &waypointArray) const override;
   public:
     explicit CTargetXCSoar6(const CTranslator &translator);
-    virtual const char *Name() const { return "XCSoar 6"; }
+    virtual const char *Name() const override { return "XCSoar 6"; }
   };
 
 }

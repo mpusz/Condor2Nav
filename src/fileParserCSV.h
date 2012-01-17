@@ -50,7 +50,7 @@ namespace condor2nav {
   public:
     explicit CFileParserCSV(const boost::filesystem::path &filePath);
 
-    virtual void Dump(const boost::filesystem::path &filePath = "") const;
+    virtual void Dump(const boost::filesystem::path &filePath = "") const override;
     
     const CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false) const;
     const CRowsList &Rows() const;

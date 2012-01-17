@@ -58,7 +58,7 @@ namespace condor2nav {
        * Class is responsible for logging Condor2Nav traces on the console output
        */
       class CLogger : public CCondor2Nav::CLogger {
-        virtual void Dump(const std::string &str) const;
+        virtual void Dump(const std::string &str) const override;
       public:
         CLogger(TType type);
       };
@@ -75,9 +75,9 @@ namespace condor2nav {
     public:
       CCondor2NavCLI();
 
-      virtual const CLogger &Log() const { return _normal; }
-      virtual const CLogger &Warning() const { return _warning; }
-      virtual const CLogger &Error() const { return _error; }
+      virtual const CLogger &Log() const override { return _normal; }
+      virtual const CLogger &Warning() const override { return _warning; }
+      virtual const CLogger &Error() const override { return _error; }
 
       int Run(int argc, const char *argv[]) const;
     };

@@ -57,7 +57,7 @@ namespace condor2nav {
        */
       class CLogger : public CCondor2Nav::CLogger {
         CWidgetRichEdit &_log;	              ///< @brief The logging window widget
-        virtual void Dump(const std::string &str) const;
+        virtual void Dump(const std::string &str) const override;
       public:
         CLogger(TType type, CWidgetRichEdit &log);
       };
@@ -92,9 +92,9 @@ namespace condor2nav {
     public:
       CCondor2NavGUI(HINSTANCE hInst, HWND hDlg);
 
-      virtual const CLogger &Log() const { return _normal; }
-      virtual const CLogger &Warning() const { return _warning; }
-      virtual const CLogger &Error() const { return _error; }
+      virtual const CLogger &Log() const override { return _normal; }
+      virtual const CLogger &Warning() const override { return _warning; }
+      virtual const CLogger &Error() const override { return _error; }
 
       void Command(HWND hwnd, int controlID, int command);
     };
