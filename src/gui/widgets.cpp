@@ -47,15 +47,6 @@ _hWnd(GetDlgItem(hwndParent, id))
 
 
 /**
- * @brief Class destructor. 
- */
-condor2nav::gui::CWidget::~CWidget()
-{
-
-}
-
-
-/**
  * @brief Stes focus on that object.
  */
 void condor2nav::gui::CWidget::Focus() const

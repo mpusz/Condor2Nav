@@ -61,13 +61,3 @@ CStream(fileName)
       throw EOperationFailed("ERROR: Unknown stream type!!!");
   }
 }
-
-
-/**
- * @brief Class destructor.
- *
- * condor2nav::CIStream class destructor.
- */
-condor2nav::CIStream::~CIStream()
-{
-}

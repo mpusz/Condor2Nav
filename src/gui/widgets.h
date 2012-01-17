@@ -44,7 +44,7 @@ namespace condor2nav {
       const HWND _hWnd;	                      ///< @brief Widget handler
     public:
       CWidget(HWND hwndParent, int id, bool disabled = false);
-      virtual ~CWidget();
+      virtual ~CWidget() {}
       void Focus() const;
       void Enable() const;
       void Disable() const;

@@ -56,7 +56,7 @@ namespace condor2nav {
 
   public:
     explicit CFileParser(const boost::filesystem::path &filePath);
-    virtual ~CFileParser();
+    virtual ~CFileParser() {}
 
     /**
      * @brief Dumps class data to the file.

@@ -40,7 +40,6 @@ namespace condor2nav {
   class CIStream : public CStream {
   public:
     CIStream(const boost::filesystem::path &fileName);
-    ~CIStream();
 
     std::istream &GetLine(std::string &line)
     {

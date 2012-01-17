@@ -44,16 +44,6 @@ _filePath(filePath)
 
 
 /**
- * @brief Class destructor.
- *
- * condor2nav::CFileParser class destructor.
- */
-condor2nav::CFileParser::~CFileParser()
-{
-}
-
-
-/**
  * @brief Returns the path to the input file. 
  *
  * Method returns the path to the input file.
