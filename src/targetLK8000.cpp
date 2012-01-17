@@ -95,7 +95,7 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
   DirectoryCreate(outputConfigDir);
 
   // init profile files parsers
-  boost::filesystem::path systemPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_PROFILE_NAME;
+  auto systemPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_PROFILE_NAME;
   if(profilesOverwrite || !FileExists(systemPath)) {
     systemPath = _outputLK8000DataPath / CONFIG_SUBDIR / DEFAULT_SYSTEM_PROFILE_NAME;
     if(!FileExists(systemPath)) {
@@ -106,7 +106,7 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
   }
   _systemParser.reset(new CFileParserINI(systemPath));
 
-  boost::filesystem::path aircraftPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_AIRCRAFT_PROFILE_NAME;
+  auto aircraftPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_AIRCRAFT_PROFILE_NAME;
   if(profilesOverwrite || !FileExists(aircraftPath)) {
     aircraftPath = _outputLK8000DataPath / CONFIG_SUBDIR / DEFAULT_AIRCRAFT_PROFILE_NAME;
     if(!FileExists(aircraftPath)) {
@@ -262,7 +262,7 @@ void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &glide
   _aircraftParser->Value("", "CompetitionClass1", "\"" + Condor().TaskParser().Value("Plane", "Class") + "\"");
 
   // create polar file
-  boost::filesystem::path polarFileName = _outputLK8000DataPath / _outputPolarsSubDir / POLAR_FILE_NAME;
+  auto polarFileName = _outputLK8000DataPath / _outputPolarsSubDir / POLAR_FILE_NAME;
   COStream polarFile(polarFileName);
 
   polarFile << "*****************************************************************************************************************" << std::endl;

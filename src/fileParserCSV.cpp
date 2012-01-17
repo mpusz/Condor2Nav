@@ -74,7 +74,7 @@ CFileParser(filePath)
  */
 const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(const std::string &value, unsigned column /* = 0 */, bool nocase /* = false */) const
 {
-  for(CRowsList::const_iterator it=_rowsList.begin(); it!=_rowsList.end(); ++it)
+  for(auto it=_rowsList.begin(); it!=_rowsList.end(); ++it)
     if(it->at(column) == value || (nocase && it->at(column).c_str() == CStringNoCase(value.c_str())))
       return *it;
 
@@ -109,11 +109,11 @@ const condor2nav::CFileParserCSV::CRowsList &condor2nav::CFileParserCSV::Rows() 
  */
 void condor2nav::CFileParserCSV::Dump(const boost::filesystem::path &filePath /* = "" */) const
 {
-  boost::filesystem::path path = filePath.empty() ? Path() : filePath;
+  auto path = filePath.empty() ? Path() : filePath;
   COStream outputStream(path);
 
-  for(CRowsList::const_iterator it=_rowsList.begin(); it!=_rowsList.end(); ++it) {
-    for(unsigned i=0; i<it->size(); i++) {
+  for(auto it=_rowsList.begin(); it!=_rowsList.end(); ++it) {
+    for(size_t i=0; i<it->size(); i++) {
       if(i)
         outputStream << ",";
       outputStream << (*it)[i];

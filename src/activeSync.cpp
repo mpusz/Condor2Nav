@@ -101,7 +101,7 @@ _hInstLib(::LoadLibrary("rapi.dll")), _rapi(false, CRapiDeleter(_iface))
     throw EOperationFailed("Cannot initialize ActiveSync connection!!!");
 
   HRESULT hr;
-  DWORD status = WaitForSingleObject(initData.heRapiInit, TIMEOUT);
+  auto status = WaitForSingleObject(initData.heRapiInit, TIMEOUT);
   if(status == WAIT_OBJECT_0) {
     // heRapiInit signaled:
     // set return error code to return value of RAPI Init function

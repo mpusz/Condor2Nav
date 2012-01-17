@@ -144,7 +144,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 {
   using namespace xcsoar;
 
-  boost::filesystem::path wpFileName = wpOutputPathPrefix / WP_FILE_NAME;
+  auto wpFileName = wpOutputPathPrefix / WP_FILE_NAME;
 
   std::unique_ptr<COStream> wpFile;
   if(generateWPFile)

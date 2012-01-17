@@ -177,7 +177,7 @@ void condor2nav::DirectoryCreate(const boost::filesystem::path &dirName)
       boost::filesystem::create_directories(dirName);
     }
     else {
-      boost::filesystem::path path = dirName;
+      auto path = dirName;
       std::vector<boost::filesystem::path> dirs;
       while(path.parent_path() != "\\") {
         dirs.push_back(path);

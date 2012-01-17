@@ -55,7 +55,7 @@ _outputXCSoarDataPath(OutputPath() / "XCSoarData")
   else
     _outputTaskFilePath = _outputCondor2NavDataPath / TASK_FILE_NAME;
 
-  boost::filesystem::path profilePath = _outputCondor2NavDataPath / OUTPUT_PROFILE_NAME;
+  auto profilePath = _outputCondor2NavDataPath / OUTPUT_PROFILE_NAME;
   if(!FileExists(profilePath)) {
     profilePath = _outputXCSoarDataPath / XCSOAR_PROFILE_NAME;
     if(!FileExists(profilePath)) {
@@ -207,7 +207,7 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
   _profileParser->Value("", "BallastSecsToEmpty", waterBallastEmptyTime == "0" ? "10" : waterBallastEmptyTime);
 
   // create polar file
-  boost::filesystem::path polarFileName = _outputCondor2NavDataPath / POLAR_FILE_NAME;
+  auto polarFileName = _outputCondor2NavDataPath / POLAR_FILE_NAME;
   COStream polarFile(polarFileName);
 
   polarFile << "***************************************************************************************************" << std::endl;

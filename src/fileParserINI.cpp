@@ -103,7 +103,7 @@ CFileParser(filePath)
  */
 condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const std::string &chapter)
 {
-  for(CChaptersList::iterator it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
+  for(auto it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
     if((*it)->name == chapter)
       return **it;
 
@@ -124,7 +124,7 @@ condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const 
  */
 const condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const std::string &chapter) const
 {
-  for(CChaptersList::const_iterator it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
+  for(auto it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
     if((*it)->name == chapter)
       return **it;
 
@@ -151,7 +151,7 @@ const std::string &condor2nav::CFileParserINI::Value(const std::string &chapter,
   if(chapter != "")
     mapPtr = &Chapter(chapter).valuesMap;
 
-  CValuesMap::const_iterator it = mapPtr->find(&key);
+  auto it = mapPtr->find(&key);
   if(it == mapPtr->end())
     throw EOperationFailed("ERROR: Entry '" + key + "' not found in '" + Path().string() + "' INI file!!!");
   return it->second->value;
@@ -173,7 +173,7 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
   if(chapter != "")
     mapPtr = &Chapter(chapter).valuesMap;
 
-  CValuesMap::iterator it = mapPtr->find(&key);
+  auto it = mapPtr->find(&key);
   if(it == mapPtr->end()) {
     // add new entry
     std::unique_ptr<TKeyValue> data(new TKeyValue);
@@ -197,20 +197,20 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
 void condor2nav::CFileParserINI::Dump(const boost::filesystem::path &filePath /* = "" */) const
 {
   // open output file
-  boost::filesystem::path path = filePath.empty() ? Path() : filePath;
+  auto path = filePath.empty() ? Path() : filePath;
   COStream outputStream(path);
 
   // dump global scope
-  for(CValuesMap::const_iterator it=_valuesMap.begin(); it!=_valuesMap.end(); ++it)
+  for(auto it=_valuesMap.begin(); it!=_valuesMap.end(); ++it)
     outputStream << *it->first << "=" << it->second->value << std::endl;
 
   // dump chapters
-  for(CChaptersList::const_iterator it=_chaptersList.begin(); it!=_chaptersList.end(); ++it) {
+  for(auto it=_chaptersList.begin(); it!=_chaptersList.end(); ++it) {
     if(it != _chaptersList.begin() || _valuesMap.size())
       outputStream << std::endl;
 
     outputStream << "[" << (*it)->name << "]" << std::endl;
-    for(CValuesMap::const_iterator it2=(*it)->valuesMap.begin(); it2!=(*it)->valuesMap.end(); ++it2)
+    for(auto it2=(*it)->valuesMap.begin(); it2!=(*it)->valuesMap.end(); ++it2)
       outputStream << *it2->first << "=" << it2->second->value << std::endl;
   }
 }

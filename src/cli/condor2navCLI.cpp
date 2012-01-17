@@ -222,7 +222,7 @@ int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
   CLIParse(argc, argv, fplType, fplPath, aatTime);
   
   // obtain Condor installation path
-  boost::filesystem::path condorPath = CCondor::InstallPath();
+  auto condorPath = CCondor::InstallPath();
   
   // open configuration file
   CFileParserINI configParser(CONFIG_FILE_NAME);
