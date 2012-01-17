@@ -58,7 +58,7 @@ namespace condor2nav {
     std::unique_ptr<CFileParserINI> _systemParser;       ///< @brief LK8000 system profile file parser. 
     std::unique_ptr<CFileParserINI> _aircraftParser;     ///< @brief LK8000 aircraft profile file parser. 
     const boost::filesystem::path _outputLK8000DataPath; ///< @brief The path to the output LK8000 directory.
-    boost::filesystem::path _condor2navDataPath;         ///< @brief The Condor2Nav destination data directory path (in LK8000 format) on the target device that runs LK8000.
+    std::string _condor2navDataPathString;               ///< @brief The Condor2Nav destination data directory path (in LK8000 format) on the target device that runs LK8000.
 
     boost::filesystem::path _outputAirspacesSubDir;      ///< @brief The subdirectory where output LK8000 airspaces file should be located
     boost::filesystem::path _outputMapsSubDir;           ///< @brief The subdirectory where output LK8000 airspaces file should be located

@@ -55,7 +55,7 @@ CTargetXCSoarCommon(translator),
 _outputLK8000DataPath(OutputPath() / "LK8000")
 {
   boost::filesystem::path subDir = "condor2nav";
-  _condor2navDataPath = ConfigParser().Value("LK8000", "LK8000Path");
+  _condor2navDataPathString = ConfigParser().Value("LK8000", "LK8000Path");
 
   // prepare directory names
   _outputAirspacesSubDir = AIRSPACES_SUBDIR / subDir;
@@ -226,7 +226,7 @@ void condor2nav::CTargetLK8000::Gps()
  */
 void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  SceneryMapProcess(*_systemParser, sceneryData, _condor2navDataPath / _outputMapsSubDir);
+  SceneryMapProcess(*_systemParser, sceneryData, _condor2navDataPathString + "\\" + _outputMapsSubDir.string());
 }
 
 
@@ -252,7 +252,7 @@ void condor2nav::CTargetLK8000::SceneryTime()
 void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &gliderData)
 {
   _aircraftParser->Value("", "AircraftCategory1", "\"0\"");
-  _aircraftParser->Value("", "PolarFile1", "\"" + (_condor2navDataPath / _outputPolarsSubDir / POLAR_FILE_NAME).string() + "\"");
+  _aircraftParser->Value("", "PolarFile1", "\"" + _condor2navDataPathString + "\\" + (_outputPolarsSubDir / POLAR_FILE_NAME).string() + "\"");
   _aircraftParser->Value("", "SafteySpeed1", Convert(static_cast<unsigned>(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)) * 1000.0 / 3.6 + 0.5)));
   _aircraftParser->Value("", "Handicap1", gliderData.at(GLIDER_DAEC_INDEX));
   const std::string &waterBallastEmptyTime = gliderData.at(GLIDER_WATER_BALLAST_EMPTY_TIME);
@@ -317,7 +317,7 @@ void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCo
  */
 void condor2nav::CTargetLK8000::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  PenaltyZonesProcess(*_systemParser, taskParser, coordConv, _condor2navDataPath / _outputAirspacesSubDir, _outputLK8000DataPath / _outputAirspacesSubDir);
+  PenaltyZonesProcess(*_systemParser, taskParser, coordConv, _condor2navDataPathString + "\\" + _outputAirspacesSubDir.string(), _outputLK8000DataPath / _outputAirspacesSubDir);
 }
 
 

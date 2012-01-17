@@ -46,7 +46,7 @@ _outputXCSoarDataPath(OutputPath() / "XCSoarData")
 {
   boost::filesystem::path subDir = ConfigParser().Value("XCSoar", "Condor2NavDataSubDir");
   _outputCondor2NavDataPath = _outputXCSoarDataPath / subDir;
-  _condor2navDataPath = ConfigParser().Value("XCSoar", "XCSoarDataPath") / subDir;
+  _condor2navDataPathString = ConfigParser().Value("XCSoar", "XCSoarDataPath") + "\\" + subDir.string();
 
   DirectoryCreate(_outputCondor2NavDataPath);
 
@@ -171,7 +171,7 @@ void condor2nav::CTargetXCSoar::Gps()
  */
 void condor2nav::CTargetXCSoar::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPath);
+  SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPathString);
 }
 
 
@@ -198,7 +198,7 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
 {
   // set WinPilot Polar
   _profileParser->Value("", "Polar", "6");
-  _profileParser->Value("", "PolarFile", "\"" + (_condor2navDataPath / POLAR_FILE_NAME).string() + "\"");
+  _profileParser->Value("", "PolarFile", "\"" + _condor2navDataPathString + "\\" + POLAR_FILE_NAME.string() + "\"");
 
   _profileParser->Value("", "AircraftType", "\"" + gliderData.at(GLIDER_NAME) + "\"");
   _profileParser->Value("", "SafteySpeed", Convert(KmH2MS(Convert<unsigned>(gliderData.at(GLIDER_SPEED_MAX)))));
@@ -262,7 +262,7 @@ void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCo
  */
 void condor2nav::CTargetXCSoar::PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv)
 {
-  PenaltyZonesProcess(*_profileParser, taskParser, coordConv, _condor2navDataPath, _outputCondor2NavDataPath);
+  PenaltyZonesProcess(*_profileParser, taskParser, coordConv, _condor2navDataPathString, _outputCondor2NavDataPath);
 }
 
 
