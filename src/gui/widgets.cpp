@@ -214,9 +214,9 @@ void condor2nav::gui::CWidgetComboBox::Add(const std::string &str) const
  */
 std::string condor2nav::gui::CWidgetComboBox::Selection() const
 {
-  const unsigned bufSize = 255;
-  char buf[bufSize];
-  SendMessage(Hwnd(), WM_GETTEXT, (WPARAM)bufSize, (LPARAM)buf);
+  const unsigned BUF_SIZE = 255;
+  char buf[BUF_SIZE];
+  SendMessage(Hwnd(), WM_GETTEXT, (WPARAM)BUF_SIZE, (LPARAM)buf);
   return buf;
 }
 
