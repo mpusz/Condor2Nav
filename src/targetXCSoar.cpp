@@ -124,7 +124,7 @@ void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
   WAYPOINT *startWaypointArray = new WAYPOINT[MAXSTARTPOINTS];
   memset(startWaypointArray, 0, MAXSTARTPOINTS * sizeof(WAYPOINT));
 
-  for(unsigned i=0; i<waypointArray.size(); i++) {
+  for(size_t i=0; i<waypointArray.size(); i++) {
     taskWaypointArray[i].Number = waypointArray[i].number;
     taskWaypointArray[i].Latitude = waypointArray[i].latitude;
     taskWaypointArray[i].Longitude = waypointArray[i].longitude;
@@ -215,7 +215,7 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
   polarFile << "*" << std::endl;
   polarFile << "* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3" << std::endl;
   polarFile << "***************************************************************************************************" << std::endl;
-  for(unsigned i=GLIDER_MASS_DRY_GROSS; i<=GLIDER_SINK_3; i++) {
+  for(size_t i=GLIDER_MASS_DRY_GROSS; i<=GLIDER_SINK_3; i++) {
     if(i > GLIDER_MASS_DRY_GROSS)
       polarFile << ",";
     polarFile << gliderData.at(i);

@@ -169,12 +169,12 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   memset(startPointArray, 0, maxStartPoints * sizeof(START_POINT));
   CWaypointArray waypointArray;
   waypointArray.reserve(maxTaskPoints);
-  for(unsigned i=0; i<maxTaskPoints; i++) {
+  for(size_t i=0; i<maxTaskPoints; i++) {
     taskPointArray[i].Index = -1;
     taskPointArray[i].AATStartRadial = 0;
     taskPointArray[i].AATFinishRadial = 360;
   }
-  for(unsigned i=0; i<maxStartPoints; i++)
+  for(size_t i=0; i<maxStartPoints; i++)
     startPointArray[i].Index = -1;
 
   bool tpsValid(true);
@@ -185,7 +185,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     throw EOperationFailed("ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!");
 
   // skip takeoff waypoint
-  for(unsigned i=1; i<tpNum; i++) {
+  for(size_t i=1; i<tpNum; i++) {
     // dump WP file line
     std::string tpIdxStr(Convert(i));
     std::string name;
@@ -404,7 +404,7 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
   airspacesFile << "*******************************************************" << std::endl;
   airspacesFile << "* Condor Task Penalty Zones generated with Condor2Nav *" << std::endl;
   airspacesFile << "*******************************************************" << std::endl;
-  for(unsigned i=0; i<pzNum; i++) {
+  for(size_t i=0; i<pzNum; i++) {
     std::string tpIdxStr(Convert(i));
     airspacesFile << std::endl;
     airspacesFile << "AC P" << std::endl;
@@ -416,7 +416,7 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
     else
       airspacesFile << "AL " << base << "m AMSL" << std::endl;
     
-    for(unsigned j=0; j<4; j++) {
+    for(size_t j=0; j<4; j++) {
       std::string tpCornerIdxStr(Convert(j));
       std::string x(taskParser.Value("Task", "PZPos" + tpCornerIdxStr + "X" + tpIdxStr));
       std::string y(taskParser.Value("Task", "PZPos" + tpCornerIdxStr + "Y" + tpIdxStr));

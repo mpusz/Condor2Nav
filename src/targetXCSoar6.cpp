@@ -80,7 +80,7 @@ void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
     << "\" fai_finish=\"0\" min_points=\"" << waypointArray.size() - 1
     << "\" max_points=\"10\" homogeneous_tps=\"0\" is_closed=\"0\">" << std::endl;
 
-  for(unsigned i=0; i<waypointArray.size(); i++) {
+  for(size_t i=0; i<waypointArray.size(); i++) {
     tskFile << "\t<Point type=\"";
 
     if(i==0)
