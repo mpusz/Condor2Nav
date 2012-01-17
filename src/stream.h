@@ -28,6 +28,7 @@
 #ifndef __STREAM_H__
 #define __STREAM_H__
 
+#include "nonCopyable.h"
 #include <sstream>
 #include <boost/filesystem.hpp>
 
@@ -38,7 +39,7 @@ namespace condor2nav {
    *
    * condor2nav::CStream class is a wrapper for different stream types.
    */
-  class CStream {
+  class CStream : CNonCopyable {
   protected:
     /*
      * @brief Stream types

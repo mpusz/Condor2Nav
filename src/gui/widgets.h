@@ -28,6 +28,8 @@
 #ifndef __WIDGETS_H__
 #define __WIDGETS_H__
 
+#include "nonCopyable.h"
+
 namespace condor2nav {
 
   namespace gui {
@@ -38,10 +40,8 @@ namespace condor2nav {
      * condor2nav::gui::CWidget is a base for all Condor2Nav GUI widgets. Basically
      * their role is to be a wrapper over cumbersome Windows API interface.
      */
-    class CWidget {
+    class CWidget : CNonCopyable {
       const HWND _hWnd;	                      ///< @brief Widget handler
-      CWidget(const CWidget &);               ///< @brief Disallowed
-      CWidget &operator=(const CWidget &);    ///< @brief Disallowed
     public:
       CWidget(HWND hwndParent, int id, bool disabled = false);
       virtual ~CWidget();

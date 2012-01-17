@@ -28,6 +28,7 @@
 #ifndef __FILEPARSER_H__
 #define __FILEPARSER_H__
 
+#include "nonCopyable.h"
 #include <vector>
 #include <boost/filesystem.hpp>
 
@@ -42,15 +43,12 @@ namespace condor2nav {
    * format. That class provides also some common parsing tools that may be reused
    * in child classes.
    */
-  class CFileParser {
+  class CFileParser : CNonCopyable {
   public:
     typedef std::vector<std::string> CStringArray;	///< @brief The array of strings.
 
   private:
     const boost::filesystem::path _filePath;	    ///< @brief Input file path.
-
-    CFileParser(const CFileParser &);               ///< @brief Disallowed
-    CFileParser &operator=(const CFileParser &);    ///< @brief Disallowed
 
   protected:
     void LineParseKeyValue(const std::string &line, std::string &key, std::string &value) const;

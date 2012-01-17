@@ -42,7 +42,7 @@ namespace condor2nav {
    *
    * condor2nav::CTranslator is a class responsible for translation management.
    */
-  class CTranslator {
+  class CTranslator : CNonCopyable {
   public:
 
     /**
@@ -50,10 +50,9 @@ namespace condor2nav {
      *
      * condor2nav::CTranslator::CTarget is a base abstract class for all translation targets.
      */
-    class CTarget {
+    class CTarget : CNonCopyable {
       const CTranslator &_translator;               ///< @brief Translator class
-      CTarget(const CTarget &);                     ///< @brief Disallowed
-      const CTarget &operator=(const CTarget &);    ///< @brief Disallowed
+      const boost::filesystem::path _outputPath;    ///< @brief Translation output directory
 
     protected:
       /**
