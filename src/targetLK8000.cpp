@@ -126,8 +126,8 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
  */
 condor2nav::CTargetLK8000::~CTargetLK8000()
 {
-  _systemParser->Dump(_outputLK8000DataPath / _outputSystemProfilePath);
-  _aircraftParser->Dump(_outputLK8000DataPath / _outputAircraftProfilePath);
+  _systemParser->Dump(_outputSystemProfilePath);
+  _aircraftParser->Dump(_outputAircraftProfilePath);
 }
 
 
