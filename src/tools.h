@@ -56,9 +56,6 @@ namespace condor2nav {
     void operator ()(HMODULE hmod) const { ::FreeLibrary(hmod); }
   };
 
-  template<class Seq> void Purge(Seq &container);
-  template<class Map> void PurgeMap(Map &container);
-
   // conversions
   template<class T> T Convert(const std::string &str);
   template<class T> std::string Convert(const T &val);
@@ -101,38 +98,6 @@ namespace condor2nav {
     explicit EOperationFailed(const std::string &error) throw();
   };
 
-}
-
-
-/**
-* @brief Clears STL sequence container
-* 
-* Deletes all pointers and clears STL sequence container.
-* 
-* @param container STL sequence container to clear
-*/
-template<class Seq> void condor2nav::Purge(Seq &container)
-{
-  typename Seq::iterator it;
-  for(it = container.begin(); it != container.end(); ++it)
-    delete *it;
-  container.clear();
-}
-
-
-/**
-* @brief Clears STL map container
-* 
-* Deletes all pointers and clears STL map container.
-* 
-* @param container STL map container to clear
-*/
-template<class Map> void condor2nav::PurgeMap(Map &container)
-{
-  typename Map::iterator it;
-  for(it = container.begin(); it != container.end(); ++it)
-    delete it->second;
-  container.clear();
 }
 
 
