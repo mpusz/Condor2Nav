@@ -30,6 +30,7 @@
 #include "resource.h"
 #include "translator.h"
 #include "condor.h"
+#include <array>
 
 
 /**
@@ -102,7 +103,7 @@ _error(CLogger::TYPE_ERROR, _log)
 
   // set AAT data
   _aatOff.Select();
-  for(unsigned i=2;i<=20;i++)
+  for(unsigned i=2; i<=20; i++)
     _aatTime.Add(Convert(i * 15));
 
   // set default task
@@ -114,8 +115,7 @@ _error(CLogger::TYPE_ERROR, _log)
     AATCheck(condor);
     _fplDefault.Select();
   }
-  catch(const Exception &)
-  {
+  catch(const Exception &) {
     _fplDefault.Disable();
     _fplOther.Select();
     _fplSelect.Enable();
@@ -123,12 +123,10 @@ _error(CLogger::TYPE_ERROR, _log)
   }
 
   // check if last result is available
-  try
-  {
+  try {
     fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath);
   }
-  catch(const Exception &)
-  {
+  catch(const Exception &) {
     _fplLastRace.Disable();
   }
 }
@@ -221,8 +219,8 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
 
   case IDC_FPL_SELECT_BUTTON:
     if(command == BN_CLICKED) {
-      OPENFILENAME ofn;       // common dialog box structure
-      char szFile[1024];       // buffer for file name
+      OPENFILENAME ofn;                // common dialog box structure
+      std::array<char, 1024> szFile;   // buffer for file name
 
       // Initialize OPENFILENAME
       ZeroMemory(&ofn, sizeof(ofn));
@@ -230,7 +228,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       ofn.hwndOwner = _hDlg;
       ofn.lpstrFilter = "Condor FPL Files (*.fpl)\0*.fpl\0All Files (*.*)\0*.*\0";
       ofn.nFilterIndex = 1;
-      ofn.lpstrFile = szFile;
+      ofn.lpstrFile = szFile.data();
       // Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
       // use the contents of szFile to initialize itself.
       ofn.lpstrFile[0] = '\0';
@@ -275,14 +273,12 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
 
   case IDC_TRANSLATE_BUTTON:
     if(command == BN_CLICKED) {
-      try
-      {
+      try {
         _log.Clear();
         CCondor condor(_condorPath, _fplPath.String());
         CTranslator(*this, _configParser, condor, _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
       }
-      catch(const Exception &ex)
-      {
+      catch(const Exception &ex) {
         Error() << ex.what() << std::endl;
       }
     }
@@ -295,6 +291,10 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
     CCondor condor(_condorPath, _fplPath.String());
     AATCheck(condor);
   }
-  if(changed || fplChanged)
-    TranslateValid() ? _translate.Enable() : _translate.Disable();
+  if(changed || fplChanged) {
+    if(TranslateValid())
+      _translate.Enable();
+    else
+      _translate.Disable();
+  }
 }

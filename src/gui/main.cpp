@@ -137,8 +137,7 @@ INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM
  */
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int cmdShow)
 {
-  try
-  {
+  try {
     hInst = hInstance;
 
     // init RichEdit controls
@@ -163,16 +162,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int
     
     return msg.wParam;
   }
-  catch(const condor2nav::Exception &ex)
-  {
+  catch(const condor2nav::Exception &ex) {
     MessageBox(0, ex.what(), "Condor2Nav Exception", MB_ICONEXCLAMATION | MB_OK);
   }
-  catch(const std::exception &ex)
-  {
+  catch(const std::exception &ex) {
     MessageBox(0, ex.what(), "Exception", MB_ICONEXCLAMATION | MB_OK);
   }
-  catch(...)
-  {
+  catch(...) {
     MessageBox(0, "Unknown", "Exception", MB_ICONEXCLAMATION | MB_OK);
   }
   

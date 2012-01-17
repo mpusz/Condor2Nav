@@ -75,9 +75,9 @@ namespace condor2nav {
     public:
       CCondor2NavCLI();
 
-      virtual const CLogger &Log() const override { return _normal; }
+      virtual const CLogger &Log() const override     { return _normal; }
       virtual const CLogger &Warning() const override { return _warning; }
-      virtual const CLogger &Error() const override { return _error; }
+      virtual const CLogger &Error() const override   { return _error; }
 
       int Run(int argc, const char *argv[]) const;
     };

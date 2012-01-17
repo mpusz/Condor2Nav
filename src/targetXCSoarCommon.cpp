@@ -54,15 +54,17 @@ CTranslator::CTarget(translator)
 
 
 /**
-* @brief Sets scenery map. 
-*
-* Method sets scenery map XCM data file according to the Condor landscape name. 
-*
-* @param profileParser XCSoar profile file parser.
-* @param sceneryData Information describing the scenery. 
-* @param pathPrefix Scenery map subdirectory prefix (in XCSoar format).
+ * @brief Sets scenery map. 
+ *
+ * Method sets scenery map XCM data file according to the Condor landscape name. 
+ *
+ * @param profileParser XCSoar profile file parser.
+ * @param sceneryData Information describing the scenery. 
+ * @param pathPrefix Scenery map subdirectory prefix (in XCSoar format).
  */
-void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileParser, const CFileParserCSV::CStringArray &sceneryData, const boost::filesystem::path &pathPrefix) const
+void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileParser,
+                                                        const CFileParserCSV::CStringArray &sceneryData,
+                                                        const boost::filesystem::path &pathPrefix) const
 {
   profileParser.Value("", "MapFile", "\"" + (pathPrefix / sceneryData.at(SCENERY_XCM_FILE)).string() + "\"");
 
@@ -75,11 +77,11 @@ void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileP
 
 
 /**
-* @brief Sets time for scenery time zone. 
-*
-* Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.
-*
-* @param profileParser XCSoar profile file parser.
+ * @brief Sets time for scenery time zone. 
+ *
+ * Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.
+ *
+ * @param profileParser XCSoar profile file parser.
  */
 void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profileParser) const
 {
@@ -371,40 +373,6 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   TaskDump(profileParser, taskParser, outputTaskFilePath, settingsTask, taskPointArray, startPointArray, waypointArray);
 }
 
-  // set units
-  // Speed
-//  switch(Speed)
-//    {
-//    case 0 :
-//      SPEEDMODIFY = TOMPH;
-//      break;
-//    case 1 :
-//      SPEEDMODIFY = TOKNOTS;
-//      break;
-//    case 2 :
-//      SPEEDMODIFY = TOKPH;
-//      break;
-//    }
-//  // Distance
-//  switch(Distance)
-//    {
-//    case 0 : DISTANCEMODIFY = TOMILES; break;
-//    case 1 : DISTANCEMODIFY = TONAUTICALMILES; break;
-//    case 2 : DISTANCEMODIFY = TOKILOMETER; break;
-//    }
-//
-//  // Altitude
-//  GetFromRegistryD(szRegistryAltitudeUnitsValue,Altitude);
-//  switch(Altitude)
-//    {
-//    case 0 : ALTITUDEMODIFY = TOFEET; break;
-//    case 1 : ALTITUDEMODIFY = TOMETER; break;
-//    }
-//
-//
-//    
-//}
- 
 
 /**
 * @brief Sets task penalty zones. 
@@ -457,8 +425,3 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
     }
   }
 }
-
-
-//
-//Print info about:
-//1. Copy

@@ -57,16 +57,6 @@ _outputPath(_translator._configParser.Value("Condor2Nav", "OutputPath"))
 
 
 /**
- * @brief Class destructor.
- *
- * condor2nav::CTranslator::CTarget class destructor.
- */
-condor2nav::CTranslator::CTarget::~CTarget()
-{
-}
-
-
-/**
  * @brief Returns translator class.
  *
  * Method returns translator class. Should be used by the translation target

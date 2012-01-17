@@ -92,9 +92,9 @@ namespace condor2nav {
     public:
       CCondor2NavGUI(HINSTANCE hInst, HWND hDlg);
 
-      virtual const CLogger &Log() const override { return _normal; }
+      virtual const CLogger &Log() const override     { return _normal; }
       virtual const CLogger &Warning() const override { return _warning; }
-      virtual const CLogger &Error() const override { return _error; }
+      virtual const CLogger &Error() const override   { return _error; }
 
       void Command(HWND hwnd, int controlID, int command);
     };

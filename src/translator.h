@@ -89,7 +89,7 @@ namespace condor2nav {
 
     public:
       explicit CTarget(const CTranslator &translator);
-      virtual ~CTarget();
+      virtual ~CTarget() {}
 
       /**
        * @brief Returns target name.
@@ -140,7 +140,8 @@ namespace condor2nav {
        * @param sceneryData Information describing the scenery.
        * @param aatTime     Minimum time for AAT task
        */
-      virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime) = 0;
+      virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv,
+                        const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime) = 0;
 
       /**
        * @brief Sets task penalty zones. 
@@ -164,8 +165,7 @@ namespace condor2nav {
 
   private:
     const CCondor2Nav &_app;
-    CTranslator(const CTranslator &);                     ///< @brief Disallowed
-    const CTranslator &operator=(const CTranslator &);    ///< @brief Disallowed
+    const CFileParserINI &_configParser;                  ///< @brief Configuration INI file parser.
     const CCondor &_condor;                               ///< @brief Condor data.
     const unsigned _aatTime;                              ///< @brief Minimum time for AAT task
 
