@@ -69,7 +69,7 @@ CFileParser(filePath)
       chapter->name = line.substr(1, pos - 1);
       Trim(chapter->name);
       currentMap = &chapter->valuesMap;
-      _chaptersList.push_back(chapter.release());
+      _chaptersList.push_back(std::move(chapter));
       continue;
     }
     
@@ -83,24 +83,10 @@ CFileParser(filePath)
 
     // add new entry
     std::unique_ptr<TKeyValue> data(new TKeyValue);
-    data->key = key;
-    data->value = value;
-    (*currentMap)[&data->key] = data.release();
+    data->key = std::move(key);
+    data->value = std::move(value);
+    (*currentMap)[&data->key] = std::move(data);
   }
-}
-
-
-/**
- * @brief Class destructor. 
- *
- * condor2nav::CFileParserINI class destructor.
- */
-condor2nav::CFileParserINI::~CFileParserINI()
-{
-  for(CChaptersList::iterator it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
-    PurgeMap((*it)->valuesMap);
-  Purge(_chaptersList);
-  PurgeMap(_valuesMap);
 }
 
 
@@ -193,7 +179,7 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
     std::unique_ptr<TKeyValue> data(new TKeyValue);
     data->key = key;
     data->value = value;
-    (*mapPtr)[&data->key] = data.release();
+    (*mapPtr)[&data->key] = std::move(data);
   }
   else
     // update existing entry

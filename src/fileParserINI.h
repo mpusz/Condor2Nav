@@ -51,7 +51,7 @@ namespace condor2nav {
       std::string key;
       std::string value;
     };
-    typedef std::map<const std::string *, TKeyValue *, CPtrCmp> CValuesMap;	///< @brief The map of key=value pairs. 
+    typedef std::map<const std::string *, std::unique_ptr<TKeyValue>, CPtrCmp> CValuesMap;	///< @brief The map of key=value pairs. 
 
     /**
      * @brief INI file chapter data.
@@ -60,7 +60,7 @@ namespace condor2nav {
       std::string name;
       CValuesMap valuesMap;
     };
-    typedef std::deque<TChapter *> CChaptersList;	  ///< @brief The list of INI file chapters.
+    typedef std::deque<std::unique_ptr<TChapter>> CChaptersList;	  ///< @brief The list of INI file chapters.
 
     CValuesMap _valuesMap;	                          ///< @brief The map of plain key=value pairs. 
     CChaptersList _chaptersList;                      ///< @brief The list of chapters and their data found in the file.
@@ -70,7 +70,6 @@ namespace condor2nav {
     
   public:
     explicit CFileParserINI(const boost::filesystem::path &filePath);
-    ~CFileParserINI();
 
     virtual void Dump(const boost::filesystem::path &filePath = "") const override;
 
