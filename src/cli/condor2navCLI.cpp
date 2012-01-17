@@ -228,7 +228,8 @@ int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
   CFileParserINI configParser(CONFIG_FILE_NAME);
   
   // create Condor FPL file path
-  CCondor::FPLPath(configParser, fplType, condorPath, fplPath);
+  if(fplType != TYPE_USER)
+    fplPath = CCondor::FPLPath(configParser, fplType, condorPath);
   
   // create Condor wrapper
   CCondor condor(condorPath, fplPath);

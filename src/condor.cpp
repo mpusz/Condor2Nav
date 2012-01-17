@@ -220,9 +220,11 @@ boost::filesystem::path condor2nav::CCondor::InstallPath()
 *
 * @exception std::runtime_error Thrown when FPL file cannot be found.
  */
-void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType,
-                                  const boost::filesystem::path &condorPath, boost::filesystem::path &fplPath)
+boost::filesystem::path condor2nav::CCondor::FPLPath(const CFileParserINI &configParser,
+                                                     CCondor2Nav::TFPLType fplType,
+                                                     const boost::filesystem::path &condorPath)
 {
+  boost::filesystem::path fplPath;
   if(fplType == CCondor2Nav::TYPE_DEFAULT) {
     boost::filesystem::path fplPathUser = configParser.Value("Condor", "FlightPlansPath");
     if(fplPathUser.empty())
@@ -247,6 +249,7 @@ void condor2nav::CCondor::FPLPath(const CFileParserINI &configParser, CCondor2Na
     else
       throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath.string() + "'(" + Convert(GetLastError()) + ")!!!");
   }
+  return fplPath;
 }
 
 

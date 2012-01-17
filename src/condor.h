@@ -105,8 +105,9 @@ namespace condor2nav {
 
   public:
     static boost::filesystem::path InstallPath();
-    static void FPLPath(const CFileParserINI &configParser, CCondor2Nav::TFPLType fplType,
-                        const boost::filesystem::path &condorPath, boost::filesystem::path &fplPath);
+    static boost::filesystem::path FPLPath(const CFileParserINI &configParser,
+                                           CCondor2Nav::TFPLType fplType,
+                                           const boost::filesystem::path &condorPath);
 
     CCondor(const boost::filesystem::path &condorPath, const boost::filesystem::path &fplPath);
     const CFileParserINI &TaskParser() const      { return _taskParser; }

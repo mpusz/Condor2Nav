@@ -106,8 +106,7 @@ _error(CLogger::TYPE_ERROR, _log)
     _aatTime.Add(Convert(i * 15));
 
   // set default task
-  boost::filesystem::path fplPath;
-  CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath, fplPath);
+  boost::filesystem::path fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath);
 
   try {
     CCondor condor(_condorPath, fplPath);
@@ -126,7 +125,7 @@ _error(CLogger::TYPE_ERROR, _log)
   // check if last result is available
   try
   {
-    CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath, fplPath);
+    fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath);
   }
   catch(const Exception &)
   {
@@ -193,8 +192,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       _fplSelect.Disable();
 
       // create Condor FPL file path
-      boost::filesystem::path fplPath;
-      CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath, fplPath);
+      boost::filesystem::path fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath);
       _fplPath.String(fplPath.string());
 
       fplChanged = true;
@@ -206,8 +204,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       _fplSelect.Disable();
 
       // create Condor FPL file path
-      boost::filesystem::path fplPath;
-      CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath, fplPath);
+      boost::filesystem::path fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath);
       _fplPath.String(fplPath.string());
 
       fplChanged = true;
