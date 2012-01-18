@@ -145,7 +145,7 @@ std::string condor2nav::CActiveSync::Read(const boost::filesystem::path &src) co
     throw EOperationFailed("ERROR: Unable to open ActiveSync file '" + src.string() + "'!!!");
 
   DWORD numBytes = _iface.ceGetFileSize(hSrc.get(), nullptr);
-  std::unique_ptr<char> buff(new char[numBytes]);
+  std::unique_ptr<char[]> buff(new char[numBytes]);
 
   if(!_iface.ceReadFile(hSrc.get(), buff.get(), numBytes, &numBytes, nullptr))
     throw EOperationFailed("ERROR: Reading ActiveSync file '" + src.string() + "'!!!");
