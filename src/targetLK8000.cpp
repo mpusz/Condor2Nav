@@ -28,6 +28,7 @@
 #include "targetLK8000.h"
 #include "imports/lk8000Types.h"
 #include "ostream.h"
+#include <array>
 
 
 const boost::filesystem::path condor2nav::CTargetLK8000::AIRSPACES_SUBDIR    = "_Airspaces";
@@ -148,19 +149,19 @@ void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser,
                                          const CFileParserINI &taskParser,
                                          const boost::filesystem::path &outputTaskFilePath,
                                          const xcsoar::SETTINGS_TASK &settingsTask,
-                                         const xcsoar::TASK_POINT *taskPointArray,
-                                         const xcsoar::START_POINT *startPointArray,
+                                         const xcsoar::TASK_POINT taskPointArray[],
+                                         const xcsoar::START_POINT startPointArray[],
                                          const CWaypointArray &waypointArray) const
 {
   using namespace lk8000;
   std::string ver = "LK" + Convert(LK_TASK_VERSION) + Convert(lk8000::MAXTASKPOINTS) + Convert(lk8000::MAXSTARTPOINTS);
-  char version[50] = { 0 };
-  sprintf(version, ver.c_str());
+  std::array<char, 50> version = { 0 };
+  std::copy(ver.begin(), ver.end(), version.begin());
 
   COStream tskFile(outputTaskFilePath);
-  tskFile.Write(version, 50);
+  tskFile.Write(version.data(), version.size());
 
-  tskFile.Write(reinterpret_cast<const char *>(taskPointArray), lk8000::MAXTASKPOINTS * sizeof(TASK_POINT));
+  tskFile.Write(reinterpret_cast<const char *>(taskPointArray), lk8000::MAXTASKPOINTS * sizeof(taskPointArray[0]));
 
   tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATEnabled), sizeof(settingsTask.AATEnabled));
   tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AATTaskLength), sizeof(settingsTask.AATTaskLength));
@@ -173,12 +174,12 @@ void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser,
   tskFile.Write(reinterpret_cast<const char *>(&settingsTask.AutoAdvance), sizeof(settingsTask.AutoAdvance));
   tskFile.Write(reinterpret_cast<const char *>(&settingsTask.EnableMultipleStartPoints), sizeof(settingsTask.EnableMultipleStartPoints));
 
-  tskFile.Write(reinterpret_cast<const char *>(startPointArray), lk8000::MAXSTARTPOINTS * sizeof(START_POINT));
+  tskFile.Write(reinterpret_cast<const char *>(startPointArray), lk8000::MAXSTARTPOINTS * sizeof(startPointArray[0]));
 
-  lk8000::WAYPOINT *taskWaypointArray = new lk8000::WAYPOINT[lk8000::MAXTASKPOINTS];
-  memset(taskWaypointArray, 0, lk8000::MAXTASKPOINTS * sizeof(lk8000::WAYPOINT));
-  lk8000::WAYPOINT *startWaypointArray = new lk8000::WAYPOINT[lk8000::MAXSTARTPOINTS];
-  memset(startWaypointArray, 0, lk8000::MAXSTARTPOINTS * sizeof(lk8000::WAYPOINT));
+  std::array<lk8000::WAYPOINT, lk8000::MAXTASKPOINTS> taskWaypointArray;
+  std::array<lk8000::WAYPOINT, lk8000::MAXSTARTPOINTS> startWaypointArray;
+  memset(taskWaypointArray.data(), 0, taskWaypointArray.size() * sizeof(taskWaypointArray[0]));
+  memset(startWaypointArray.data(), 0, startWaypointArray.size() * sizeof(startWaypointArray[0]));
 
   for(size_t i=0; i<waypointArray.size(); i++) {
     taskWaypointArray[i].Number = waypointArray[i].number;
@@ -192,8 +193,8 @@ void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser,
     taskWaypointArray[i].Style = 1;
   }
   
-  tskFile.Write(reinterpret_cast<const char *>(taskWaypointArray), lk8000::MAXTASKPOINTS * sizeof(lk8000::WAYPOINT));
-  tskFile.Write(reinterpret_cast<const char *>(startWaypointArray), lk8000::MAXSTARTPOINTS * sizeof(lk8000::WAYPOINT));
+  tskFile.Write(reinterpret_cast<const char *>(taskWaypointArray.data()), taskWaypointArray.size() * sizeof(taskWaypointArray[0]));
+  tskFile.Write(reinterpret_cast<const char *>(startWaypointArray.data()), startWaypointArray.size() * sizeof(startWaypointArray[0]));
   
   profileParser.Value("", "StartMaxHeight", Convert(settingsTask.StartMaxHeight * 1000));
   profileParser.Value("", "StartMaxHeightMargin", "0");

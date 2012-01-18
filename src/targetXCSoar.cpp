@@ -28,6 +28,7 @@
 #include "targetXCSoar.h"
 #include "imports/xcsoarTypes.h"
 #include "ostream.h"
+#include <array>
 
 
 const boost::filesystem::path condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registry.prf";
@@ -96,8 +97,8 @@ void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
                                          const CFileParserINI &taskParser,
                                          const boost::filesystem::path &outputTaskFilePath,
                                          const xcsoar::SETTINGS_TASK &settingsTask,
-                                         const xcsoar::TASK_POINT *taskPointArray,
-                                         const xcsoar::START_POINT *startPointArray,
+                                         const xcsoar::TASK_POINT taskPointArray[],
+                                         const xcsoar::START_POINT startPointArray[],
                                          const CWaypointArray &waypointArray) const
 {
   using namespace xcsoar;
@@ -119,10 +120,10 @@ void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
 
   tskFile.Write(reinterpret_cast<const char *>(startPointArray), MAXSTARTPOINTS * sizeof(START_POINT));
 
-  WAYPOINT *taskWaypointArray = new WAYPOINT[MAXTASKPOINTS];
-  memset(taskWaypointArray, 0, MAXTASKPOINTS * sizeof(WAYPOINT));
-  WAYPOINT *startWaypointArray = new WAYPOINT[MAXSTARTPOINTS];
-  memset(startWaypointArray, 0, MAXSTARTPOINTS * sizeof(WAYPOINT));
+  std::array<WAYPOINT, MAXTASKPOINTS> taskWaypointArray;
+  std::array<WAYPOINT, MAXSTARTPOINTS> startWaypointArray;
+  memset(taskWaypointArray.data(), 0, taskWaypointArray.size() * sizeof(taskWaypointArray[0]));
+  memset(startWaypointArray.data(), 0, startWaypointArray.size() * sizeof(startWaypointArray[0]));
 
   for(size_t i=0; i<waypointArray.size(); i++) {
     taskWaypointArray[i].Number = waypointArray[i].number;
@@ -135,8 +136,8 @@ void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
     taskWaypointArray[i].InTask = true;
   }
   
-  tskFile.Write(reinterpret_cast<const char *>(taskWaypointArray), MAXTASKPOINTS * sizeof(WAYPOINT));
-  tskFile.Write(reinterpret_cast<const char *>(startWaypointArray), MAXSTARTPOINTS * sizeof(WAYPOINT));
+  tskFile.Write(reinterpret_cast<const char *>(taskWaypointArray.data()), taskWaypointArray.size() * sizeof(taskWaypointArray[0]));
+  tskFile.Write(reinterpret_cast<const char *>(startWaypointArray.data()), startWaypointArray.size() * sizeof(startWaypointArray[0]));
 }
 
 

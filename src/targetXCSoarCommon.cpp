@@ -31,6 +31,7 @@
 #include "imports/lk8000Types.h"
 #include "ostream.h"
 #include <cmath>
+#include <algorithm>
 
 
 const boost::filesystem::path condor2nav::CTargetXCSoarCommon::OUTPUT_PROFILE_NAME    = "Condor.prf";
@@ -144,11 +145,11 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 {
   using namespace xcsoar;
 
-  auto wpFileName = wpOutputPathPrefix / WP_FILE_NAME;
+  unsigned tpNum = Convert<unsigned>(taskParser.Value("Task", "Count"));
 
-  std::unique_ptr<COStream> wpFile;
-  if(generateWPFile)
-    wpFile = std::unique_ptr<COStream>(new COStream(wpFileName));
+  // check if enough waypoints to create a task
+  if(tpNum - 1 > maxTaskPoints)
+    throw EOperationFailed("ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!");
 
   // set task settings
   SETTINGS_TASK settingsTask = { 0 };
@@ -163,10 +164,10 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   settingsTask.EnableMultipleStartPoints = false;
 
   // reset data
-  TASK_POINT *taskPointArray = new TASK_POINT[maxTaskPoints];
-  memset(taskPointArray, 0, maxTaskPoints * sizeof(TASK_POINT));
-  START_POINT *startPointArray = new START_POINT[maxStartPoints];
-  memset(startPointArray, 0, maxStartPoints * sizeof(START_POINT));
+  std::unique_ptr<TASK_POINT[]> taskPointArray(new TASK_POINT[maxTaskPoints]);
+  std::unique_ptr<START_POINT[]> startPointArray(new START_POINT[maxStartPoints]);
+  memset(taskPointArray.get(), 0, maxTaskPoints * sizeof(TASK_POINT));
+  memset(startPointArray.get(), 0, maxStartPoints * sizeof(START_POINT));
   CWaypointArray waypointArray;
   waypointArray.reserve(maxTaskPoints);
   for(size_t i=0; i<maxTaskPoints; i++) {
@@ -178,11 +179,10 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     startPointArray[i].Index = -1;
 
   bool tpsValid(true);
-  unsigned tpNum = Convert<unsigned>(taskParser.Value("Task", "Count"));
-
-  // check if enough waypoints to create a task
-  if(tpNum - 1 > maxTaskPoints)
-    throw EOperationFailed("ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!");
+  auto wpFileName = wpOutputPathPrefix / WP_FILE_NAME;
+  std::unique_ptr<COStream> wpFile;
+  if(generateWPFile)
+    wpFile.reset(new COStream(wpFileName));
 
   // skip takeoff waypoint
   for(size_t i=1; i<tpNum; i++) {
@@ -210,24 +210,26 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
       *wpFile << i << "," << latitudeStr << "," << longitudeStr << ","
               << altitude << "M,T," << name << "," << tpName << std::endl;
 
-    // fill waypoint data
-    TWaypoint waypoint;
-    taskPointArray[i - 1].Index = waypoint.number = WAYPOINT_INDEX_OFFSET + i;
-    waypoint.latitude = latitude;
-    waypoint.longitude = longitude;
-    waypoint.altitude = altitude;
-    waypoint.flags = xcsoar::WAYPOINT_TURNPOINT;
-    waypoint.name = name;
-    waypoint.comment = tpName;
-    waypoint.inTask = true;
-    waypointArray.push_back(waypoint);
+    {
+      // fill waypoint data
+      TWaypoint waypoint;
+      taskPointArray[i - 1].Index = waypoint.number = WAYPOINT_INDEX_OFFSET + i;
+      waypoint.latitude = latitude;
+      waypoint.longitude = longitude;
+      waypoint.altitude = altitude;
+      waypoint.flags = xcsoar::WAYPOINT_TURNPOINT;
+      waypoint.name = name;
+      waypoint.comment = std::move(tpName);
+      waypoint.inTask = true;
+      waypointArray.push_back(std::move(waypoint));
+    }
 
     // dump Task File data
     std::string sectorTypeStr(taskParser.Value("Task", "TPSectorType" + tpIdxStr));
     unsigned sectorType(Convert<unsigned>(sectorTypeStr));
     if(sectorType == CCondor::SECTOR_CLASSIC) {
-      unsigned radius(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
-      unsigned angle(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr)));
+      unsigned radius(Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
+      unsigned angle(Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr)));
 
       if(settingsTask.AATEnabled && i > 1 && i < tpNum - 1) {
         // AAT waypoints
@@ -370,7 +372,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   profileParser.Value("", "FAIFinishHeight", Convert(settingsTask.FinishMinHeight));
 
   // dump Task file
-  TaskDump(profileParser, taskParser, outputTaskFilePath, settingsTask, taskPointArray, startPointArray, waypointArray);
+  TaskDump(profileParser, taskParser, outputTaskFilePath, settingsTask, taskPointArray.get(), startPointArray.get(), waypointArray);
 }
 
 

@@ -53,8 +53,8 @@ namespace condor2nav {
                           const CFileParserINI &taskParser, 
                           const boost::filesystem::path &outputTaskFilePath,
                           const xcsoar::SETTINGS_TASK &settingsTask, 
-                          const xcsoar::TASK_POINT *taskPointArray,
-                          const xcsoar::START_POINT *startPointArray,
+                          const xcsoar::TASK_POINT taskPointArray[],
+                          const xcsoar::START_POINT startPointArray[],
                           const CWaypointArray &waypointArray) const override;
 
   public:
