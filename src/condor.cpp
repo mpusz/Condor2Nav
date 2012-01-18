@@ -92,8 +92,8 @@ _hInstLib(::LoadLibrary((condorPath / "NaviCon.dll").string().c_str()))
  */
 double condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y) const
 {
-  float xVal(condor2nav::Convert<float>(x));
-  float yVal(condor2nav::Convert<float>(y));
+  float xVal(Convert<float>(x));
+  float yVal(Convert<float>(y));
   double lon = _iface.xyToLon(xVal, yVal);
   int deg = static_cast<int>(lon);
   double min = static_cast<int>(floor((lon - deg) * 60.0 * 1000 + 0.5)) / static_cast<double>(1000.0);
@@ -113,8 +113,8 @@ double condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, con
  */
 double condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y) const
 {
-  float xVal(condor2nav::Convert<float>(x));
-  float yVal(condor2nav::Convert<float>(y));
+  float xVal(Convert<float>(x));
+  float yVal(Convert<float>(y));
   double lat = _iface.xyToLat(xVal, yVal);
   int deg = static_cast<int>(lat);
   double min = static_cast<int>(floor((lat - deg) * 60.0 * 1000 + 0.5)) / static_cast<double>(1000.0);

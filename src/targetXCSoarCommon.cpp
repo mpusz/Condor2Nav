@@ -178,7 +178,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     startPointArray[i].Index = -1;
 
   bool tpsValid(true);
-  unsigned tpNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "Count"));
+  unsigned tpNum = Convert<unsigned>(taskParser.Value("Task", "Count"));
 
   // check if enough waypoints to create a task
   if(tpNum - 1 > maxTaskPoints)
@@ -203,7 +203,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     double longitude = coordConv.Longitude(x, y);
     std::string latitudeStr = DDFF2DDMMFF(latitude, false);
     std::string longitudeStr = DDFF2DDMMFF(longitude, true);
-    double minAlt = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
+    double minAlt = Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
     double altitude = minAlt ? minAlt : Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
     
     if(generateWPFile)
@@ -330,11 +330,11 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 
         if(i == 1) {
           settingsTask.StartRadius = radius;
-          settingsTask.StartMaxHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPHeight" + tpIdxStr));
+          settingsTask.StartMaxHeight = Convert<unsigned>(taskParser.Value("Task", "TPHeight" + tpIdxStr));
         }
         else if(i == tpNum - 1) {
           settingsTask.FinishRadius = radius;
-          //        settingsTask.FinishMinHeight = condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
+          //        settingsTask.FinishMinHeight = Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
           // AGL only in XCSoar ;-(
           settingsTask.FinishMinHeight = 0;
         }
@@ -391,7 +391,7 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
                                                           const boost::filesystem::path &pathPrefix,
                                                           const boost::filesystem::path &outputPathPrefix) const
 {
-  unsigned pzNum = condor2nav::Convert<unsigned>(taskParser.Value("Task", "PZCount"));
+  unsigned pzNum = Convert<unsigned>(taskParser.Value("Task", "PZCount"));
   if(pzNum == 0) {
     profileParser.Value("", "AirspaceFile", "\"\"");
     return;

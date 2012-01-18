@@ -100,8 +100,8 @@ void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
     tskFile << "\t\t</Waypoint>" << std::endl;
 
     std::string tpIdxStr(Convert(i + 1));
-    unsigned radius(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
-    unsigned angle(condor2nav::Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr)));
+    unsigned radius(Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
+    unsigned angle(Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr)));
     if(angle == 360)
       tskFile << "\t\t<ObservationZone type=\"Cylinder\" radius=\"" << radius <<"\"/>" << std::endl;
     else {
