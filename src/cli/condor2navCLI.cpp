@@ -1,7 +1,7 @@
 //
 // This file is part of Condor2Nav file formats translator.
 //
-// Copyright (C) 2009-2011 Mateusz Pusz
+// Copyright (C) 2009-2012 Mateusz Pusz
 //
 // Condor2Nav is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ _error(CLogger::TYPE_ERROR)
  */
 void condor2nav::cli::CCondor2NavCLI::Usage() const
 {
-  Log() << "Condor2Nav 3.1 Copyright (C) 2009-2011 Mateusz Pusz" << std::endl;
+  Log() << "Condor2Nav 3.1 Copyright (C) 2009-2012 Mateusz Pusz" << std::endl;
   Log() << std::endl;
   Log() << "This program comes with ABSOLUTELY NO WARRANTY. This is free software," << std::endl;
   Log() << "and you are welcome to redistribute it under GNU GPL conditions." << std::endl;
