@@ -226,7 +226,13 @@ void condor2nav::CTargetLK8000::Gps()
  */
 void condor2nav::CTargetLK8000::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  SceneryMapProcess(*_systemParser, sceneryData, _condor2navDataPathString + "\\" + _outputMapsSubDir.string());
+  _systemParser->Value("", "MapFile",     "\"" + _condor2navDataPathString + "\\" + (_outputMapsSubDir / sceneryData.at(SCENERY_MAP_FILE)).string() + "\"");
+  _systemParser->Value("", "TerrainFile", "\"" + _condor2navDataPathString + "\\" + (_outputMapsSubDir / sceneryData.at(SCENERY_TERRAIN_FILE)).string() + "\"");
+  _systemParser->Value("", "WPFile",      "\"" + _condor2navDataPathString + "\\" + (_outputWaypointsSubDir / sceneryData.at(SCENERY_WAYPOINTS_FILE)).string() + "\"");
+
+  // reset landscape specific files in case they were set before profile import
+  // if need user can still assign additionl data with second entries
+  _systemParser->Value("", "AirfieldFile", "\"\"");
 }
 
 

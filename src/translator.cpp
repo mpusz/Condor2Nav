@@ -176,7 +176,7 @@ void condor2nav::CTranslator::Run()
   std::unique_ptr<CTarget> target(Target());
   
   {
-    const CFileParserCSV sceneriesParser(DATA_PATH / SCENERIES_DATA_FILE_NAME);
+    const CFileParserCSV sceneriesParser(DATA_PATH / _configParser.Value("Condor2Nav", "Target") / SCENERIES_DATA_FILE_NAME);
     auto &sceneryData = sceneriesParser.Row(_condor.TaskParser().Value("Task", "Landscape"), 0, true);
 
     // set Condor GPS data

@@ -55,29 +55,6 @@ CTranslator::CTarget(translator)
 
 
 /**
- * @brief Sets scenery map. 
- *
- * Method sets scenery map XCM data file according to the Condor landscape name. 
- *
- * @param profileParser XCSoar profile file parser.
- * @param sceneryData Information describing the scenery. 
- * @param pathPrefix Scenery map subdirectory prefix (in XCSoar format).
- */
-void condor2nav::CTargetXCSoarCommon::SceneryMapProcess(CFileParserINI &profileParser,
-                                                        const CFileParserCSV::CStringArray &sceneryData,
-                                                        const boost::filesystem::path &pathPrefix) const
-{
-  profileParser.Value("", "MapFile", "\"" + (pathPrefix / sceneryData.at(SCENERY_XCM_FILE)).string() + "\"");
-
-  // reset landscape specific files in case they were set before profile import
-  // if need user can still assign additionl data with second entries
-  profileParser.Value("", "TerrainFile", "\"\"");
-  profileParser.Value("", "WPFile", "\"\"");
-  profileParser.Value("", "AirfieldFile", "\"\"");
-}
-
-
-/**
  * @brief Sets time for scenery time zone. 
  *
  * Method sets UTC time offset for selected scenery and forces time synchronization to the GPS source.

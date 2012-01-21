@@ -75,9 +75,6 @@ namespace condor2nav {
                           const xcsoar::TASK_POINT taskPointArray[],
                           const xcsoar::START_POINT startPointArray[],
                           const CWaypointArray &waypointArray) const = 0;
-    void SceneryMapProcess(CFileParserINI &profileParser,
-                           const CFileParserCSV::CStringArray &sceneryData,
-                           const boost::filesystem::path &pathPrefix) const;
     void SceneryTimeProcess(CFileParserINI &profileParser) const;
     void TaskProcess(CFileParserINI &profileParser,
                      const CFileParserINI &taskParser,

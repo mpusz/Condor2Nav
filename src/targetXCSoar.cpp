@@ -170,7 +170,13 @@ void condor2nav::CTargetXCSoar::Gps()
  */
 void condor2nav::CTargetXCSoar::SceneryMap(const CFileParserCSV::CStringArray &sceneryData)
 {
-  SceneryMapProcess(*_profileParser, sceneryData, _condor2navDataPathString);
+  _profileParser->Value("", "MapFile",     "\"" + _condor2navDataPathString + "\\" + sceneryData.at(SCENERY_MAP_FILE) + "\"");
+  _profileParser->Value("", "TerrainFile", "\"" + _condor2navDataPathString + "\\" + sceneryData.at(SCENERY_TERRAIN_FILE) + "\"");
+  _profileParser->Value("", "WPFile",      "\"" + _condor2navDataPathString + "\\" + sceneryData.at(SCENERY_WAYPOINTS_FILE) + "\"");
+
+  // reset landscape specific files in case they were set before profile import
+  // if need user can still assign additionl data with second entries
+  _profileParser->Value("", "AirfieldFile", "\"\"");
 }
 
 
