@@ -67,8 +67,8 @@ namespace condor2nav {
     boost::filesystem::path _outputWaypointsSubDir;      ///< @brief The subdirectory where output LK8000 waypoints file should be located
 
     COStream::CPathList _outputTaskFilePathList;         ///< @brief The path where output LK8000 task file should be located
-    boost::filesystem::path _outputSystemProfilePath;    ///< @brief The path where output configuration paths should be located
-    boost::filesystem::path _outputAircraftProfilePath;  ///< @brief The path where output configuration paths should be located
+    COStream::CPathList _outputSystemProfilePathList;    ///< @brief The path where output configuration paths should be located
+    COStream::CPathList _outputAircraftProfilePathList;  ///< @brief The path where output configuration paths should be located
 
     virtual void TaskDump(CFileParserINI &profileParser,
                           const CFileParserINI &taskParser,

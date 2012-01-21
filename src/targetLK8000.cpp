@@ -79,19 +79,19 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
     auto outputTaskDir = _outputLK8000DataPath / TASKS_SUBDIR;
     _outputTaskFilePathList.push_back(outputTaskDir / DEFAULT_TASK_FILE_NAME);
   }
-  boost::filesystem::path outputConfigDir;
-  bool profilesOverwrite = Convert<unsigned>(ConfigParser().Value("LK8000", "DefaultProfilesOverwrite")) != 0;
-  if(profilesOverwrite) {
-    outputConfigDir = _outputLK8000DataPath / CONFIG_SUBDIR;
-    _outputSystemProfilePath = outputConfigDir / DEFAULT_SYSTEM_PROFILE_NAME;
-    _outputAircraftProfilePath = outputConfigDir / DEFAULT_AIRCRAFT_PROFILE_NAME;
+
+  {
+    auto outputConfigDir = _outputLK8000DataPath / CONFIG_SUBDIR / subDir;
+    DirectoryCreate(outputConfigDir);
+    _outputSystemProfilePathList.push_back(outputConfigDir / OUTPUT_PROFILE_NAME);
+    _outputAircraftProfilePathList.push_back(outputConfigDir / OUTPUT_AIRCRAFT_PROFILE_NAME);
   }
-  else {
-    outputConfigDir = _outputLK8000DataPath / CONFIG_SUBDIR / subDir;
-    _outputSystemProfilePath = outputConfigDir / OUTPUT_PROFILE_NAME;
-    _outputAircraftProfilePath = outputConfigDir / OUTPUT_AIRCRAFT_PROFILE_NAME;
+  if(Convert<unsigned>(ConfigParser().Value("LK8000", "DefaultProfilesOverwrite"))) {
+    auto outputConfigDir = _outputLK8000DataPath / CONFIG_SUBDIR;
+    DirectoryCreate(outputConfigDir);
+    _outputSystemProfilePathList.push_back(outputConfigDir / DEFAULT_SYSTEM_PROFILE_NAME);
+    _outputAircraftProfilePathList.push_back(outputConfigDir / DEFAULT_AIRCRAFT_PROFILE_NAME);
   }
-  DirectoryCreate(outputConfigDir);
 
   // init profile files parsers
   auto systemPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_PROFILE_NAME;
@@ -125,8 +125,10 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
  */
 condor2nav::CTargetLK8000::~CTargetLK8000()
 {
-  _systemParser->Dump(_outputSystemProfilePath);
-  _aircraftParser->Dump(_outputAircraftProfilePath);
+  std::for_each(_outputSystemProfilePathList.begin(), _outputSystemProfilePathList.end(),
+    [this](const boost::filesystem::path &path){ _systemParser->Dump(path); });
+  std::for_each(_outputAircraftProfilePathList.begin(), _outputAircraftProfilePathList.end(),
+    [this](const boost::filesystem::path &path){ _aircraftParser->Dump(path); });
 }
 
 
