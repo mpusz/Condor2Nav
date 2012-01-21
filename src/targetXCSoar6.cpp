@@ -58,7 +58,6 @@ CTargetXCSoar(translator)
  */
 void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
                                           const CFileParserINI &taskParser,
-                                          const boost::filesystem::path &outputTaskFilePath,
                                           const xcsoar::SETTINGS_TASK &settingsTask,
                                           const xcsoar::TASK_POINT taskPointArray[],
                                           const xcsoar::START_POINT startPointArray[],
@@ -66,7 +65,7 @@ void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
 {
   using namespace xcsoar;
 
-  COStream tskFile(outputTaskFilePath);  
+  COStream tskFile(_outputTaskFilePathList);  
 
   if(settingsTask.AATEnabled) {
     tskFile << "<Task type=\"AAT\" task_scored=\"1\" aat_min_time=\""

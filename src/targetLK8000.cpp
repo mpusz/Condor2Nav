@@ -70,17 +70,15 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
   DirectoryCreate(_outputLK8000DataPath / _outputPolarsSubDir);
   DirectoryCreate(_outputLK8000DataPath / _outputWaypointsSubDir);
 
-  boost::filesystem::path outputTaskDir;
+  {
+    auto outputTaskDir = _outputLK8000DataPath / TASKS_SUBDIR / subDir;
+    DirectoryCreate(outputTaskDir);
+    _outputTaskFilePathList.push_back(outputTaskDir / TASK_FILE_NAME);
+  }
   if(Convert<unsigned>(ConfigParser().Value("LK8000", "DefaultTaskOverwrite"))) {
-    outputTaskDir = _outputLK8000DataPath / TASKS_SUBDIR;
-    _outputTaskFilePath = outputTaskDir / DEFAULT_TASK_FILE_NAME;
+    auto outputTaskDir = _outputLK8000DataPath / TASKS_SUBDIR;
+    _outputTaskFilePathList.push_back(outputTaskDir / DEFAULT_TASK_FILE_NAME);
   }
-  else {
-    outputTaskDir = _outputLK8000DataPath / TASKS_SUBDIR / subDir;
-    _outputTaskFilePath = outputTaskDir / TASK_FILE_NAME;
-  }
-  DirectoryCreate(outputTaskDir);
-
   boost::filesystem::path outputConfigDir;
   bool profilesOverwrite = Convert<unsigned>(ConfigParser().Value("LK8000", "DefaultProfilesOverwrite")) != 0;
   if(profilesOverwrite) {
@@ -147,7 +145,6 @@ condor2nav::CTargetLK8000::~CTargetLK8000()
  */
 void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser,
                                          const CFileParserINI &taskParser,
-                                         const boost::filesystem::path &outputTaskFilePath,
                                          const xcsoar::SETTINGS_TASK &settingsTask,
                                          const xcsoar::TASK_POINT taskPointArray[],
                                          const xcsoar::START_POINT startPointArray[],
@@ -158,7 +155,7 @@ void condor2nav::CTargetLK8000::TaskDump(CFileParserINI &profileParser,
   std::array<char, 50> version = { 0 };
   std::copy(ver.begin(), ver.end(), version.begin());
 
-  COStream tskFile(outputTaskFilePath);
+  COStream tskFile(_outputTaskFilePathList);
   tskFile.Write(version.data(), version.size());
 
   tskFile.Write(reinterpret_cast<const char *>(taskPointArray), lk8000::MAXTASKPOINTS * sizeof(taskPointArray[0]));
@@ -303,7 +300,7 @@ void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &glide
 void condor2nav::CTargetLK8000::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime)
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("LK8000", "TaskWPFileGenerate")));
-  TaskProcess(*_systemParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
+  TaskProcess(*_systemParser, taskParser, coordConv, aatTime,
               lk8000::MAXTASKPOINTS, lk8000::MAXSTARTPOINTS,
               wpFile > 0, _outputLK8000DataPath / _outputWaypointsSubDir);
 }

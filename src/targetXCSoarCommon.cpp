@@ -127,8 +127,6 @@ unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(double lon1, double la
 * @param profileParser XCSoar profile file parser.
 * @param taskParser Condor task parser. 
 * @param coordConv  Condor coordinates converter.
-* @param sceneryData Information describing the scenery. 
-* @param outputTaskFilePath The path of output XCSoar task file.
 * @param aatTime     Minimum time for AAT task
 * @param maxTaskPoints The number of waypoints stored in a task file.
 * @param maxStartPoints The number of alternate startpoints stored in a task file.
@@ -137,8 +135,6 @@ unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(double lon1, double la
  */
 void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser, const CFileParserINI &taskParser,
                                                   const CCondor::CCoordConverter &coordConv,
-                                                  const CFileParserCSV::CStringArray &sceneryData,
-                                                  const boost::filesystem::path &outputTaskFilePath,
                                                   unsigned aatTime,
                                                   unsigned maxTaskPoints, unsigned maxStartPoints,
                                                   bool generateWPFile, const boost::filesystem::path &wpOutputPathPrefix) const
@@ -372,7 +368,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   profileParser.Value("", "FAIFinishHeight", Convert(settingsTask.FinishMinHeight));
 
   // dump Task file
-  TaskDump(profileParser, taskParser, outputTaskFilePath, settingsTask, taskPointArray.get(), startPointArray.get(), waypointArray);
+  TaskDump(profileParser, taskParser, settingsTask, taskPointArray.get(), startPointArray.get(), waypointArray);
 }
 
 

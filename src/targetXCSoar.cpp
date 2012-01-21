@@ -51,10 +51,9 @@ _outputXCSoarDataPath(OutputPath() / "XCSoarData")
 
   DirectoryCreate(_outputCondor2NavDataPath);
 
+  _outputTaskFilePathList.push_back(_outputCondor2NavDataPath / TASK_FILE_NAME);
   if(Convert<unsigned>(ConfigParser().Value("XCSoar", "DefaultTaskOverwrite")))
-    _outputTaskFilePath = _outputXCSoarDataPath / DEFAULT_TASK_FILE_NAME;
-  else
-    _outputTaskFilePath = _outputCondor2NavDataPath / TASK_FILE_NAME;
+    _outputTaskFilePathList.push_back(_outputXCSoarDataPath / DEFAULT_TASK_FILE_NAME);
 
   auto profilePath = _outputCondor2NavDataPath / OUTPUT_PROFILE_NAME;
   if(!FileExists(profilePath)) {
@@ -95,7 +94,6 @@ condor2nav::CTargetXCSoar::~CTargetXCSoar()
  */
 void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
                                          const CFileParserINI &taskParser,
-                                         const boost::filesystem::path &outputTaskFilePath,
                                          const xcsoar::SETTINGS_TASK &settingsTask,
                                          const xcsoar::TASK_POINT taskPointArray[],
                                          const xcsoar::START_POINT startPointArray[],
@@ -103,7 +101,7 @@ void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
 {
   using namespace xcsoar;
 
-  COStream tskFile(outputTaskFilePath);
+  COStream tskFile(_outputTaskFilePathList);
 
   tskFile.Write(reinterpret_cast<const char *>(taskPointArray), MAXTASKPOINTS * sizeof(TASK_POINT));
 
@@ -247,7 +245,7 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
 void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime)
 {
   unsigned wpFile(Convert<unsigned>(ConfigParser().Value("XCSoar", "TaskWPFileGenerate")));
-  TaskProcess(*_profileParser, taskParser, coordConv, sceneryData, _outputTaskFilePath, aatTime,
+  TaskProcess(*_profileParser, taskParser, coordConv, aatTime,
               xcsoar::MAXTASKPOINTS, xcsoar::MAXSTARTPOINTS,
               wpFile > 0, _outputCondor2NavDataPath);
 }

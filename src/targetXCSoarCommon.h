@@ -71,7 +71,6 @@ namespace condor2nav {
     unsigned WaypointBearing(double lon1, double lat1, double lon2, double lat2) const;
     virtual void TaskDump(CFileParserINI &profileParser,
                           const CFileParserINI &taskParser,
-                          const boost::filesystem::path &outputTaskFilePath,
                           const xcsoar::SETTINGS_TASK &settingsTask,
                           const xcsoar::TASK_POINT taskPointArray[],
                           const xcsoar::START_POINT startPointArray[],
@@ -83,8 +82,6 @@ namespace condor2nav {
     void TaskProcess(CFileParserINI &profileParser,
                      const CFileParserINI &taskParser,
                      const CCondor::CCoordConverter &coordConv,
-                     const CFileParserCSV::CStringArray &sceneryData,
-                     const boost::filesystem::path &outputTaskFilePath,
                      unsigned aatTime,
                      unsigned maxTaskPoints,
                      unsigned maxStartPoints,

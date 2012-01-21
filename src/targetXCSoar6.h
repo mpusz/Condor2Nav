@@ -42,7 +42,6 @@ namespace condor2nav {
   class CTargetXCSoar6 : public CTargetXCSoar {
     virtual void TaskDump(CFileParserINI &profileParser,
                           const CFileParserINI &taskParser,
-                          const boost::filesystem::path &outputTaskFilePath,
                           const xcsoar::SETTINGS_TASK &settingsTask,
                           const xcsoar::TASK_POINT taskPointArray[],
                           const xcsoar::START_POINT startPointArray[],
