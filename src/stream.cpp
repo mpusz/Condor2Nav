@@ -34,17 +34,9 @@
  * @brief Class constructor.
  *
  * condor2nav::CStream class constructor.
- *
- * @param fileName The name of the file to create.
  */
-condor2nav::CStream::CStream(const boost::filesystem::path &fileName):
-_fileName(fileName)
+condor2nav::CStream::CStream()
 {
-  std::string str(fileName.string());
-  if(str.size() > 2 && str[0] == '\\' && str[1] != '\\')
-    _type = TYPE_ACTIVE_SYNC;
-  else
-    _type = TYPE_LOCAL;
 }
 
 
@@ -56,4 +48,19 @@ _fileName(fileName)
  */
 condor2nav::CStream::~CStream()
 {
+}
+
+
+/**
+ * @brief Returns file type.
+ *
+ * Determinates file type based on its name.
+ */
+condor2nav::CStream::TType condor2nav::CStream::Type(const boost::filesystem::path &fileName) const
+{
+  std::string str(fileName.string());
+  if(str.size() > 2 && str[0] == '\\' && str[1] != '\\')
+    return TYPE_ACTIVE_SYNC;
+  else
+    return TYPE_LOCAL;
 }

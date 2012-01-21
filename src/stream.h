@@ -40,6 +40,8 @@ namespace condor2nav {
    * condor2nav::CStream class is a wrapper for different stream types.
    */
   class CStream : CNonCopyable {
+    std::stringstream _buffer;            ///< @brief Buffer with file data. 
+
   protected:
     /*
      * @brief Stream types
@@ -49,19 +51,12 @@ namespace condor2nav {
       TYPE_ACTIVE_SYNC                    ///< @brief ActiveSync (remote device) path. 
     };
 
-  private:
-    boost::filesystem::path _fileName;    ///< @brief File name.
-    TType _type;                          ///< @brief Stream type. 
-    std::stringstream _buffer;            ///< @brief Buffer with file data. 
-    
-  protected:
-    const boost::filesystem::path &FileName() const { return _fileName; }
-    TType Type() const { return _type; }
+    TType Type(const boost::filesystem::path &fileName) const;
     const std::stringstream &Buffer() const { return _buffer; }
     std::stringstream &Buffer() { return _buffer; }
 
   public:
-    CStream(const boost::filesystem::path &fileName);
+    CStream();
     virtual ~CStream() = 0;
   };
 

@@ -38,6 +38,7 @@ namespace condor2nav {
    * condor2nav::CIStream class is a wrapper for different stream types.
    */
   class CIStream : public CStream {
+    boost::filesystem::path _fileName;    ///< @brief File name.
   public:
     CIStream(const boost::filesystem::path &fileName);
 

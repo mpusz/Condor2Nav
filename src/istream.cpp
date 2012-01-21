@@ -37,10 +37,9 @@
  *
  * @param fileName The name of the file to read.
  */
-condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName):
-CStream(fileName)
+condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName)
 {
-  switch(Type()) {
+  switch(Type(fileName)) {
     case TYPE_LOCAL:
       {
         std::fstream stream(fileName.c_str(), std::ios_base::in);
@@ -53,7 +52,7 @@ CStream(fileName)
     case TYPE_ACTIVE_SYNC:
       {
         CActiveSync &activeSync(CActiveSync::Instance());
-        Buffer().str(activeSync.Read(FileName()));
+        Buffer().str(activeSync.Read(fileName));
       }
       break;
 

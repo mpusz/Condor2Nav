@@ -37,8 +37,21 @@
  *
  * @param fileName The name of the file to create.
  */
-condor2nav::COStream::COStream(const boost::filesystem::path &fileName):
-CStream(fileName)
+condor2nav::COStream::COStream(const boost::filesystem::path &fileName)
+{
+  _pathList.push_back(fileName);
+}
+
+
+/**
+ * @brief Class constructor.
+ *
+ * condor2nav::COStream class constructor.
+ *
+ * @param fileName The name of the file to create.
+ */
+condor2nav::COStream::COStream(const CPathList &pathList):
+_pathList(pathList)
 {
 }
 
@@ -52,25 +65,28 @@ CStream(fileName)
 condor2nav::COStream::~COStream()
 {
   if(Buffer().str().size()) {
-    switch(Type()) {
-      case TYPE_LOCAL:
-        {
-          std::ofstream stream(FileName().c_str(), std::ios_base::out | std::ios_base::binary);
-          if(!stream)
-            throw EOperationFailed("ERROR: Couldn't open file '" + FileName().string() + "' for writing!!!");
-          stream << Buffer().str();
-        }
-        break;
+    std::for_each(_pathList.begin(), _pathList.end(), [this](const boost::filesystem::path &path)
+    {
+      switch(Type(path)) {
+        case TYPE_LOCAL:
+          {
+            std::ofstream stream(path.c_str(), std::ios_base::out | std::ios_base::binary);
+            if(!stream)
+              throw EOperationFailed("ERROR: Couldn't open file '" + path.string() + "' for writing!!!");
+            stream << Buffer().str();
+          }
+          break;
 
-      case TYPE_ACTIVE_SYNC:
-        {
-          CActiveSync &activeSync(CActiveSync::Instance());
-          activeSync.Write(FileName(), Buffer().str());
-        }
-        break;
+        case TYPE_ACTIVE_SYNC:
+          {
+            CActiveSync &activeSync(CActiveSync::Instance());
+            activeSync.Write(path, Buffer().str());
+          }
+          break;
 
-      default:
-        throw EOperationFailed("ERROR: Unknown stream type (" + Convert(Type()) + ")!!!");
-    }
+        default:
+          throw EOperationFailed("ERROR: Unknown stream type (" + Convert(Type(path)) + ")!!!");
+      }
+    });
   }
 }
