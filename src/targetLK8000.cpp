@@ -95,7 +95,7 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
 
   // init profile files parsers
   auto systemPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_PROFILE_NAME;
-  if(profilesOverwrite || !FileExists(systemPath)) {
+  if(!FileExists(systemPath)) {
     systemPath = _outputLK8000DataPath / CONFIG_SUBDIR / DEFAULT_SYSTEM_PROFILE_NAME;
     if(!FileExists(systemPath)) {
       systemPath = CTranslator::DATA_PATH / DEFAULT_SYSTEM_PROFILE_NAME;
@@ -106,7 +106,7 @@ _outputLK8000DataPath(OutputPath() / "LK8000")
   _systemParser.reset(new CFileParserINI(systemPath));
 
   auto aircraftPath = _outputLK8000DataPath / CONFIG_SUBDIR / subDir / OUTPUT_AIRCRAFT_PROFILE_NAME;
-  if(profilesOverwrite || !FileExists(aircraftPath)) {
+  if(!FileExists(aircraftPath)) {
     aircraftPath = _outputLK8000DataPath / CONFIG_SUBDIR / DEFAULT_AIRCRAFT_PROFILE_NAME;
     if(!FileExists(aircraftPath)) {
       aircraftPath = CTranslator::DATA_PATH / DEFAULT_AIRCRAFT_PROFILE_NAME;
