@@ -52,12 +52,11 @@ namespace condor2nav {
     };
 
     TType Type(const boost::filesystem::path &fileName) const;
-    const std::stringstream &Buffer() const { return _buffer; }
-    std::stringstream &Buffer() { return _buffer; }
-
   public:
     CStream();
     virtual ~CStream() = 0;
+    const std::stringstream &Buffer() const { return _buffer; }
+    std::stringstream &Buffer() { return _buffer; }
   };
 
 }

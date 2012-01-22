@@ -26,6 +26,7 @@
  */
 
 #include "istream.h"
+#include <boost/asio/ip/tcp.hpp>
 #include "activeSync.h"
 #include <fstream>
 
@@ -59,4 +60,44 @@ condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName)
     default:
       throw EOperationFailed("ERROR: Unknown stream type!!!");
   }
+}
+
+
+condor2nav::CIStream::CIStream(const std::string &server, const std::string &path, unsigned timeout /* = 30 */)
+{
+  boost::asio::ip::tcp::iostream http;
+  http.expires_from_now(boost::posix_time::seconds(timeout));
+
+  // establish a connection to the server.
+  http.connect(server, "http");
+  if(!http)
+    throw EOperationFailed("ERROR: Unable to connect to: '" + server + path + "', error: " + http.error().message());
+
+  // Send the request. We specify the "Connection: close" header so that the
+  // server will close the socket after transmitting the response. This will
+  // allow us to treat all data up until the EOF as the content.
+  http << "GET " << path << " HTTP/1.0\r\n";
+  http << "Host: " << server << "\r\n";
+  http << "Accept: */*\r\n";
+  http << "Connection: close\r\n\r\n";
+
+  // Check that response is OK.
+  std::string http_version;
+  http >> http_version;
+  unsigned int status_code;
+  http >> status_code;
+  std::string status_message;
+  std::getline(http, status_message);
+  if(!http || http_version.substr(0, 5) != "HTTP/")
+    throw EOperationFailed("ERROR: Invalid response from: '" + server + path + "'");
+  if(status_code != 200)
+    throw EOperationFailed("ERROR: '" + server + path + "' returned a response with status code: " + Convert(status_code));
+
+  // Process the response headers, which are terminated by a blank line.
+  std::string header;
+  while(std::getline(http, header) && header != "\r")
+    ;
+
+  // Write the remaining data to internal buffer
+  Buffer() << http.rdbuf();
 }
