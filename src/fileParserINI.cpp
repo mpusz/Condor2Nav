@@ -43,7 +43,35 @@ CFileParser(filePath)
 {
   // open input INI file
   CIStream inputStream(filePath);
+  Parse(inputStream);
+}
 
+
+/**
+ * @brief Class constructor.
+ *
+ * condor2nav::CFileParserINI class constructor.
+ *
+ * @param server The server from which to download the INI file.
+ * @param path The path on the server to the INI file.
+ */
+condor2nav::CFileParserINI::CFileParserINI(const std::string &server, const std::string &path):
+CFileParser(server + path)
+{
+  CIStream inputStream(server, path);
+  Parse(inputStream);
+}
+
+
+/**
+ * @brief INI file parser.
+ *
+ * Parses INI file.
+ *
+ * @param inputStream Input stream to use for reading.
+ */
+void condor2nav::CFileParserINI::Parse(CIStream &inputStream)
+{
   // parse all lines
   std::string line;
   CValuesMap *currentMap = &_valuesMap;
