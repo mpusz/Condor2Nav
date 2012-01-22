@@ -57,6 +57,7 @@
     </ClCompile>
     <PostBuildEvent>
       <Command>mkdir ..\dist\$(Configuration)\condor2nav\data
+mkdir ..\dist\$(Configuration)\condor2nav\data\Landscapes
 mkdir ..\dist\$(Configuration)\condor2nav\data\LK8000
 mkdir ..\dist\$(Configuration)\condor2nav\data\XCSoar
 copy /Y ..\README.txt ..\dist\$(Configuration)\condor2nav
@@ -64,6 +65,7 @@ copy /Y ..\CHANGELOG.txt ..\dist\$(Configuration)\condor2nav
 copy /Y ..\QuickStart*.txt ..\dist\$(Configuration)\condor2nav
 copy /Y ..\data\condor2nav.ini ..\dist\$(Configuration)\condor2nav
 copy /Y ..\data\GliderData.csv ..\dist\$(Configuration)\condor2nav\data
+copy /Y ..\data\LK8000\Landscapes\*.TXT ..\dist\$(Configuration)\condor2nav\data\Landscapes
 copy /Y ..\data\XCSoar\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\XCSoar
 copy /Y ..\data\LK8000\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\LK8000
 </Command>
@@ -84,6 +86,7 @@ copy /Y ..\data\LK8000\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\
     </ClCompile>
     <PostBuildEvent>
       <Command>mkdir ..\dist\$(Configuration)\condor2nav\data
+mkdir ..\dist\$(Configuration)\condor2nav\data\Landscapes
 mkdir ..\dist\$(Configuration)\condor2nav\data\LK8000
 mkdir ..\dist\$(Configuration)\condor2nav\data\XCSoar
 copy /Y ..\README.txt ..\dist\$(Configuration)\condor2nav
@@ -91,6 +94,7 @@ copy /Y ..\CHANGELOG.txt ..\dist\$(Configuration)\condor2nav
 copy /Y ..\QuickStart*.txt ..\dist\$(Configuration)\condor2nav
 copy /Y ..\data\condor2nav.ini ..\dist\$(Configuration)\condor2nav
 copy /Y ..\data\GliderData.csv ..\dist\$(Configuration)\condor2nav\data
+copy /Y ..\data\LK8000\Landscapes\*.TXT ..\dist\$(Configuration)\condor2nav\data\Landscapes
 copy /Y ..\data\XCSoar\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\XCSoar
 copy /Y ..\data\LK8000\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\LK8000
 </Command>
