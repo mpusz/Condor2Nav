@@ -39,3 +39,9 @@ _type(type)
 {
 
 }
+
+
+condor2nav::CCondor2Nav::CCondor2Nav():
+_configParser(CONFIG_FILE_NAME)
+{
+}

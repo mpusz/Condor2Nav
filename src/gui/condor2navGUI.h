@@ -29,7 +29,6 @@
 #define __CONDOR2NAV_GUI_H__
 
 #include "condor2nav.h"
-#include "fileParserINI.h"
 #include "widgets.h"
 
 namespace condor2nav {
@@ -65,7 +64,6 @@ namespace condor2nav {
     private:
       const HWND _hDlg;	                         ///< @brief The dialog handle
       const boost::filesystem::path _condorPath; ///< @brief Full pathname of the Condor directory
-      const CFileParserINI _configParser;	     ///< @brief The INI file configuration parser
 
       CWidgetRadioButton _fplDefault;	         ///< @brief The default FPL button
       CWidgetRadioButton _fplLastRace;           ///< @brief The last race FPL button

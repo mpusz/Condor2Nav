@@ -224,12 +224,9 @@ int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
   // obtain Condor installation path
   auto condorPath = CCondor::InstallPath();
   
-  // open configuration file
-  CFileParserINI configParser(CONFIG_FILE_NAME);
-  
   // create Condor FPL file path
   if(fplType != TYPE_USER)
-    fplPath = CCondor::FPLPath(configParser, fplType, condorPath);
+    fplPath = CCondor::FPLPath(ConfigParser(), fplType, condorPath);
   
   // create Condor wrapper
   CCondor condor(condorPath, fplPath);
@@ -237,7 +234,7 @@ int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
     return EXIT_FAILURE;
 
   // run translation
-  CTranslator translator(*this, configParser, condor, aatTime);
+  CTranslator translator(*this, ConfigParser(), condor, aatTime);
   translator.Run();
   
   return EXIT_SUCCESS;

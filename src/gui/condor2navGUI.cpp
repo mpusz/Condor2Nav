@@ -81,7 +81,6 @@ void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) cons
 condor2nav::gui::CCondor2NavGUI::CCondor2NavGUI(HINSTANCE hInst, HWND hDlg):
 _hDlg(hDlg),
 _condorPath(CCondor::InstallPath()),
-_configParser(CCondor2NavGUI::CONFIG_FILE_NAME),
 _fplDefault(hDlg, IDC_FPL_DEFAULT_RADIO),
 _fplLastRace(hDlg, IDC_FPL_LAST_RACE_RADIO),
 _fplOther(hDlg, IDC_FPL_OTHER_RADIO),
@@ -107,7 +106,7 @@ _error(CLogger::TYPE_ERROR, _log)
     _aatTime.Add(Convert(i * 15));
 
   // set default task
-  auto fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath);
+  auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TYPE_DEFAULT, _condorPath);
 
   try {
     CCondor condor(_condorPath, fplPath);
@@ -124,7 +123,7 @@ _error(CLogger::TYPE_ERROR, _log)
 
   // check if last result is available
   try {
-    fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath);
+    fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TYPE_RESULT, _condorPath);
   }
   catch(const Exception &) {
     _fplLastRace.Disable();
@@ -190,7 +189,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       _fplSelect.Disable();
 
       // create Condor FPL file path
-      auto fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_DEFAULT, _condorPath);
+      auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TYPE_DEFAULT, _condorPath);
       _fplPath.String(fplPath.string());
 
       fplChanged = true;
@@ -202,7 +201,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       _fplSelect.Disable();
 
       // create Condor FPL file path
-      auto fplPath = CCondor::FPLPath(_configParser, CCondor2NavGUI::TYPE_RESULT, _condorPath);
+      auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TYPE_RESULT, _condorPath);
       _fplPath.String(fplPath.string());
 
       fplChanged = true;
@@ -276,7 +275,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       try {
         _log.Clear();
         CCondor condor(_condorPath, _fplPath.String());
-        CTranslator(*this, _configParser, condor, _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
+        CTranslator(*this, ConfigParser(), condor, _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
       }
       catch(const Exception &ex) {
         Error() << ex.what() << std::endl;

@@ -29,6 +29,7 @@
 #define __CONDOR2NAV_H__
 
 #include "nonCopyable.h"
+#include "fileParserINI.h"
 #include <sstream>
 
 /**
@@ -126,10 +127,15 @@ namespace condor2nav {
       }
     };
 
+  private:
+    const CFileParserINI _configParser;	          ///< @brief The INI file configuration parser
+
   protected:
     static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file.
+    const CFileParserINI &ConfigParser() const { return _configParser; }
 
   public:
+    CCondor2Nav();
     virtual ~CCondor2Nav() {}
 
     /**
