@@ -56,11 +56,14 @@ condor2nav::CCondor2Nav::CLogger(type), _log(log)
 void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) const
 {
   switch(Type()) {
-  case TYPE_NORMAL:
+  case TYPE_LOG_NORMAL:
     _log.Format(0, CWidgetRichEdit::COLOR_AUTO);
     break;
+  case TYPE_LOG_HIGH:
+    _log.Format(0, CWidgetRichEdit::COLOR_BLUE);
+    break;
   case TYPE_WARNING:
-    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_BLUE);
+    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_GREEN);
     break;
   case TYPE_ERROR:
     _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_RED);
@@ -92,7 +95,8 @@ _aatTime(hDlg, IDC_AAT_TIME_COMBO, true),
 _aatMinutes(hDlg, IDC_AAT_STATIC, true),
 _translate(hDlg, IDC_TRANSLATE_BUTTON),
 _log(hDlg, IDC_LOG_RICHEDIT2),
-_normal(CLogger::TYPE_NORMAL, _log),
+_normal(CLogger::TYPE_LOG_NORMAL, _log),
+_high(CLogger::TYPE_LOG_HIGH, _log),
 _warning(CLogger::TYPE_WARNING, _log),
 _error(CLogger::TYPE_ERROR, _log)
 {

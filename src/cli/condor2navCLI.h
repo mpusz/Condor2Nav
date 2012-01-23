@@ -65,6 +65,7 @@ namespace condor2nav {
 
     private:
       CLogger _normal;              ///< @brief Normal logging level logger
+      CLogger _high;                ///< @brief Important logging level logger
       CLogger _warning;             ///< @brief Warning logging level logger
       CLogger _error;               ///< @brief Error logging level logger
 
@@ -76,6 +77,7 @@ namespace condor2nav {
       CCondor2NavCLI();
 
       virtual const CLogger &Log() const override     { return _normal; }
+      virtual const CLogger &LogHigh() const override { return _high; }
       virtual const CLogger &Warning() const override { return _warning; }
       virtual const CLogger &Error() const override   { return _error; }
 

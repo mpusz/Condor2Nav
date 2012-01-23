@@ -81,6 +81,7 @@ namespace condor2nav {
       CWidgetRichEdit _log;                      ///< @brief The Condor2Nav logging window
 
       CLogger _normal;                           ///< @brief Normal logging level logger
+      CLogger _high;                             ///< @brief Important logging level logger
       CLogger _warning;                          ///< @brief Warning logging level logger
       CLogger _error;                            ///< @brief Error logging level logger
 
@@ -91,6 +92,7 @@ namespace condor2nav {
       CCondor2NavGUI(HINSTANCE hInst, HWND hDlg);
 
       virtual const CLogger &Log() const override     { return _normal; }
+      virtual const CLogger &LogHigh() const override { return _high; }
       virtual const CLogger &Warning() const override { return _warning; }
       virtual const CLogger &Error() const override   { return _error; }
 

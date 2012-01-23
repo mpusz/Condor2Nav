@@ -53,7 +53,8 @@ CCondor2Nav::CLogger(type)
 void condor2nav::cli::CCondor2NavCLI::CLogger::Dump(const std::string &str) const
 {
   switch(Type()) {
-  case TYPE_NORMAL:
+  case TYPE_LOG_NORMAL:
+  case TYPE_LOG_HIGH:
     std::cout << str;
     break;
   case TYPE_WARNING:
@@ -70,7 +71,8 @@ void condor2nav::cli::CCondor2NavCLI::CLogger::Dump(const std::string &str) cons
  * @brief Default class constructor.
  */
 condor2nav::cli::CCondor2NavCLI::CCondor2NavCLI():
-_normal(CLogger::TYPE_NORMAL),
+_normal(CLogger::TYPE_LOG_NORMAL),
+_high(CLogger::TYPE_LOG_HIGH),
 _warning(CLogger::TYPE_WARNING),
 _error(CLogger::TYPE_ERROR)
 {

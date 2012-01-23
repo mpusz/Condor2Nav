@@ -170,7 +170,7 @@ std::unique_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Targe
  */
 void condor2nav::CTranslator::Run()
 {
-  _app.Warning() << "Translation START" << std::endl;
+  _app.LogHigh() << "Translation START" << std::endl;
 
   // create translation target
   std::unique_ptr<CTarget> target(Target());
@@ -222,5 +222,5 @@ void condor2nav::CTranslator::Run()
     target->Weather(_condor.TaskParser());
   }
 
-  _app.Warning() << "Translation FINISH" << std::endl;
+  _app.LogHigh() << "Translation FINISH" << std::endl;
 }

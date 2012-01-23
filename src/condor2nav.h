@@ -67,7 +67,8 @@ namespace condor2nav {
        * @brief Values that represent logger types.
        */
       enum TType {
-        TYPE_NORMAL,	      ///< @brief All normal processing logs.
+        TYPE_LOG_NORMAL,      ///< @brief All normal processing logs.
+        TYPE_LOG_HIGH,        ///< @brief Important processing logs.
         TYPE_WARNING,         ///< @brief Warning level logs (not critical errors).
         TYPE_ERROR            ///< @brief Critical errors.
       };
@@ -149,6 +150,13 @@ namespace condor2nav {
      * @return Normal logging level logger.
      */
     virtual const CLogger &Log() const = 0;
+
+    /**
+     * @brief Returns important processing logging level logger. 
+     *
+     * @return Important processing logging level logger.
+     */
+    virtual const CLogger &LogHigh() const = 0;
 
     /**
      * @brief Returns warning logging level logger. 
