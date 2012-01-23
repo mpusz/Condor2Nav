@@ -26,6 +26,7 @@
  */
 
 #include "condor2nav.h"
+#include "lkMapsDB.h"
 
 const char *condor2nav::CCondor2Nav::CONFIG_FILE_NAME = "condor2nav.ini";
 
@@ -43,5 +44,10 @@ _type(type)
 
 condor2nav::CCondor2Nav::CCondor2Nav():
 _configParser(CONFIG_FILE_NAME)
+{
+}
+
+
+void condor2nav::CCondor2Nav::OnStart() const
 {
 }

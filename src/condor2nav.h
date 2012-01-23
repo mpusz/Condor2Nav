@@ -139,6 +139,11 @@ namespace condor2nav {
     virtual ~CCondor2Nav() {}
 
     /**
+     * @brief Handler triggered on application startup. 
+     */
+    virtual void OnStart() const;
+
+    /**
      * @brief Returns normal logging level logger. 
      *
      * @return Normal logging level logger.

@@ -89,6 +89,7 @@ INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM
   switch(message) {
   case WM_INITDIALOG:
     app = new condor2nav::gui::CCondor2NavGUI(hInst, hDlg);
+    app->OnStart();
     return TRUE;
 
   case WM_COMMAND:
