@@ -28,6 +28,7 @@
 #ifndef __TRAITSNOCASE_H__
 #define __TRAITSNOCASE_H__
 
+#include <string>
 #include <cctype>
 #include <iostream>
 

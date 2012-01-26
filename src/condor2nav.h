@@ -133,11 +133,12 @@ namespace condor2nav {
 
   protected:
     static const char *CONFIG_FILE_NAME;          ///< @brief The name of the configuration INI file.
-    const CFileParserINI &ConfigParser() const { return _configParser; }
 
   public:
     CCondor2Nav();
     virtual ~CCondor2Nav() {}
+
+    const CFileParserINI &ConfigParser() const { return _configParser; }
 
     /**
      * @brief Handler triggered on application startup. 

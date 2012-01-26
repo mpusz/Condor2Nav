@@ -44,9 +44,8 @@ namespace condor2nav {
    */
   class CTranslator : CNonCopyable {
   public:
-
     /**
-     * @brief Translation targets hierarchy base class.
+    * @brief Translation targets hierarchy base class.
      *
      * condor2nav::CTranslator::CTarget is a base abstract class for all translation targets.
      */
@@ -54,10 +53,10 @@ namespace condor2nav {
       const CTranslator &_translator;               ///< @brief Translator class
       const boost::filesystem::path _outputPath;    ///< @brief Translation output directory
 
-    protected:
+    public:
       /**
-       * @brief Sceneries data CSV file column names.
-       */
+      * @brief Sceneries data CSV file column names.
+      */
       enum TSceneriesDataColumns {
         SCENERY_NAME,
         SCENERY_MAP_FILE,
@@ -65,6 +64,7 @@ namespace condor2nav {
         SCENERY_WAYPOINTS_FILE
       };
 
+    protected:
       /**
        * @brief Gliders data CSV file column names.
        */

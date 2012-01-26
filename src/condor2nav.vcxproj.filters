@@ -59,6 +59,9 @@
     <ClCompile Include="translator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lkMapsDB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="activeSync.h">
@@ -116,6 +119,9 @@
       <Filter>Header Files\imports</Filter>
     </ClInclude>
     <ClInclude Include="nonCopyable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lkMapsDB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
