@@ -26,7 +26,6 @@
  */
 
 #include "activeSync.h"
-#include <fstream>
 #include <memory>
 #include <algorithm>
 

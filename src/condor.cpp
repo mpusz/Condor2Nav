@@ -28,7 +28,6 @@
 #include "condor.h"
 #include "traitsNoCase.h"
 #include "tools.h"
-#include <fstream>
 #include <iomanip>
 #include <cmath>
 

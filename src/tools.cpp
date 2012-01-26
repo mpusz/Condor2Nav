@@ -27,7 +27,7 @@
 
 #include "tools.h"
 #include "activeSync.h"
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 #include <iomanip>
 #include <windows.h>
 

@@ -27,7 +27,7 @@
 
 #include "ostream.h"
 #include "activeSync.h"
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 
 /**
@@ -70,7 +70,7 @@ condor2nav::COStream::~COStream()
       switch(Type(path)) {
         case TYPE_LOCAL:
           {
-            std::ofstream stream(path.c_str(), std::ios_base::out | std::ios_base::binary);
+            boost::filesystem::ofstream stream(path, std::ios_base::out | std::ios_base::binary);
             if(!stream)
               throw EOperationFailed("ERROR: Couldn't open file '" + path.string() + "' for writing!!!");
             stream << Buffer().str();

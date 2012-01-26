@@ -26,9 +26,9 @@
  */
 
 #include "istream.h"
+#include <boost/filesystem/fstream.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include "activeSync.h"
-#include <fstream>
 
 
 /**
@@ -43,7 +43,7 @@ condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName)
   switch(Type(fileName)) {
     case TYPE_LOCAL:
       {
-        std::fstream stream(fileName.c_str(), std::ios_base::in);
+        boost::filesystem::fstream stream(fileName, std::ios_base::in);
         if(!stream)
           throw EOperationFailed("ERROR: Couldn't open file '" + fileName.string() + "' for reading!!!");
         Buffer() << stream.rdbuf();
