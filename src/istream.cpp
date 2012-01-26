@@ -100,4 +100,7 @@ condor2nav::CIStream::CIStream(const std::string &server, const std::string &pat
 
   // Write the remaining data to internal buffer
   Buffer() << http.rdbuf();
+
+  if(http.error() == boost::asio::error::operation_aborted)
+    throw EOperationFailed("ERROR: Download timeout (" + Convert(timeout) + " seconds) exceeded!");
 }
