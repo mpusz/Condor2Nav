@@ -53,8 +53,8 @@ namespace condor2nav {
 void condor2nav::Trim(std::string &str)
 {
   if(str != "") {
-    size_t pos1 = str.find_first_not_of(" ");
-    size_t pos2 = str.find_last_not_of(" ");
+    size_t pos1 = str.find_first_not_of(" \t");
+    size_t pos2 = str.find_last_not_of(" \t");
     str = str.substr(pos1, pos2 - pos1 + 1);
   }
 }
