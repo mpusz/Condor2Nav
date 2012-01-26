@@ -50,4 +50,6 @@ _configParser(CONFIG_FILE_NAME)
 
 void condor2nav::CCondor2Nav::OnStart() const
 {
+  if(_configParser.Value("Condor2Nav", "Target") == "LK8000" && _configParser.Value("LK8000", "CheckForMapUpdates") == "1") {
+  }
 }
