@@ -74,6 +74,26 @@ CFileParser(filePath)
  */
 const condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(const std::string &value, unsigned column /* = 0 */, bool nocase /* = false */) const
 {
+  CFileParserCSV *nonConst = const_cast<CFileParserCSV *>(this);
+  return nonConst->Row(value, column, nocase);
+}
+
+
+/**
+ * @brief Returns requested row.
+ *
+ * Method returns the values from one row specified by the value in specified column.
+ *
+ * @param value  The value to use for searching.
+ * @param column The column index to be used for value comparison.
+ * @param nocase Specifies if a search should be case sensitive.
+ *
+ * @exception std Thrown when requested row is not found.
+ *
+ * @return Requested row.
+ */
+condor2nav::CFileParser::CStringArray &condor2nav::CFileParserCSV::Row(const std::string &value, unsigned column /* = 0 */, bool nocase /* = false */)
+{
   for(auto it=_rowsList.begin(); it!=_rowsList.end(); ++it)
     if(it->at(column) == value || (nocase && it->at(column).c_str() == CStringNoCase(value.c_str())))
       return *it;
