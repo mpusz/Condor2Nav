@@ -26,6 +26,7 @@
  */
 
 #include "tools.h"
+#include "istream.h"
 #include "activeSync.h"
 #include <boost/filesystem/fstream.hpp>
 #include <iomanip>
@@ -214,6 +215,15 @@ bool condor2nav::FileExists(const boost::filesystem::path &fileName)
   else {
     return boost::filesystem::exists(fileName);
   }
+}
+
+
+void condor2nav::Download(const std::string &server, const std::string &path, const boost::filesystem::path &fileName, unsigned timeout /* = 30 */)
+{
+  DirectoryCreate(fileName.parent_path());
+  CIStream in(server, path, timeout);
+  boost::filesystem::ofstream out(fileName, std::ios_base::out | std::ios_base::binary);
+  out << in.Buffer().rdbuf();
 }
 
 

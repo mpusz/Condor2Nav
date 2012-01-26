@@ -73,6 +73,8 @@ namespace condor2nav {
   // disk operations
   void DirectoryCreate(const boost::filesystem::path &dirName);
   bool FileExists(const boost::filesystem::path &fileName);
+  void Download(const std::string &server, const std::string &path, const boost::filesystem::path &fileName, unsigned timeout = 30);
+
   // exceptions hierarchy
 
   /**
