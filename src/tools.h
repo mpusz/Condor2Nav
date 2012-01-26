@@ -70,6 +70,10 @@ namespace condor2nav {
   double Deg2Rad(double angle);
   double Rad2Deg(double angle);
 
+  template<typename T>
+  bool InsideArea(T outerLonMin, T outerLonMax, T outerLatMin, T outerLatMax,
+    T innerLonMin, T innerLonMax, T innerLatMin, T innerLatMax);
+
   // disk operations
   void DirectoryCreate(const boost::filesystem::path &dirName);
   bool FileExists(const boost::filesystem::path &fileName);
@@ -148,6 +152,16 @@ std::string condor2nav::Convert(const T &val)
   stream << val;
   return stream.str();
 }
+
+
+template<typename T>
+bool condor2nav::InsideArea(T outerLonMin, T outerLonMax, T outerLatMin, T outerLatMax,
+  T innerLonMin, T innerLonMax, T innerLatMin, T innerLatMax)
+{
+  return innerLonMin >= outerLonMin && innerLonMax <= outerLonMax &&
+    innerLatMin >= outerLatMin && innerLatMax <= outerLatMax;
+}
+
 
 
 #endif /* __TOOLS_H__ */
