@@ -81,10 +81,16 @@ auto condor2nav::CLKMapsDB::LKMTemplatesSync() const -> CNamesList
   // get the list of all LKMaps templates on LK8000 server
   _app.Log() << "Obtaining list of LK8000 maps templates..." << std::endl;
   CNamesList lkRemote;
-  // do it here...
-  lkRemote.push_back("CRO_CROATIA.TXT");
-  lkRemote.push_back("POL.TXT");
-  lkRemote.push_back("POL_TATRA.TXT");
+
+  // temporary solution - read from a fixed file
+  boost::filesystem::ifstream templates("data/LK8000/LKMTemplates.txt");
+  while(templates) {
+    std::string line;
+    std::getline(templates, line);
+    Trim(line);
+    if(!line.empty())
+      lkRemote.push_back(line.c_str());
+  }
   std::sort(lkRemote.begin(), lkRemote.end());
 
   // check if there are new LK8000 templates on the LK8000 server
