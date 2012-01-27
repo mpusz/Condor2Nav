@@ -74,7 +74,7 @@ namespace condor2nav {
     
   public:
     explicit CFileParserINI(const boost::filesystem::path &filePath);
-    explicit CFileParserINI(const std::string &server, const std::string &path);
+    explicit CFileParserINI(const std::string &server, const boost::filesystem::path &url);
 
     virtual void Dump(const boost::filesystem::path &filePath = "") const override;
 

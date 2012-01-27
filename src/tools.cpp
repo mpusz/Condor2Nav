@@ -218,10 +218,10 @@ bool condor2nav::FileExists(const boost::filesystem::path &fileName)
 }
 
 
-void condor2nav::Download(const std::string &server, const std::string &path, const boost::filesystem::path &fileName, unsigned timeout /* = 30 */)
+void condor2nav::Download(const std::string &server, const boost::filesystem::path &url, const boost::filesystem::path &fileName, unsigned timeout /* = 30 */)
 {
   DirectoryCreate(fileName.parent_path());
-  CIStream in(server, path, timeout);
+  CIStream in(server, url.generic_string(), timeout);
   boost::filesystem::ofstream out(fileName, std::ios_base::out | std::ios_base::binary);
   out << in.Buffer().rdbuf();
 }

@@ -63,7 +63,7 @@ condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName)
 }
 
 
-condor2nav::CIStream::CIStream(const std::string &server, const std::string &path, unsigned timeout /* = 30 */)
+condor2nav::CIStream::CIStream(const std::string &server, const boost::filesystem::path &url, unsigned timeout /* = 30 */)
 {
   boost::asio::ip::tcp::iostream http;
   http.expires_from_now(boost::posix_time::seconds(timeout));
@@ -71,12 +71,12 @@ condor2nav::CIStream::CIStream(const std::string &server, const std::string &pat
   // establish a connection to the server.
   http.connect(server, "http");
   if(!http)
-    throw EOperationFailed("ERROR: Unable to connect to: '" + server + path + "', error: " + http.error().message());
+    throw EOperationFailed("ERROR: Unable to connect to: '" + server + url.generic_string() + "', error: " + http.error().message());
 
   // Send the request. We specify the "Connection: close" header so that the
   // server will close the socket after transmitting the response. This will
   // allow us to treat all data up until the EOF as the content.
-  http << "GET " << path << " HTTP/1.0\r\n";
+  http << "GET " << url.generic_string() << " HTTP/1.0\r\n";
   http << "Host: " << server << "\r\n";
   http << "Accept: */*\r\n";
   http << "Connection: close\r\n\r\n";
@@ -89,9 +89,9 @@ condor2nav::CIStream::CIStream(const std::string &server, const std::string &pat
   std::string status_message;
   std::getline(http, status_message);
   if(!http || http_version.substr(0, 5) != "HTTP/")
-    throw EOperationFailed("ERROR: Invalid response from: '" + server + path + "'");
+    throw EOperationFailed("ERROR: Invalid response from: '" + server + url.generic_string() + "'");
   if(status_code != 200)
-    throw EOperationFailed("ERROR: '" + server + path + "' returned a response with status code: " + Convert(status_code));
+    throw EOperationFailed("ERROR: '" + server + url.generic_string() + "' returned a response with status code: " + Convert(status_code));
 
   // Process the response headers, which are terminated by a blank line.
   std::string header;

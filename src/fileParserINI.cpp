@@ -52,12 +52,12 @@ CFileParser(filePath)
  * condor2nav::CFileParserINI class constructor.
  *
  * @param server The server from which to download the INI file.
- * @param path The path on the server to the INI file.
+ * @param url The path on the server to the INI file.
  */
-condor2nav::CFileParserINI::CFileParserINI(const std::string &server, const std::string &path):
-CFileParser(server + path)
+condor2nav::CFileParserINI::CFileParserINI(const std::string &server, const boost::filesystem::path &url):
+CFileParser(server + url.generic_string())
 {
-  CIStream inputStream(server, path);
+  CIStream inputStream(server, url.generic_string());
   Parse(inputStream);
 }
 
