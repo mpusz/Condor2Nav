@@ -52,8 +52,9 @@ namespace condor2nav {
 
   private:
     static const boost::filesystem::path CONDOR_TEMPLATES_DIR;
-    static const boost::filesystem::path LK8000_TEMPLATES_DIR;
-    static const boost::filesystem::path LK8000_MAPS_DIR;
+    static const boost::filesystem::path CONDOR2NAV_LK8000_TEMPLATES_DIR;
+    static const boost::filesystem::path CONDOR2NAV_LK8000_MAPS_DIR;
+    static const boost::filesystem::path LK8000_MAPS_URL;
 
     const CCondor2Nav &_app;
     CFileParserCSV _sceneriesParser;
@@ -63,7 +64,7 @@ namespace condor2nav {
     CLKMapsDB(const CCondor2Nav &app);
     CNamesList LKMTemplatesSync() const;
     CParsersMap LandscapesMatch(CNamesList &&newTemplates);
-    void LKMDownload(const CParsersMap &maps) const;
+    void LKMDownload(CParsersMap &maps) const;
     void ScenarioCSVUpdate() const;
   };
 

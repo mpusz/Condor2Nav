@@ -55,7 +55,7 @@ namespace condor2nav {
     const CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false) const;
     CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false);
     const CRowsList &Rows() const;
-//    void Row(CStringArray &row);
+    CRowsList &Rows();
   };
 
 }

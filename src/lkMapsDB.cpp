@@ -32,6 +32,7 @@
 #include "istream.h"
 #include "tools.h"
 #include <algorithm>
+#include <boost\filesystem\fstream.hpp>
 
 namespace condor2nav {
 
@@ -39,9 +40,10 @@ namespace condor2nav {
 
 }
 
-const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR_TEMPLATES_DIR = "data/Landscapes";
-const boost::filesystem::path condor2nav::CLKMapsDB::LK8000_TEMPLATES_DIR = "data/LK8000/LKMTemplates";
-const boost::filesystem::path condor2nav::CLKMapsDB::LK8000_MAPS_DIR      = "data/LK8000/_Maps";
+const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR_TEMPLATES_DIR            = "data/Landscapes";
+const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_TEMPLATES_DIR = "data/LK8000/LKMTemplates";
+const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_MAPS_DIR      = "data/LK8000/_Maps";
+const boost::filesystem::path condor2nav::CLKMapsDB::LK8000_MAPS_URL                 = "/listing/LKMAPS";
 
 
 unsigned condor2nav::MapScale(const CFileParserINI &map)
@@ -64,7 +66,7 @@ _app(app), _sceneriesParser(CTranslator::DATA_PATH / _app.ConfigParser().Value("
   // fill the list of Condor landscapes templates
   std::for_each(boost::filesystem::directory_iterator(CONDOR_TEMPLATES_DIR), boost::filesystem::directory_iterator(),
     [this](const boost::filesystem::path &p) { _condor.push_back(p.filename().string().c_str()); });
-  DirectoryCreate(LK8000_TEMPLATES_DIR);
+  DirectoryCreate(CONDOR2NAV_LK8000_TEMPLATES_DIR);
 }
 
 
@@ -72,7 +74,7 @@ auto condor2nav::CLKMapsDB::LKMTemplatesSync() const -> CNamesList
 {
   // fill the list of already downloaded LKMaps templates
   CNamesList lkLocal;
-  std::for_each(boost::filesystem::directory_iterator(LK8000_TEMPLATES_DIR), boost::filesystem::directory_iterator(),
+  std::for_each(boost::filesystem::directory_iterator(CONDOR2NAV_LK8000_TEMPLATES_DIR), boost::filesystem::directory_iterator(),
     [&](const boost::filesystem::path &p) { lkLocal.push_back(p.filename().string().c_str()); });
   std::sort(lkLocal.begin(), lkLocal.end());
 
@@ -91,12 +93,23 @@ auto condor2nav::CLKMapsDB::LKMTemplatesSync() const -> CNamesList
   if(result.size()) {
     // download new templates from LK8000 server
     _app.Log() << "Downloading new LK8000 maps templates..." << std::endl;
+    CNamesList errors;
     std::for_each(result.begin(), result.end(),
       [&](const CStringNoCase &name)
-    { 
-      _app.Log() << " - " << name << std::endl;
-      Download("www.bware.it", std::string("/listing/LKMAPS/TEMPLATES/") + name.c_str(), LK8000_TEMPLATES_DIR / name.c_str());
+    {
+      try {
+        _app.Log() << " - " << name << std::endl;
+        Download("www.bware.it", LK8000_MAPS_URL / "TEMPLATES" / name.c_str(), CONDOR2NAV_LK8000_TEMPLATES_DIR / name.c_str());
+      }
+      catch(const EOperationFailed &ex) {
+        _app.Log() << ex.what() << std::endl;
+        errors.push_back(name);
+      }
     });
+
+    // remove errored templates if any
+    std::for_each(errors.begin(), errors.end(),
+          [&](const CStringNoCase &error) { result.erase(std::find(result.begin(), result.end(), error)); });
   }
   else {
     _app.Log() << "No new LK8000 maps templates found" << std::endl;
@@ -120,7 +133,7 @@ auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList &&newTemplates) -> CParse
   // prepare a list of freshly downloaded LKMaps templates data
   CParsersMap lk;
   std::for_each(newTemplates.begin(), newTemplates.end(),
-    [&](CStringNoCase &n) { lk[std::move(n)] = std::make_shared<CFileParserINI>(LK8000_TEMPLATES_DIR / n.c_str()); });
+    [&](CStringNoCase &n) { lk[std::move(n)] = std::make_shared<CFileParserINI>(CONDOR2NAV_LK8000_TEMPLATES_DIR / n.c_str()); });
 
   // do for all Condor maps
   for(auto landscape=condor.begin(); landscape!=condor.end(); ++landscape) {
@@ -136,7 +149,7 @@ auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList &&newTemplates) -> CParse
     // assign previous LK map if found
     auto mapName = landscapeData[CTranslator::CTarget::SCENERY_MAP_FILE];
     if(!mapName.empty())
-      bestMatch = std::make_shared<CFileParserINI>(LK8000_TEMPLATES_DIR / (mapName.substr(0, mapName.find(".LKM")) + ".TXT").c_str());
+      bestMatch = std::make_shared<CFileParserINI>(CONDOR2NAV_LK8000_TEMPLATES_DIR / (mapName.substr(0, mapName.find(".LKM")) + ".TXT").c_str());
 
     // check for all new maps
     bool newMapFound = false;
@@ -174,18 +187,27 @@ auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList &&newTemplates) -> CParse
 }
 
 
-void condor2nav::CLKMapsDB::LKMDownload(const CParsersMap &maps) const
+void condor2nav::CLKMapsDB::LKMDownload(CParsersMap &maps) const
 {
   _app.Log() << "Downloading new LK8000 maps..." << std::endl;
   for(auto map=maps.begin(); map!=maps.end(); ++map) {
-    std::string path = "/listing/LKMAPS/" + map->second->Value("", "MAPZONE") + "/" + map->second->Value("", "DIR") + ".DIR/";
-    std::string name = map->second->Value("", "NAME") + ".LKM";
-    _app.Log() << " - " << name << std::endl;
-    Download("www.bware.it", path + name, LK8000_MAPS_DIR / name, 180);
+    try {
+      boost::filesystem::path path = LK8000_MAPS_URL;
+      if(map->second->Value("", "DIR") == "CONDOR")
+        path /= "EUR/CONDOR.DIR";
+      else
+        path = path / map->second->Value("", "MAPZONE") / (map->second->Value("", "DIR") + ".DIR");
+      std::string name = map->second->Value("", "NAME") + ".LKM";
+      _app.Log() << " - " << name << std::endl;
+      Download("www.bware.it", path / name, CONDOR2NAV_LK8000_MAPS_DIR / name, 180);
 
-    name = map->second->Value("", "NAME") + "_" + Convert(MapScale(*map->second)) + ".DEM";
-    _app.Log() << " - " << name << std::endl;
-    Download("www.bware.it", path + name, LK8000_MAPS_DIR / name, 180);
+      name = map->second->Value("", "NAME") + "_" + Convert(MapScale(*map->second)) + ".DEM";
+      _app.Log() << " - " << name << std::endl;
+      Download("www.bware.it", path / name, CONDOR2NAV_LK8000_MAPS_DIR / name, 180);
+    }
+    catch(const EOperationFailed &ex) {
+      _app.Log() << ex.what() << std::endl;
+    }
   }
 }
 
