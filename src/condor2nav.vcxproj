@@ -105,6 +105,7 @@ copy /Y ..\data\LK8000\LKMTemplates.txt ..\dist\$(Configuration)\condor2nav\data
     <ClCompile Include="activeSync.cpp" />
     <ClCompile Include="condor.cpp" />
     <ClCompile Include="condor2nav.cpp" />
+    <ClCompile Include="exception.cpp" />
     <ClCompile Include="fileParser.cpp" />
     <ClCompile Include="fileParserCSV.cpp" />
     <ClCompile Include="fileParserINI.cpp" />
@@ -123,6 +124,7 @@ copy /Y ..\data\LK8000\LKMTemplates.txt ..\dist\$(Configuration)\condor2nav\data
     <ClInclude Include="activeSync.h" />
     <ClInclude Include="condor.h" />
     <ClInclude Include="condor2nav.h" />
+    <ClInclude Include="exception.h" />
     <ClInclude Include="fileParser.h" />
     <ClInclude Include="fileParserCSV.h" />
     <ClInclude Include="fileParserINI.h" />

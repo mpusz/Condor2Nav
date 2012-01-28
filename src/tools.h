@@ -28,8 +28,8 @@
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
 
+#include "exception.h"
 #include <sstream>
-#include <exception>
 #include <boost/filesystem.hpp>
 #include <Windows.h>
 
@@ -72,37 +72,12 @@ namespace condor2nav {
 
   template<typename T>
   bool InsideArea(T outerLonMin, T outerLonMax, T outerLatMin, T outerLatMax,
-    T innerLonMin, T innerLonMax, T innerLatMin, T innerLatMax);
+                  T innerLonMin, T innerLonMax, T innerLatMin, T innerLatMax);
 
   // disk operations
   void DirectoryCreate(const boost::filesystem::path &dirName);
   bool FileExists(const boost::filesystem::path &fileName);
   void Download(const std::string &server, const boost::filesystem::path &url, const boost::filesystem::path &fileName, unsigned timeout = 30);
-
-  // exceptions hierarchy
-
-  /**
-   * @brief Condor2Nav exception hierarchy base class
-   */
-  class Exception : public std::exception {
-    const std::string _error;	///< @brief The error string
-    Exception &operator=(const Exception &) throw();
-  public:
-    explicit Exception(const std::string &error) throw();
-    Exception(const Exception &org) throw();
-    virtual ~Exception() = 0;
-
-    virtual const char *what() const throw();
-  };
-
-
-  /**
-   * @brief Operation failed exception. 
-   */
-  class EOperationFailed : public Exception {
-  public:
-    explicit EOperationFailed(const std::string &error) throw();
-  };
 
 }
 
