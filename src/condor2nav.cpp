@@ -48,19 +48,20 @@ _configParser(CONFIG_FILE_NAME)
 }
 
 
-void condor2nav::CCondor2Nav::OnStart() const
+void condor2nav::CCondor2Nav::OnStart(std::function<bool()> abort)
 {
   if(_configParser.Value("Condor2Nav", "Target") == "LK8000" && _configParser.Value("LK8000", "CheckForMapUpdates") == "1") {
     LogHigh() << "LK8000 maps synchronization START" << std::endl;
     try {
       CLKMapsDB db(*this);
-      auto newTemplates = db.LKMTemplatesSync();
+      auto newTemplates = db.LKMTemplatesSync(abort);
       if(newTemplates.size()) {
         // new templates found - check if better maps can be used
         auto newMaps = db.LandscapesMatch(std::move(newTemplates));
-        if(newMaps.size()) {
-          db.LKMDownload(newMaps);
-          db.ScenarioCSVUpdate();
+        if(newMaps.size() && !abort()) {
+          db.LKMDownload(newMaps, abort);
+          if(!abort())
+            db.ScenarioCSVUpdate();
         }
       }
       LogHigh() << "LK8000 maps synchronization FINISH" << std::endl;

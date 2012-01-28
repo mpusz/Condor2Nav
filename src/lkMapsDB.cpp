@@ -70,7 +70,7 @@ _app(app), _sceneriesParser(CTranslator::DATA_PATH / _app.ConfigParser().Value("
 }
 
 
-auto condor2nav::CLKMapsDB::LKMTemplatesSync() const -> CNamesList
+auto condor2nav::CLKMapsDB::LKMTemplatesSync(const std::function<bool()> &abort) const -> CNamesList
 {
   // fill the list of already downloaded LKMaps templates
   CNamesList lkLocal;
@@ -103,6 +103,8 @@ auto condor2nav::CLKMapsDB::LKMTemplatesSync() const -> CNamesList
     std::for_each(result.begin(), result.end(),
       [&](const CStringNoCase &name)
     {
+      if(abort())
+        return;
       try {
         _app.Log() << " - " << name << std::endl;
         Download("www.bware.it", LK8000_MAPS_URL / "TEMPLATES" / name.c_str(), CONDOR2NAV_LK8000_TEMPLATES_DIR / name.c_str());
@@ -193,11 +195,13 @@ auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList &&newTemplates) -> CParse
 }
 
 
-void condor2nav::CLKMapsDB::LKMDownload(CParsersMap &maps) const
+void condor2nav::CLKMapsDB::LKMDownload(CParsersMap &maps, const std::function<bool()> &abort) const
 {
   _app.Log() << "Downloading new LK8000 maps..." << std::endl;
   for(auto map=maps.begin(); map!=maps.end(); ++map) {
     try {
+      if(abort())
+        return;
       boost::filesystem::path path = LK8000_MAPS_URL;
       if(map->second->Value("", "DIR") == "CONDOR")
         path /= "EUR/CONDOR.DIR";

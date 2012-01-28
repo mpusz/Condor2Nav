@@ -26,9 +26,9 @@
  */
 
 #include "istream.h"
-#include <boost/filesystem/fstream.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include "activeSync.h"
+#include <boost/filesystem/fstream.hpp>
 
 
 /**

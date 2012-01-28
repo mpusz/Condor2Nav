@@ -42,7 +42,7 @@ int main(int argc, const char *argv[])
 {
   try {
     condor2nav::cli::CCondor2NavCLI app;
-    app.OnStart();
+    app.OnStart([]{ return false; });
     return app.Run(argc, argv);
   }
   catch(const condor2nav::Exception &ex) {

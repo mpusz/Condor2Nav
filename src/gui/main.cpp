@@ -88,8 +88,8 @@ INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM
   static condor2nav::gui::CCondor2NavGUI *app = nullptr;
   switch(message) {
   case WM_INITDIALOG:
-    app = new condor2nav::gui::CCondor2NavGUI(hInst, hDlg);
-    app->OnStart();
+    app = new CCondor2NavGUI(hInst, hDlg);
+    app->OnStart([=]{ return app->Abort(); });
     return TRUE;
 
   case WM_COMMAND:
@@ -109,6 +109,10 @@ INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM
         app->Command(hDlg, wmId, wmEvent);
       }
     }
+    return TRUE;
+
+  case WM_LOG:
+    app->Log(static_cast<CCondor2NavGUI::CLogger::TType>(wParam), std::unique_ptr<std::string>(reinterpret_cast<std::string *>(lParam)));
     return TRUE;
 
   case WM_CLOSE:

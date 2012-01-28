@@ -39,8 +39,8 @@
  * @param type         The logger type. 
  * @param [in,out] log Logging window widget. 
  */
-condor2nav::gui::CCondor2NavGUI::CLogger::CLogger(TType type, CWidgetRichEdit &log):
-condor2nav::CCondor2Nav::CLogger(type), _log(log)
+condor2nav::gui::CCondor2NavGUI::CLogger::CLogger(TType type, HWND hDlg):
+condor2nav::CCondor2Nav::CLogger(type), _hDlg(hDlg)
 {
 
 }
@@ -55,23 +55,8 @@ condor2nav::CCondor2Nav::CLogger(type), _log(log)
  */
 void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) const
 {
-  switch(Type()) {
-  case TYPE_LOG_NORMAL:
-    _log.Format(0, CWidgetRichEdit::COLOR_AUTO);
-    break;
-  case TYPE_LOG_HIGH:
-    _log.Format(0, CWidgetRichEdit::COLOR_BLUE);
-    break;
-  case TYPE_WARNING:
-    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_GREEN);
-    break;
-  case TYPE_ERROR:
-    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_RED);
-    break;
-  default:
-    throw EOperationFailed("ERROR: Unsupported logger type (" + Convert(Type()) + ")!!!");
-  }
-  _log.Append(str);
+  std::unique_ptr<std::string> dup(new std::string(str));
+  PostMessage(_hDlg, WM_LOG, Type(), reinterpret_cast<WPARAM>(dup.release()));
 }
 
 
@@ -82,6 +67,12 @@ void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) cons
  * @param hDlg  Handle of the dialog. 
  */
 condor2nav::gui::CCondor2NavGUI::CCondor2NavGUI(HINSTANCE hInst, HWND hDlg):
+_running(false),
+_abort(false),
+_normal(CLogger::TYPE_LOG_NORMAL, hDlg),
+_high(CLogger::TYPE_LOG_HIGH, hDlg),
+_warning(CLogger::TYPE_WARNING, hDlg),
+_error(CLogger::TYPE_ERROR, hDlg),
 _hDlg(hDlg),
 _condorPath(CCondor::InstallPath()),
 _fplDefault(hDlg, IDC_FPL_DEFAULT_RADIO),
@@ -94,12 +85,10 @@ _aatOn(hDlg, IDC_AAT_ON_RADIO),
 _aatTime(hDlg, IDC_AAT_TIME_COMBO, true),
 _aatMinutes(hDlg, IDC_AAT_STATIC, true),
 _translate(hDlg, IDC_TRANSLATE_BUTTON),
-_log(hDlg, IDC_LOG_RICHEDIT2),
-_normal(CLogger::TYPE_LOG_NORMAL, _log),
-_high(CLogger::TYPE_LOG_HIGH, _log),
-_warning(CLogger::TYPE_WARNING, _log),
-_error(CLogger::TYPE_ERROR, _log)
+_log(hDlg, IDC_LOG_RICHEDIT2)
 {
+  _translate.Disable();
+
   // Attach icon to main dialog
   SendMessage(hDlg, WM_SETICON, ICON_BIG, LPARAM(LoadIcon(hInst, MAKEINTRESOURCE(IDI_CONDOR2NAV))));
   SendMessage(hDlg, WM_SETICON, ICON_SMALL, LPARAM(LoadIcon(hInst, MAKEINTRESOURCE(IDI_CONDOR2NAV))));
@@ -122,7 +111,6 @@ _error(CLogger::TYPE_ERROR, _log)
     _fplDefault.Disable();
     _fplOther.Select();
     _fplSelect.Enable();
-    _translate.Disable();
   }
 
   // check if last result is available
@@ -132,6 +120,12 @@ _error(CLogger::TYPE_ERROR, _log)
   catch(const Exception &) {
     _fplLastRace.Disable();
   }
+}
+
+
+condor2nav::gui::CCondor2NavGUI::~CCondor2NavGUI()
+{
+  _abort = true;
 }
 
 
@@ -171,7 +165,7 @@ void condor2nav::gui::CCondor2NavGUI::AATCheck(const CCondor &condor) const
  */
 bool condor2nav::gui::CCondor2NavGUI::TranslateValid() const
 {
-  return (!_fplOther.Selected() || _fplPath.String() != "") && (!_aatOn.Selected() || _aatTime.Selection() != "" || _aatTime.ItemSelected());
+  return !_running && (!_fplOther.Selected() || _fplPath.String() != "") && (!_aatOn.Selected() || _aatTime.Selection() != "" || _aatTime.ItemSelected());
 }
 
 
@@ -288,8 +282,6 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
     break;
   }
 
-  if(changed || fplChanged)
-    _log.Clear();
   if(fplChanged) {
     CCondor condor(_condorPath, _fplPath.String());
     AATCheck(condor);
@@ -300,4 +292,39 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
     else
       _translate.Disable();
   }
+}
+
+
+void condor2nav::gui::CCondor2NavGUI::OnStart(std::function<bool()> abort)
+{
+  _activeObject.Send([this, abort]{
+    _running = true;
+    _translate.Disable();
+    this->CCondor2Nav::OnStart(abort);
+    if(TranslateValid())
+      _translate.Enable();
+    _running = false;
+  });
+}
+
+
+void condor2nav::gui::CCondor2NavGUI::Log(CLogger::TType type, std::unique_ptr<std::string> &&str)
+{
+  switch(type) {
+  case CLogger::TYPE_LOG_NORMAL:
+    _log.Format(0, CWidgetRichEdit::COLOR_AUTO);
+    break;
+  case CLogger::TYPE_LOG_HIGH:
+    _log.Format(0, CWidgetRichEdit::COLOR_BLUE);
+    break;
+  case CLogger::TYPE_WARNING:
+    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_GREEN);
+    break;
+  case CLogger::TYPE_ERROR:
+    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_RED);
+    break;
+  default:
+    throw EOperationFailed("ERROR: Unsupported logger type (" + Convert(type) + ")!!!");
+  }
+  _log.Append(*str.release());
 }

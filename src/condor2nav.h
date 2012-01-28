@@ -143,7 +143,7 @@ namespace condor2nav {
     /**
      * @brief Handler triggered on application startup. 
      */
-    virtual void OnStart() const;
+    virtual void OnStart(std::function<bool()> abort);
 
     /**
      * @brief Returns normal logging level logger. 
