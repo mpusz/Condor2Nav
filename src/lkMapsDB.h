@@ -63,7 +63,7 @@ namespace condor2nav {
   public:
     CLKMapsDB(const CCondor2Nav &app);
     CNamesList LKMTemplatesSync(const std::function<bool()> &abort) const;
-    CParsersMap LandscapesMatch(CNamesList &&newTemplates);
+    CParsersMap LandscapesMatch(CNamesList &&allTemplates);
     void LKMDownload(CParsersMap &maps, const std::function<bool()> &abort) const;
     void ScenarioCSVUpdate() const;
   };

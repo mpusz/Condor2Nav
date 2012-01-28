@@ -54,10 +54,10 @@ void condor2nav::CCondor2Nav::OnStart(std::function<bool()> abort)
     LogHigh() << "LK8000 maps synchronization START" << std::endl;
     try {
       CLKMapsDB db(*this);
-      auto newTemplates = db.LKMTemplatesSync(abort);
-      if(newTemplates.size()) {
+      auto allTemplates = db.LKMTemplatesSync(abort);
+      if(allTemplates.size()) {
         // new templates found - check if better maps can be used
-        auto newMaps = db.LandscapesMatch(std::move(newTemplates));
+        auto newMaps = db.LandscapesMatch(std::move(allTemplates));
         if(newMaps.size() && !abort()) {
           db.LKMDownload(newMaps, abort);
           if(!abort())
