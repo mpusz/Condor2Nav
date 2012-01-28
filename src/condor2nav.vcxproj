@@ -102,6 +102,7 @@ copy /Y ..\data\LK8000\LKMTemplates.txt ..\dist\$(Configuration)\condor2nav\data
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="activeObject.cpp" />
     <ClCompile Include="activeSync.cpp" />
     <ClCompile Include="condor.cpp" />
     <ClCompile Include="condor2nav.cpp" />
@@ -121,6 +122,7 @@ copy /Y ..\data\LK8000\LKMTemplates.txt ..\dist\$(Configuration)\condor2nav\data
     <ClCompile Include="translator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="activeObject.h" />
     <ClInclude Include="activeSync.h" />
     <ClInclude Include="condor.h" />
     <ClInclude Include="condor2nav.h" />
@@ -142,6 +144,7 @@ copy /Y ..\data\LK8000\LKMTemplates.txt ..\dist\$(Configuration)\condor2nav\data
     <ClInclude Include="translator.h" />
     <ClInclude Include="imports\lk8000Types.h" />
     <ClInclude Include="imports\xcsoarTypes.h" />
+    <ClInclude Include="waitQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CHANGELOG.txt" />
