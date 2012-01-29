@@ -281,7 +281,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
           if(TranslateValid())
             _translate.Enable();
         }
-        catch(const Exception &ex) {
+        catch(const std::exception &ex) {
           Error() << ex.what() << std::endl;
         }
       });
@@ -313,7 +313,7 @@ void condor2nav::gui::CCondor2NavGUI::OnStart(std::function<bool()> abort)
       if(TranslateValid())
         _translate.Enable();
     }
-    catch(const Exception &ex) {
+    catch(const std::exception &ex) {
       Error() << ex.what() << std::endl;
     }
   });
