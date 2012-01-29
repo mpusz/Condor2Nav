@@ -87,8 +87,6 @@ _aatMinutes(hDlg, IDC_AAT_STATIC, true),
 _translate(hDlg, IDC_TRANSLATE_BUTTON),
 _log(hDlg, IDC_LOG_RICHEDIT2)
 {
-  _translate.Disable();
-
   // Attach icon to main dialog
   SendMessage(hDlg, WM_SETICON, ICON_BIG, LPARAM(LoadIcon(hInst, MAKEINTRESOURCE(IDI_CONDOR2NAV))));
   SendMessage(hDlg, WM_SETICON, ICON_SMALL, LPARAM(LoadIcon(hInst, MAKEINTRESOURCE(IDI_CONDOR2NAV))));
@@ -270,14 +268,23 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
 
   case IDC_TRANSLATE_BUTTON:
     if(command == BN_CLICKED) {
-      try {
-        _log.Clear();
-        CCondor condor(_condorPath, _fplPath.String());
-        CTranslator(*this, ConfigParser(), condor, _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
-      }
-      catch(const Exception &ex) {
-        Error() << ex.what() << std::endl;
-      }
+      _log.Clear();
+      _activeObject.Send([this]{
+        try {
+          _running = true;
+          _translate.Disable();
+
+          CCondor condor(_condorPath, _fplPath.String());
+          CTranslator(*this, ConfigParser(), condor, _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
+
+          _running = false;
+          if(TranslateValid())
+            _translate.Enable();
+        }
+        catch(const Exception &ex) {
+          Error() << ex.what() << std::endl;
+        }
+      });
     }
     break;
   }
@@ -298,12 +305,17 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
 void condor2nav::gui::CCondor2NavGUI::OnStart(std::function<bool()> abort)
 {
   _activeObject.Send([this, abort]{
-    _running = true;
-    _translate.Disable();
-    this->CCondor2Nav::OnStart(abort);
-    if(TranslateValid())
-      _translate.Enable();
-    _running = false;
+    try {
+      _running = true;
+      _translate.Disable();
+      this->CCondor2Nav::OnStart(abort);
+      _running = false;
+      if(TranslateValid())
+        _translate.Enable();
+    }
+    catch(const Exception &ex) {
+      Error() << ex.what() << std::endl;
+    }
   });
 }
 
