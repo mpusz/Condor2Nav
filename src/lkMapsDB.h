@@ -55,6 +55,8 @@ namespace condor2nav {
     static const boost::filesystem::path CONDOR2NAV_LK8000_TEMPLATES_DIR;
     static const boost::filesystem::path CONDOR2NAV_LK8000_MAPS_DIR;
     static const boost::filesystem::path LK8000_MAPS_URL;
+    static const std::string             LKM_TEMPLATES_INDEX_SERVER;
+    static const boost::filesystem::path LKM_TEMPLATES_INDEX_URL;
 
     const CCondor2Nav &_app;
     CFileParserCSV _sceneriesParser;

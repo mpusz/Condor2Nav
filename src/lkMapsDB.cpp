@@ -44,6 +44,8 @@ const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR_TEMPLATES_DIR       
 const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_TEMPLATES_DIR = "data/LK8000/LKMTemplates";
 const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_MAPS_DIR      = "data/LK8000/_Maps";
 const boost::filesystem::path condor2nav::CLKMapsDB::LK8000_MAPS_URL                 = "/listing/LKMAPS";
+const std::string             condor2nav::CLKMapsDB::LKM_TEMPLATES_INDEX_SERVER      = "cloud.github.com";
+const boost::filesystem::path condor2nav::CLKMapsDB::LKM_TEMPLATES_INDEX_URL         = "/downloads/mpusz/Condor2Nav/LKMTemplates.txt";
 
 
 unsigned condor2nav::MapScale(const CFileParserINI &map)
@@ -83,10 +85,10 @@ auto condor2nav::CLKMapsDB::LKMTemplatesSync(const std::function<bool()> &abort)
   CNamesList lkRemote;
 
   // temporary solution - read from a fixed file
-  boost::filesystem::ifstream templates("data/LK8000/LKMTemplates.txt");
-  while(templates) {
+  CIStream templates(LKM_TEMPLATES_INDEX_SERVER, LKM_TEMPLATES_INDEX_URL);
+  while(templates.Buffer()) {
     std::string line;
-    std::getline(templates, line);
+    std::getline(templates.Buffer(), line);
     Trim(line);
     if(!line.empty())
       lkRemote.push_back(line.c_str());
