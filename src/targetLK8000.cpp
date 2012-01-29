@@ -284,6 +284,12 @@ void condor2nav::CTargetLK8000::Glider(const CFileParserCSV::CStringArray &glide
   }
   polarFile << "," << gliderData.at(GLIDER_WING_AREA) << std::endl;
 
+  if(!gliderData.at(GLIDER_FLAPS).empty()) {
+    // add flaps line
+    polarFile << std::endl;
+    polarFile << gliderData.at(GLIDER_FLAPS) << std::endl;
+  }
+
   unsigned ballast(Convert<unsigned>(Condor().TaskParser().Value("Plane", "Water")));
   unsigned maxBallast(Convert<unsigned>(gliderData.at(GLIDER_MAX_WATER_BALLAST)));
   if(maxBallast > 0 && ballast > 0) {

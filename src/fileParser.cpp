@@ -91,14 +91,31 @@ void condor2nav::CFileParser::LineParseKeyValue(const std::string &line, std::st
  */
 void condor2nav::CFileParser::LineParseCSV(const std::string &line, CStringArray &values) const
 {
-  size_t pos = 0;
+  bool insideQuote = false;
+  size_t pos = 0, newValuePos = 0;
   do {
     size_t posOld = pos;
-    pos = line.find_first_of(",", posOld);
-    size_t len = (pos != std::string::npos) ? (pos - posOld) : pos;
-    std::string value = line.substr(posOld, len);
-    Trim(value);
-    values.push_back(std::move(value));
+    if(insideQuote) {
+      pos = line.find_first_of("\"", posOld);
+      insideQuote = false;
+    }
+    else {
+      pos = line.find_first_of(",\"", posOld);
+      if(pos != std::string::npos && line[pos] == '\"') {
+        insideQuote = true;
+      }
+      else {
+        size_t len = (pos != std::string::npos) ? (pos - newValuePos) : pos;
+        std::string value = line.substr(newValuePos, len);
+        Trim(value);
+        if(!value.empty() && value[0] == '\"')
+          // remove quotes
+          value = value.substr(1, value.size() - 2);
+        values.push_back(std::move(value));
+        if(pos != std::string::npos)
+          newValuePos = pos + 1;
+      }
+    }
     if(pos != std::string::npos)
       pos++;
   }

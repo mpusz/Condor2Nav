@@ -82,6 +82,7 @@ namespace condor2nav {
         GLIDER_SINK_2,
         GLIDER_SPPED_3,
         GLIDER_SINK_3,
+        GLIDER_FLAPS
       };
 
       const CTranslator &Translator() const;
