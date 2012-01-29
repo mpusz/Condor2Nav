@@ -42,7 +42,7 @@ namespace condor2nav {
 
 const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR_TEMPLATES_DIR            = "data/Landscapes";
 const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_TEMPLATES_DIR = "data/LK8000/LKMTemplates";
-const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_MAPS_DIR      = "data/LK8000/_Maps";
+const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_MAPS_DIR      = "data/LK8000/_Maps/condor2nav";
 const boost::filesystem::path condor2nav::CLKMapsDB::LK8000_MAPS_URL                 = "/listing/LKMAPS";
 const std::string             condor2nav::CLKMapsDB::LKM_TEMPLATES_INDEX_SERVER      = "cloud.github.com";
 const boost::filesystem::path condor2nav::CLKMapsDB::LKM_TEMPLATES_INDEX_URL         = "/downloads/mpusz/Condor2Nav/LKMTemplates.txt";
@@ -196,7 +196,7 @@ auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList &&allTemplates) -> CParse
       // set new map data in CSV file
       auto &newName = bestMatch->Value("", "NAME");
       landscapeData[CTranslator::CTarget::SCENERY_MAP_FILE] = newName + ".LKM";
-      landscapeData[CTranslator::CTarget::SCENERY_TERRAIN_FILE] = newName + ".DEM";
+      landscapeData[CTranslator::CTarget::SCENERY_TERRAIN_FILE] = newName + "_" + Convert(MapScale(*bestMatch)) + ".DEM";
 
       if(std::none_of(lkLocal.begin(), lkLocal.end(), [&](CStringNoCase &m){ return m == newName.c_str(); })) {
         _app.Log() << " - " << newName << " -> " << landscape->first << std::endl;
@@ -209,6 +209,9 @@ auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList &&allTemplates) -> CParse
 
   if(result.empty())
     _app.Log() << "No new/better maps found" << std::endl;
+
+  _app.Log() << "Updating '" << _sceneriesParser.Path() << "' file..." << std::endl;
+  _sceneriesParser.Dump();
 
   return result;
 }
@@ -241,11 +244,4 @@ void condor2nav::CLKMapsDB::LKMDownload(CParsersMap &maps, const std::function<b
       _app.Log() << ex.what() << std::endl;
     }
   }
-}
-
-
-void condor2nav::CLKMapsDB::ScenarioCSVUpdate() const
-{
-  _app.Log() << "Updating '" << _sceneriesParser.Path() << "' file..." << std::endl;
-  _sceneriesParser.Dump();
 }

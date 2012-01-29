@@ -67,7 +67,6 @@ namespace condor2nav {
     CNamesList LKMTemplatesSync(const std::function<bool()> &abort) const;
     CParsersMap LandscapesMatch(CNamesList &&allTemplates);
     void LKMDownload(CParsersMap &maps, const std::function<bool()> &abort) const;
-    void ScenarioCSVUpdate() const;
   };
 
 }

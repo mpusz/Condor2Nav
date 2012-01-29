@@ -56,9 +56,8 @@
       <DisableSpecificWarnings>4100;4481;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
-      <Command>mkdir ..\dist\$(Configuration)\condor2nav\data
-mkdir ..\dist\$(Configuration)\condor2nav\data\Landscapes
-mkdir ..\dist\$(Configuration)\condor2nav\data\LK8000
+      <Command>mkdir ..\dist\$(Configuration)\condor2nav\data\Landscapes
+mkdir ..\dist\$(Configuration)\condor2nav\data\LK8000\_Waypoints\condor2nav
 mkdir ..\dist\$(Configuration)\condor2nav\data\XCSoar
 copy /Y ..\README.txt ..\dist\$(Configuration)\condor2nav
 copy /Y ..\CHANGELOG.txt ..\dist\$(Configuration)\condor2nav
@@ -68,6 +67,7 @@ copy /Y ..\data\GliderData.csv ..\dist\$(Configuration)\condor2nav\data
 copy /Y ..\data\LK8000\Landscapes\*.TXT ..\dist\$(Configuration)\condor2nav\data\Landscapes
 copy /Y ..\data\XCSoar\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\XCSoar
 copy /Y ..\data\LK8000\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\LK8000
+copy /Y ..\data\LK8000\Waypoints\*.cup  ..\dist\$(Configuration)\condor2nav\data\LK8000\_Waypoints\condor2nav
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -85,9 +85,8 @@ copy /Y ..\data\LK8000\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\
       <DisableSpecificWarnings>4100;4481;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <PostBuildEvent>
-      <Command>mkdir ..\dist\$(Configuration)\condor2nav\data
-mkdir ..\dist\$(Configuration)\condor2nav\data\Landscapes
-mkdir ..\dist\$(Configuration)\condor2nav\data\LK8000
+      <Command>mkdir ..\dist\$(Configuration)\condor2nav\data\Landscapes
+mkdir ..\dist\$(Configuration)\condor2nav\data\LK8000\_Waypoints\condor2nav
 mkdir ..\dist\$(Configuration)\condor2nav\data\XCSoar
 copy /Y ..\README.txt ..\dist\$(Configuration)\condor2nav
 copy /Y ..\CHANGELOG.txt ..\dist\$(Configuration)\condor2nav
@@ -97,6 +96,7 @@ copy /Y ..\data\GliderData.csv ..\dist\$(Configuration)\condor2nav\data
 copy /Y ..\data\LK8000\Landscapes\*.TXT ..\dist\$(Configuration)\condor2nav\data\Landscapes
 copy /Y ..\data\XCSoar\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\XCSoar
 copy /Y ..\data\LK8000\SceneryData.csv ..\dist\$(Configuration)\condor2nav\data\LK8000
+copy /Y ..\data\LK8000\Waypoints\*.cup  ..\dist\$(Configuration)\condor2nav\data\LK8000\_Waypoints\condor2nav
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
