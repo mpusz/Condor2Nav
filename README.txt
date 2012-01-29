@@ -26,8 +26,10 @@ Obtain latest release package from the project website and extract it
 anywhere on the hard drive.
 
 The package contains:
+ - data/Landscapes/* - LK8000 style template file describing Condor Landscapes
+ - data/LK8000/SceneryData.csv - CSV file with supported Condor sceneries information
+ - data/XCSoar/SceneryData.csv - CSV file with supported Condor sceneries information
  - data/GliderData.csv - CSV file with all Condor gliders information
- - data/SceneryData.csv - CSV file with supported Condor sceneries information
  - CHANGELOG.txt - changes introduced in subsequent releases
  - condor2nav.ini - project configuration
  - condor2nav-cli.exe - CLI application executable
@@ -62,12 +64,16 @@ In case of XCSoar translation following steps must be completed:
 In case of LK8000 translation following steps must be completed:
 1. Have LK8000 installed and configured on the target device
    (e.g. PDA, PNA, PC).
-2. Obtain XCM map files for all supported sceneries from condor2nav
-   project webpage
-   (http://sourceforge.net/projects/condor2nav/files/maps/XCSoar/Maps.zip/download)
-3. Copy all XCM scenery files to the "LK8000/_Maps/condor2nav" subdirectory
-   on the target device.
-4. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the [LK8000]
+2. Copy directory "[CONDOR_2_NAV_PATH]/data/LK8000/_Waypoints" with waypoints for all
+   supported Condor landscapes to "LK8000" subdirectory on the target device with
+   your LK8000 instalation.
+3. If [LK8000] "CheckForMapUpdates=1" Condro2Nav will check on the startup for
+   new better maps matching Condor Landscapes. If such maps are available
+   they will be downloaded automatically.
+4. Copy "[CONDOR_2_NAV_PATH]/data/LK8000/_Maps" subdirectory containing all
+   downloaded LK8000 maps to "LK8000" directory.
+   subdirectory on the target device with LK8000 instalation.
+5. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the [LK8000]
    "LK8000Path" copy "[LK8000_DATA_PATH]/_Configuration/DEFAULT_PROFILE.prf"
    file to the "[CONDOR_2_NAV_PATH]/data" directory.
 
@@ -96,6 +102,10 @@ Open condor2nav.ini file and change the following:
 5. [OPTIONAL] In case of XCSoar translation and if proposed Condor2Nav data
    path on the target device doesn't suite your needs change
    [XCSoar] "Condor2NavDataSubDir".
+6. [OPTIONAL] In case of LK8000 translation you can enable
+   [LK8000] "DefaultProfilesOverwrite=1" option to not have to choose Condor
+   secific profiles of each LK8000 startup. Please backup your working
+   profile before doing that!!!
 
 
 6. Translation
@@ -138,7 +148,6 @@ Open condor2nav.ini file and change the following:
 -------------
 2. [OPTIONAL] If [Condor2Nav] "OutputPath" is different than the
    [LK8000] "LK8000Path" copy output data manually to the target directory.
-  
    
 7. Fly
 ======

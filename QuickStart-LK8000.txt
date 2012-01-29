@@ -9,11 +9,15 @@ I. Instalation
 --------------
 1. Obtain latest Condor2Nav release package from the project website and extract it
    anywhere on the hard drive.
-2. Obtain XCM map files for all supported sceneries from Condor2Nav project webpage
-   (http://sourceforge.net/projects/condor2nav/files/maps/XCSoar/Maps.zip/download)
-3. Have LK8000 installed and configured on the target device (e.g. PDA, PNA, PC)
-4. Copy all XCM scenery files to the "LK8000/_Maps/condor2nav" subdirectory on
-   the target device.
+2. Have LK8000 installed and configured on the target device (e.g. PDA, PNA, PC)
+3. Copy directory "[CONDOR_2_NAV_PATH]/data/LK8000/_Waypoints" with waypoints for all
+   supported Condor landscapes to "LK8000" subdirectory on the target device with
+   your LK8000 instalation.
+4. If [LK8000] "CheckForMapUpdates=1" Condro2Nav will check on the startup for
+   new better maps matching Condor Landscapes. If such maps are available
+   they will be downloaded automatically.
+5. Copy directory "[CONDOR_2_NAV_PATH]/data/LK8000/_Maps" with all downloaded LK8000
+   maps to "LK8000" subdirectory on the target device with your LK8000 instalation.
 
 II. Configuration
 -----------------
@@ -21,6 +25,9 @@ II. Configuration
 a) [Condor2Nav] "Target" to "LK8000"
 b) [Condor2Nav] "OutputPath" to the parent directory of LK8000 directory on the target
    device (data will be copied via ActiveSync connection)
+2. [OPTIONAL] You can enable [LK8000] "DefaultProfilesOverwrite=1" option to not have
+   to choose Condor secific profiles of each LK8000 startup. Please backup your working
+   profile before doing that!!!
 
 III. Translation
 ----------------
