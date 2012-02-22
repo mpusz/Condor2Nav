@@ -76,7 +76,7 @@ XCSoarTerrainDownload()
 	Gui, Show, w800 h600, Gui Browser
 	
 	; navigate to terrain generator
-	url := "http://www.xcsoar.org/mapgen"
+	url := "http://mapgen.xcsoar.org/"
 	COM_Invoke(pwb, "Navigate", url)
 	loop
 		If (rdy := COM_Invoke(pwb, "readyState") = 4)
@@ -175,7 +175,7 @@ LK8000MapTemplate()
 	global minLon
 	global LK8000OutputPath
 
-	path = %LK8000OutputPath%\Maps\%landscapeName%_%landscapeVersion%.TXT
+	path = %LK8000OutputPath%\Landscapes\%landscapeName%_%landscapeVersion%.TXT
 	FileDelete %path%
 	FileAppend NAME=%landscapeName%_%landscapeVersion%`n, %path%
 	FileAppend DIR=CONDOR`n, %path%
