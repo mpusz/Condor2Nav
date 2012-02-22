@@ -7,6 +7,12 @@ Version 4.0 (WIP)
 - UAC Virtual Store related problems finally fixed
 - LK8000 3.0 support added
 - Automated downloading of LK8000 maps that matches Condor Landscapes the best support added
+- Glider Flaps data in polar files support added
+- New maps support added:
+  alps_XL, Andalusia, area51, Belgique, Bulgaria, Central_Florida, Colorado, Czechoslovakia, Denmark, East-Andalucia,
+  Eden, Fayence50, Fuentemilanos, Haut_Atlas_Maroc, HoodRiver, Logan, Nevada, New_Mexico, NorthernNorway, Provence2,
+  pyrenees2, Reinsdorf, Rouen-Boos, sandiego, SerbiaMontenegro, SloveniaHD, Uvalde, Virgin, West&Wales, West_Australia
+- GUI interface fixes and improvements
 
 Version 3.1
 ===========
