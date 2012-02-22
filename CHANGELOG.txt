@@ -2,8 +2,8 @@
  Condor2Nav
 ============
 
-Version 4.0 (WIP)
-=================
+Version 4.0
+===========
 - UAC Virtual Store related problems finally fixed
 - LK8000 3.0 support added
 - Automated downloading of LK8000 maps that matches Condor Landscapes the best support added

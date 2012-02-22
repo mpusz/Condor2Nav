@@ -1,5 +1,5 @@
 ================
- Condor2Nav 3.1
+ Condor2Nav 4.0
 ================
 
 http://sf.net/projects/condor2nav
