@@ -1,0 +1,5 @@
+name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc
+"Benjamin Rivera",,,1818.780N,06518.270W,15.0m,2,305,792.0m,123.50,
+"Antonio Rivera",,,1808.058N,06529.664W,15.0m,5,85,1000.0m,123.50,
+"Henry Rohlsen",,,1742.000N,06448.420W,23.0m,5,85,1000.0m,123.50,
+"Cyril E King",,,1820.136N,06458.584W,7.0m,5,90,1000.0m,123.50,
