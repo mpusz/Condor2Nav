@@ -20,7 +20,7 @@
 //
 
 /**
-* @file gui\widgets.cpp
+* @file widgets.cpp
 *
 * @brief Implements the widgets classes. 
 */

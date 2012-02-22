@@ -128,7 +128,8 @@ _hInstLib(::LoadLibrary("rapi.dll")), _rapi(false, CRapiDeleter(_iface))
  * Method reads whole file to a string.
  *
  * @param src Target file path. 
- * @param stream Stream to store file content. 
+ * 
+ * @return String with file content. 
  */
 std::string condor2nav::CActiveSync::Read(const boost::filesystem::path &src) const
 {

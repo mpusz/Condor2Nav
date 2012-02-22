@@ -139,7 +139,6 @@ condor2nav::CTargetLK8000::~CTargetLK8000()
  *
  * @param profileParser      LK8000 profile file parser.
  * @param taskParser         Condor task parser. 
- * @param outputTaskFilePath The output task file path
  * @param settingsTask       Task settings
  * @param taskPointArray     Task points array
  * @param startPointArray    Task start points array

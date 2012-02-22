@@ -20,7 +20,7 @@
 //
 
 /**
- * @file condor2nav/src/tools.h
+ * @file src/tools.h
  *
  * @brief Declares common tools. 
  */

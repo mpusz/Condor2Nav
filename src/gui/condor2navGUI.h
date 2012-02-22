@@ -20,7 +20,7 @@
 //
 
 /**
-* @file gui\condor2navGUI.h
+* @file condor2navGUI.h
 *
 * @brief Declares the Condor2Nav graphical user interface class. 
 */

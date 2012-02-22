@@ -86,7 +86,6 @@ condor2nav::CTargetXCSoar::~CTargetXCSoar()
  *
  * @param profileParser      XCSoar profile file parser.
  * @param taskParser         Condor task parser. 
- * @param outputTaskFilePath The output task file path
  * @param settingsTask       Task settings
  * @param taskPointArray     Task points array
  * @param startPointArray    Task start points array

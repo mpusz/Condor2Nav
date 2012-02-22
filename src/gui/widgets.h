@@ -20,7 +20,7 @@
 //
 
 /**
-* @file gui\widgets.h
+* @file widgets.h
 *
 * @brief Declares the widgets classes. 
 */

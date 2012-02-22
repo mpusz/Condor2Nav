@@ -20,7 +20,7 @@
 //
 
 /**
- * @file condor2nav/src/activeObject.h
+ * @file activeObject.h
  *
  * @brief Active object.
  */

@@ -20,7 +20,7 @@
 //
 
 /**
- * @file condor2nav/src/exception.h
+ * @file exception.h
  *
  * @brief Exceptions hierarchy.
  */

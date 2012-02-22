@@ -20,7 +20,7 @@
 //
 
 /**
-* @file gui\stdafx.cpp
+* @file stdafx.cpp
 *
 * @brief Precompiled headers.
 *

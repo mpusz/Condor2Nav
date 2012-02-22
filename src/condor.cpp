@@ -215,9 +215,10 @@ boost::filesystem::path condor2nav::CCondor::InstallPath()
 * @param configParser     The INI file configuration parser. 
 * @param fplType          Type of the FPL file. 
 * @param condorPath       Full pathname of the Condor: The Competition Soaring Simulator. 
-* @param [in,out] fplPath Full pathname of the FPL file. 
 *
 * @exception std::runtime_error Thrown when FPL file cannot be found.
+*
+* @return Full pathname of the FPL file. 
  */
 boost::filesystem::path condor2nav::CCondor::FPLPath(const CFileParserINI &configParser,
                                                      CCondor2Nav::TFPLType fplType,

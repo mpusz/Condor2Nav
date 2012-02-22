@@ -48,7 +48,7 @@ condor2nav::COStream::COStream(const boost::filesystem::path &fileName)
  *
  * condor2nav::COStream class constructor.
  *
- * @param fileName The name of the file to create.
+ * @param pathList The list of files to create.
  */
 condor2nav::COStream::COStream(const CPathList &pathList):
 _pathList(pathList)

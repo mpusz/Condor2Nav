@@ -20,7 +20,7 @@
 //
 
 /**
-* @file gui\main.cpp
+* @file gui/main.cpp
 *
 * @brief Defines the entry point for the GUI application. 
 */

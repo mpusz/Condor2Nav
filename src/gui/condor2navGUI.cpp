@@ -20,7 +20,7 @@
 //
 
 /**
-* @file gui\condor2navGUI.cpp
+* @file condor2navGUI.cpp
 *
 * @brief Implements the Condor2Nav graphical user interface class. 
 */
@@ -36,8 +36,8 @@
 /**
  * @brief Class constructor.
  *
- * @param type         The logger type. 
- * @param [in,out] log Logging window widget. 
+ * @param type   The logger type.
+ * @param hDlg   Main dialog window handle.
  */
 condor2nav::gui::CCondor2NavGUI::CLogger::CLogger(TType type, HWND hDlg):
 condor2nav::CCondor2Nav::CLogger(type), _hDlg(hDlg)

@@ -20,7 +20,7 @@
 //
 
 /**
- * @file condor2nav/src/waitQueue.h
+ * @file waitQueue.h
  *
  * @brief Thread safe waiting queue.
  */

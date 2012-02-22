@@ -20,7 +20,7 @@
 //
 
 /**
-* @file gui\targetver.h
+* @file targetver.h
 *
 * @brief Minimum required platform macros. 
 */
