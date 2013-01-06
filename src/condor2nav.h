@@ -31,6 +31,7 @@
 #include "nonCopyable.h"
 #include "fileParserINI.h"
 #include <sstream>
+#include <functional>
 
 /**
  * @brief Condor2Nav project namespace.

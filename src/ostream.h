@@ -29,6 +29,7 @@
 #define __OSTREAM_H__
 
 #include "stream.h"
+#include <vector>
 
 namespace condor2nav {
 

@@ -34,6 +34,7 @@
 #include <boost/filesystem.hpp>
 #include <vector>
 #include <map>
+#include <functional>
 
 namespace condor2nav {
 

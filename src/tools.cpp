@@ -30,6 +30,8 @@
 #include "activeSync.h"
 #include <boost/filesystem/fstream.hpp>
 #include <iomanip>
+#include <vector>
+#include <algorithm>
 #include <windows.h>
 
 

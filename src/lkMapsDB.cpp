@@ -174,7 +174,7 @@ auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList &&allTemplates) -> CParse
     double latMin = Convert<double>(landscape->second->Value("", "LATMIN"));
     double latMax = Convert<double>(landscape->second->Value("", "LATMAX"));
 
-    auto landscapeName(landscape->first, 0, landscape->first.find_last_of('_'));
+    CStringNoCase landscapeName(landscape->first, 0, landscape->first.find_last_of('_'));
     auto &landscapeData = _sceneriesParser.Row(landscapeName.c_str(), 0, true);
     std::shared_ptr<CFileParserINI> bestMatch;
     

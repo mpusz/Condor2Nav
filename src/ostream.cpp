@@ -27,6 +27,7 @@
 
 #include "ostream.h"
 #include "activeSync.h"
+#include <algorithm>
 #include <boost/filesystem/fstream.hpp>
 
 

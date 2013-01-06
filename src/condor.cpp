@@ -29,6 +29,7 @@
 #include "traitsNoCase.h"
 #include "tools.h"
 #include <iomanip>
+#include <algorithm>
 #include <cmath>
 
 const boost::filesystem::path condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
