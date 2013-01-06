@@ -30,22 +30,23 @@
 
 #include "nonCopyable.h"
 #include <queue>
-#include <boost\thread.hpp>
+#include <thread>
+#include <condition_variable>
 
 namespace condor2nav {
 
   template<typename T>
   class CWaitQueue : CNonCopyable {
     std::queue<T> _queue;
-    boost::condition_variable _newItemReady;
-    boost::mutex _mutex;
+    std::condition_variable _newItemReady;
+    std::mutex _mutex;
   public:
     CWaitQueue() {}
     void Push(T &&msg)
     {
       bool wasEmpty;
       {
-        boost::lock_guard<boost::mutex> lock(_mutex);
+        std::lock_guard<std::mutex> lock(_mutex);
         wasEmpty = _queue.empty();
         _queue.push(std::move(msg));
       }
@@ -54,7 +55,7 @@ namespace condor2nav {
     }
     T PopWait()
     {
-      boost::unique_lock<boost::mutex> lock(_mutex);
+      std::unique_lock<std::mutex> lock(_mutex);
       _newItemReady.wait(lock, [&]{ return _queue.size(); });
       T msg = std::move(_queue.front());
       _queue.pop();

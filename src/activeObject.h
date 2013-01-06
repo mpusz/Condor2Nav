@@ -36,7 +36,7 @@ namespace condor2nav {
     typedef std::function<void()> CMessage;
     bool _done;
     CWaitQueue<CMessage> _msgQueue;
-    boost::thread _thread;
+    std::thread _thread;
     void Run();
   public:
     CActiveObject();
