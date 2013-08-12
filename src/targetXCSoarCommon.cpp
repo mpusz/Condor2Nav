@@ -48,8 +48,8 @@ const boost::filesystem::path condor2nav::CTargetXCSoarCommon::WP_FILE_NAME     
  *
  * @param translator Configuration INI file parser.
  */
-condor2nav::CTargetXCSoarCommon::CTargetXCSoarCommon(const CTranslator &translator):
-CTranslator::CTarget(translator)
+condor2nav::CTargetXCSoarCommon::CTargetXCSoarCommon(const CTranslator &translator) :
+  CTranslator::CTarget{translator}
 {
 }
 
@@ -79,19 +79,19 @@ void condor2nav::CTargetXCSoarCommon::SceneryTimeProcess(CFileParserINI &profile
 *
 * @return The bearing between 2 locations.
  */
-unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(double lon1, double lat1, double lon2, double lat2) const
+unsigned condor2nav::CTargetXCSoarCommon::WaypointBearing(TLongitude lon1, TLatitude lat1, TLongitude lon2, TLatitude lat2) const
 {
-  lon1 = Deg2Rad(lon1);
-  lat1 = Deg2Rad(lat1);
-  lon2 = Deg2Rad(lon2);
-  lat2 = Deg2Rad(lat2);
+  const auto longitude1 = Deg2Rad(lon1.value);
+  const auto latitude1 = Deg2Rad(lat1.value);
+  const auto longitude2 = Deg2Rad(lon2.value);
+  const auto latitude2 = Deg2Rad(lat2.value);
   
-  double clat1 = cos(lat1);
-  double clat2 = cos(lat2);
-  double dlon = lon2 - lon1;
+  const double clat1 = cos(latitude1);
+  const double clat2 = cos(latitude2);
+  const double dlon = longitude2 - longitude1;
 
-  double y = sin(dlon) * clat2;
-  double x = clat1 * sin(lat2) - sin(lat1) * clat2 * cos(dlon);
+  const double y = sin(dlon) * clat2;
+  const double x = clat1 * sin(latitude2) - sin(latitude1) * clat2 * cos(dlon);
   return (x==0 && y==0) ? 0 : (static_cast<unsigned>(360 + Rad2Deg(atan2(y, x)) + 0.5) % 360);
 }
 
@@ -118,14 +118,14 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 {
   using namespace xcsoar;
 
-  unsigned tpNum = Convert<unsigned>(taskParser.Value("Task", "Count"));
+  const auto tpNum = Convert<unsigned>(taskParser.Value("Task", "Count"));
 
   // check if enough waypoints to create a task
   if(tpNum - 1 > maxTaskPoints)
-    throw EOperationFailed("ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!");
+    throw EOperationFailed{"ERROR: Too many waypoints (" + Convert(tpNum - 1) + ") in a task file (only " + Convert(maxTaskPoints) + " supported)!!!"};
 
   // set task settings
-  SETTINGS_TASK settingsTask = { 0 };
+  SETTINGS_TASK settingsTask{};
   settingsTask.AATEnabled       = aatTime > 0;
   settingsTask.AATTaskLength    = aatTime;
   try {
@@ -137,9 +137,9 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   settingsTask.EnableMultipleStartPoints = false;
 
   // reset data
-  std::unique_ptr<TASK_POINT[]> taskPointArray(new TASK_POINT[maxTaskPoints]);
-  std::unique_ptr<START_POINT[]> startPointArray(new START_POINT[maxStartPoints]);
+  auto taskPointArray = std::make_unique<TASK_POINT[]>(maxTaskPoints);
   memset(taskPointArray.get(), 0, maxTaskPoints * sizeof(TASK_POINT));
+  auto startPointArray = std::make_unique<START_POINT[]>(maxStartPoints);
   memset(startPointArray.get(), 0, maxStartPoints * sizeof(START_POINT));
   CWaypointArray waypointArray;
   waypointArray.reserve(maxTaskPoints);
@@ -151,18 +151,14 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
   for(size_t i=0; i<maxStartPoints; i++)
     startPointArray[i].Index = -1;
 
-  bool tpsValid(true);
-  auto wpFileName = wpOutputPathPrefix / WP_FILE_NAME;
-  std::unique_ptr<COStream> wpFile;
-  if(generateWPFile)
-    wpFile.reset(new COStream(wpFileName));
+  bool tpsValid{true};
 
   // skip takeoff waypoint
   for(size_t i=1; i<tpNum; i++) {
     // dump WP file line
-    std::string tpIdxStr(Convert(i));
+    auto tpIdxStr = Convert(i);
+    auto tpName = taskParser.Value("Task", "TPName" + tpIdxStr);
     std::string name;
-    std::string tpName = taskParser.Value("Task", "TPName" + tpIdxStr);
     if(i == 1)
       name = "S:" + tpName;
     else if(i == tpNum - 1)
@@ -170,39 +166,41 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     else
       name = Convert(i - 1) + ":" + tpName;
 
-    std::string x(taskParser.Value("Task", "TPPosX" + tpIdxStr));
-    std::string y(taskParser.Value("Task", "TPPosY" + tpIdxStr));
-    double latitude = coordConv.Latitude(x, y);
-    double longitude = coordConv.Longitude(x, y);
-    std::string latitudeStr = DDFF2DDMMFF(latitude, false);
-    std::string longitudeStr = DDFF2DDMMFF(longitude, true);
+    auto x = taskParser.Value("Task", "TPPosX" + tpIdxStr);
+    auto y = taskParser.Value("Task", "TPPosY" + tpIdxStr);
+    auto latitude = coordConv.Latitude(x, y);
+    auto longitude = coordConv.Longitude(x, y);
+    auto latitudeStr = Coord2DDMMFF(latitude);
+    auto longitudeStr = Coord2DDMMFF(longitude);
     double minAlt = Convert<unsigned>(taskParser.Value("Task", "TPWidth" + tpIdxStr));
     double altitude = minAlt ? minAlt : Convert<double>(taskParser.Value("Task", "TPPosZ" + tpIdxStr));
     
-    if(generateWPFile)
-      *wpFile << i << "," << latitudeStr << "," << longitudeStr << ","
-              << altitude << "M,T," << name << "," << tpName << std::endl;
+    if(generateWPFile) {
+      COStream wpFile{wpOutputPathPrefix / WP_FILE_NAME};
+      wpFile << i << "," << latitudeStr << "," << longitudeStr << ","
+        << altitude << "M,T," << name << "," << tpName << std::endl;
+    }
 
     {
       // fill waypoint data
       TWaypoint waypoint;
       taskPointArray[i - 1].Index = waypoint.number = WAYPOINT_INDEX_OFFSET + i;
-      waypoint.latitude = latitude;
-      waypoint.longitude = longitude;
+      waypoint.latitude = latitude.value;
+      waypoint.longitude = longitude.value;
       waypoint.altitude = altitude;
       waypoint.flags = xcsoar::WAYPOINT_TURNPOINT;
       waypoint.name = name;
       waypoint.comment = std::move(tpName);
       waypoint.inTask = true;
-      waypointArray.push_back(std::move(waypoint));
+      waypointArray.emplace_back(std::move(waypoint));
     }
 
     // dump Task File data
-    std::string sectorTypeStr(taskParser.Value("Task", "TPSectorType" + tpIdxStr));
-    unsigned sectorType(Convert<unsigned>(sectorTypeStr));
+    const auto sectorTypeStr = taskParser.Value("Task", "TPSectorType" + tpIdxStr);
+    const auto sectorType = Convert<unsigned>(sectorTypeStr);
     if(sectorType == CCondor::SECTOR_CLASSIC) {
-      unsigned radius(Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
-      unsigned angle(Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr)));
+      const auto radius = Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr));
+      const auto angle = Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr));
 
       if(settingsTask.AATEnabled && i > 1 && i < tpNum - 1) {
         // AAT waypoints
@@ -214,17 +212,17 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
           taskPointArray[i - 1].AATType = WAYPOINT_AAT_SECTOR;
           taskPointArray[i - 1].AATSectorRadius = radius;
 
-          std::string x1 = taskParser.Value("Task", "TPPosX" + Convert(i - 1));
-          std::string y1 = taskParser.Value("Task", "TPPosY" + Convert(i - 1));
-          double lon1 = coordConv.Longitude(x1, y1);
-          double lat1 = coordConv.Latitude(x1, y1);
-          unsigned angle1 = WaypointBearing(lon1, lat1, longitude, latitude);
+          const auto x1 = taskParser.Value("Task", "TPPosX" + Convert(i - 1));
+          const auto y1 = taskParser.Value("Task", "TPPosY" + Convert(i - 1));
+          const auto lon1 = coordConv.Longitude(x1, y1);
+          const auto lat1 = coordConv.Latitude(x1, y1);
+          const auto angle1 = WaypointBearing(lon1, lat1, longitude, latitude);
 
-          std::string x2 = taskParser.Value("Task", "TPPosX" + Convert(i + 1));
-          std::string y2 = taskParser.Value("Task", "TPPosY" + Convert(i + 1));
-          double lon2 = coordConv.Longitude(x2, y2);
-          double lat2 = coordConv.Latitude(x2, y2);
-          unsigned angle2 = WaypointBearing(lon2, lat2, longitude, latitude);
+          const auto x2 = taskParser.Value("Task", "TPPosX" + Convert(i + 1));
+          const auto y2 = taskParser.Value("Task", "TPPosY" + Convert(i + 1));
+          const auto lon2 = coordConv.Longitude(x2, y2);
+          const auto lat2 = coordConv.Latitude(x2, y2);
+          const auto angle2 = WaypointBearing(lon2, lat2, longitude, latitude);
 
           unsigned halfAngle;
           if(angle1 == angle2)
@@ -279,6 +277,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 
         case 270:
           Translator().App().Warning() << "WARNING: " << name << ": " << Name() << " does not support TP with angle '270'. Circle sector will be used instead. Be carefull to advance a waypoint in Condor after it has been advanced by the " << Name() << "." << std::endl;
+
         case 360:
           if(i == 1)
             settingsTask.StartType = xcsoar::START_CIRCLE;
@@ -315,9 +314,8 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
         }
       }
     }
-    else if(sectorType == CCondor::SECTOR_WINDOW) {
+    else if(sectorType == CCondor::SECTOR_WINDOW)
       Translator().App().Warning() << "WARNING: " << name << ": " << Name() << " does not support window TP type. Circle TP will be used and you are responsible for reaching it on correct height and with correct heading." << std::endl;
-    }
     else
       Translator().App().Error() << "ERROR: Unsupported sector type '" << sectorTypeStr << "' specified for TP '" << name << "'!!!";
   }
@@ -366,37 +364,36 @@ void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profil
                                                           const boost::filesystem::path &pathPrefix,
                                                           const boost::filesystem::path &outputPathPrefix) const
 {
-  unsigned pzNum = Convert<unsigned>(taskParser.Value("Task", "PZCount"));
+  const auto pzNum = Convert<unsigned>(taskParser.Value("Task", "PZCount"));
   if(pzNum == 0) {
     profileParser.Value("", "AirspaceFile", "\"\"");
     return;
   }
-  
+
   profileParser.Value("", "AirspaceFile", "\"" + (pathPrefix / AIRSPACES_FILE_NAME).string() + std::string("\""));
-  boost::filesystem::path airspacesFileName = outputPathPrefix / AIRSPACES_FILE_NAME;
-  COStream airspacesFile(airspacesFileName);
+  COStream airspacesFile{outputPathPrefix / AIRSPACES_FILE_NAME};
 
   airspacesFile << "*******************************************************" << std::endl;
   airspacesFile << "* Condor Task Penalty Zones generated with Condor2Nav *" << std::endl;
   airspacesFile << "*******************************************************" << std::endl;
   for(size_t i=0; i<pzNum; i++) {
-    std::string tpIdxStr(Convert(i));
+    const auto tpIdxStr = Convert(i);
     airspacesFile << std::endl;
     airspacesFile << "AC P" << std::endl;
     airspacesFile << "AN Penalty Zone " << i + 1 << std::endl;
     airspacesFile << "AH " << taskParser.Value("Task", "PZTop" + tpIdxStr) << "m AMSL" << std::endl;
-    unsigned base(Convert<unsigned>(taskParser.Value("Task", "PZBase" + tpIdxStr)));
+    const auto base = Convert<unsigned>(taskParser.Value("Task", "PZBase" + tpIdxStr));
     if(base == 0)
       airspacesFile << "AL 0" << std::endl;
     else
       airspacesFile << "AL " << base << "m AMSL" << std::endl;
     
     for(size_t j=0; j<4; j++) {
-      std::string tpCornerIdxStr(Convert(j));
-      std::string x(taskParser.Value("Task", "PZPos" + tpCornerIdxStr + "X" + tpIdxStr));
-      std::string y(taskParser.Value("Task", "PZPos" + tpCornerIdxStr + "Y" + tpIdxStr));
-      airspacesFile << "DP " << coordConv.Latitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMSS) <<
-        " " << coordConv.Longitude(x, y, CCondor::CCoordConverter::FORMAT_DDMMSS) << std::endl;
+      const auto tpCornerIdxStr = Convert(j);
+      const auto x = taskParser.Value("Task", "PZPos" + tpCornerIdxStr + "X" + tpIdxStr);
+      const auto y = taskParser.Value("Task", "PZPos" + tpCornerIdxStr + "Y" + tpIdxStr);
+      airspacesFile << "DP " << Coord2DDMMSS(coordConv.Latitude(x, y)) <<
+        " " << Coord2DDMMSS(coordConv.Longitude(x, y)) << std::endl;
     }
   }
 }

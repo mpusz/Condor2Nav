@@ -31,8 +31,13 @@
 #include "condor2nav.h"
 #include "nonCopyable.h"
 #include "fileParserINI.h"
-#include <boost/filesystem.hpp>
 #include <windows.h>
+
+namespace boost {
+  namespace filesystem {
+    class path;
+  }
+}
 
 namespace condor2nav {
 
@@ -61,39 +66,14 @@ namespace condor2nav {
      * provided with every Condor release.
      */
     class CCoordConverter : CNonCopyable {
-      typedef int   (WINAPI *FNaviConInit)(const char *trnFile);  ///< @brief NaviCon.dll interface
-      typedef float (WINAPI *FXYToLon)(float X, float Y);         ///< @brief NaviCon.dll interface
-      typedef float (WINAPI *FXYToLat)(float X, float Y);         ///< @brief NaviCon.dll interface
-      typedef float (WINAPI *FGetMaxX)();                         ///< @brief NaviCon.dll interface
-      typedef float (WINAPI *FGetMaxY)();                         ///< @brief NaviCon.dll interface
-
-      /**
-       * @brief NaviCon.dll interface.
-       */
-      struct TDLLIface {
-        FNaviConInit naviConInit;
-        FGetMaxX     getMaxX;
-        FGetMaxY     getMaxY;
-        FXYToLon     xyToLon;
-        FXYToLat     xyToLat;
-      };
+      struct TDLLIface;
+      std::unique_ptr<TDLLIface> _iface;	                ///< @brief DLL interface.
       std::unique_ptr<HMODULE, CHModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
-      TDLLIface _iface;	                                    ///< @brief DLL interface.
-
     public:
-      /**
-       * @brief Coordinate output string format.
-       */
-      enum TOutputFormat {
-//        FORMAT_DDFF,          ///< @brief Format in form 23.3545645N
-        FORMAT_DDMMFF,        ///< @brief Format in form 23:35.454N
-        FORMAT_DDMMSS         ///< @brief Format in form 23:35:23N
-      };
       CCoordConverter(const boost::filesystem::path &condorPath, const std::string &trnName);
-      double Longitude(const std::string &x, const std::string &y) const;
-      double Latitude(const std::string &x, const std::string &y) const;
-      std::string Longitude(const std::string &x, const std::string &y, TOutputFormat format) const;
-      std::string Latitude(const std::string &x, const std::string &y, TOutputFormat format) const;
+      ~CCoordConverter();
+      TLongitude Longitude(const std::string &x, const std::string &y) const;
+      TLatitude Latitude(const std::string &x, const std::string &y) const;
     };
 
   private:

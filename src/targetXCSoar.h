@@ -49,28 +49,28 @@ namespace condor2nav {
     boost::filesystem::path _outputCondor2NavDataPath;        ///< @brief The path to the output Condor2Nav directory.
     std::string _condor2navDataPathString;                    ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar.
     
-    virtual void TaskDump(CFileParserINI &profileParser,
-                          const CFileParserINI &taskParser, 
-                          const xcsoar::SETTINGS_TASK &settingsTask, 
-                          const xcsoar::TASK_POINT taskPointArray[],
-                          const xcsoar::START_POINT startPointArray[],
-                          const CWaypointArray &waypointArray) const override;
+    void TaskDump(CFileParserINI &profileParser,
+                  const CFileParserINI &taskParser,
+                  const xcsoar::SETTINGS_TASK &settingsTask,
+                  const xcsoar::TASK_POINT taskPointArray[],
+                  const xcsoar::START_POINT startPointArray[],
+                  const CWaypointArray &waypointArray) const override;
 
   protected:
     COStream::CPathList _outputTaskFilePathList;              ///< @brief The path where output XCSoar task file should be located
 
   public:
     explicit CTargetXCSoar(const CTranslator &translator);
-    virtual ~CTargetXCSoar();
+    ~CTargetXCSoar();
 
-    virtual const char *Name() const override { return "XCSoar 5"; }
-    virtual void Gps() override;
-    virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData) override;
-    virtual void SceneryTime() override;
-    virtual void Glider(const CFileParserCSV::CStringArray &gliderData) override;
-    virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime) override;
-    virtual void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) override;
-    virtual void Weather(const CFileParserINI &taskParser) override;
+    const char *Name() const override { return "XCSoar 5"; }
+    void Gps() override;
+    void SceneryMap(const CFileParserCSV::CStringArray &sceneryData) override;
+    void SceneryTime() override;
+    void Glider(const CFileParserCSV::CStringArray &gliderData) override;
+    void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime) override;
+    void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) override;
+    void Weather(const CFileParserINI &taskParser) override;
   };
 
 }

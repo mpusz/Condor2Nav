@@ -59,7 +59,7 @@ namespace condor2nav {
        */
       class CLogger : public CCondor2Nav::CLogger {
         const HWND _hDlg;	              ///< @brief The logging window widget
-        virtual void Dump(const std::string &str) const override;
+        void Trace(const std::string &str) const override;
       public:
         CLogger(TType type, HWND hDlg);
       };
@@ -100,15 +100,15 @@ namespace condor2nav {
       CCondor2NavGUI(HINSTANCE hInst, HWND hDlg);
       ~CCondor2NavGUI();
 
-      virtual void OnStart(std::function<bool()> abort) override;
-      virtual const CLogger &Log() const override     { return _normal; }
-      virtual const CLogger &LogHigh() const override { return _high; }
-      virtual const CLogger &Warning() const override { return _warning; }
-      virtual const CLogger &Error() const override   { return _error; }
+      void OnStart(std::function<bool()> abort) override;
+      const CLogger &Log() const override     { return _normal; }
+      const CLogger &LogHigh() const override { return _high; }
+      const CLogger &Warning() const override { return _warning; }
+      const CLogger &Error() const override   { return _error; }
 
       void Command(HWND hwnd, int controlID, int command);
 
-      void Log(CLogger::TType type, std::unique_ptr<std::string> &&str);
+      void Log(CLogger::TType type, std::unique_ptr<std::string> str);
 
       bool Abort() const { return _abort; }
     };

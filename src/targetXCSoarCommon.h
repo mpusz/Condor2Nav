@@ -68,7 +68,7 @@ namespace condor2nav {
     static const boost::filesystem::path WP_FILE_NAME;           ///< @brief The name of XCSoar WP file with task waypoints.
     static const unsigned WAYPOINT_INDEX_OFFSET = 100000;        ///< @brief A big value that should point behind all the waypoints
 
-    unsigned WaypointBearing(double lon1, double lat1, double lon2, double lat2) const;
+    unsigned WaypointBearing(TLongitude lon1, TLatitude lat1, TLongitude lon2, TLatitude lat2) const;
     virtual void TaskDump(CFileParserINI &profileParser,
                           const CFileParserINI &taskParser,
                           const xcsoar::SETTINGS_TASK &settingsTask,

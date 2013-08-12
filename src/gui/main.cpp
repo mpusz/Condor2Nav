@@ -85,10 +85,10 @@ INT_PTR CALLBACK condor2nav::gui::AboutDialogProc(HWND hDlg, UINT message, WPARA
  */
 INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  static condor2nav::gui::CCondor2NavGUI *app = nullptr;
+  static std::unique_ptr<condor2nav::gui::CCondor2NavGUI> app;
   switch(message) {
   case WM_INITDIALOG:
-    app = new CCondor2NavGUI(hInst, hDlg);
+    app = std::make_unique<CCondor2NavGUI>(hInst, hDlg);
     app->OnStart([=]{ return app->Abort(); });
     return TRUE;
 
@@ -112,11 +112,11 @@ INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM
     return TRUE;
 
   case WM_LOG:
-    app->Log(static_cast<CCondor2NavGUI::CLogger::TType>(wParam), std::unique_ptr<std::string>(reinterpret_cast<std::string *>(lParam)));
+    app->Log(static_cast<CCondor2NavGUI::CLogger::TType>(wParam), std::unique_ptr<std::string>(reinterpret_cast<std::string*>(lParam)));
     return TRUE;
 
   case WM_CLOSE:
-    delete app;
+    app.reset();
     DestroyWindow(hDlg);
     return TRUE;
 
@@ -143,15 +143,13 @@ INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int cmdShow)
 {
   try {
-    hInst = hInstance;
-
     // init RichEdit controls
     std::unique_ptr<HMODULE, condor2nav::CHModuleDeleter> _richEditLib(::LoadLibrary("RichEd20.dll"));
 
     // create MainDialog window
-    HWND hDialog = CreateDialog(hInst, MAKEINTRESOURCE(IDD_MAIN_DIALOG), nullptr, (DLGPROC)condor2nav::gui::MainDialogProc);
+    HWND hDialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_MAIN_DIALOG), nullptr, (DLGPROC)condor2nav::gui::MainDialogProc);
     if(!hDialog)
-      throw condor2nav::EOperationFailed("Unable to create main application dialog (error: " + condor2nav::Convert(GetLastError()) + ")!!!");
+      throw condor2nav::EOperationFailed{"Unable to create main application dialog (error: " + condor2nav::Convert(GetLastError()) + ")!!!"};
 
     // process application messages
     MSG msg;

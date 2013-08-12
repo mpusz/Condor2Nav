@@ -29,7 +29,6 @@
 #define __CONDOR2NAV_CLI_H__
 
 #include "condor2nav.h"
-#include <boost/filesystem.hpp>
 
 /**
  * @brief Condor2Nav project namespace.
@@ -58,28 +57,34 @@ namespace condor2nav {
        * Class is responsible for logging Condor2Nav traces on the console output
        */
       class CLogger : public CCondor2Nav::CLogger {
-        virtual void Dump(const std::string &str) const override;
+        void Trace(const std::string &str) const override;
       public:
-        CLogger(TType type);
+        explicit CLogger(TType type);
       };
 
     private:
+      struct TOptions {
+        TFPLType fplType;
+        boost::filesystem::path fplPath;
+        unsigned aatTime;
+      };
+
       CLogger _normal;              ///< @brief Normal logging level logger
       CLogger _high;                ///< @brief Important logging level logger
       CLogger _warning;             ///< @brief Warning logging level logger
       CLogger _error;               ///< @brief Error logging level logger
 
       void Usage() const;
-      void CLIParse(int argc, const char *argv[], TFPLType &fplType, boost::filesystem::path &fplPath, unsigned &aatTime) const;
+      TOptions CLIParse(int argc, const char *argv[]) const;
       bool AATCheck(const CCondor &condor, unsigned &aatTime) const;
 
     public:
       CCondor2NavCLI();
 
-      virtual const CLogger &Log() const override     { return _normal; }
-      virtual const CLogger &LogHigh() const override { return _high; }
-      virtual const CLogger &Warning() const override { return _warning; }
-      virtual const CLogger &Error() const override   { return _error; }
+      const CLogger &Log() const override     { return _normal; }
+      const CLogger &LogHigh() const override { return _high; }
+      const CLogger &Warning() const override { return _warning; }
+      const CLogger &Error() const override   { return _error; }
 
       int Run(int argc, const char *argv[]) const;
     };

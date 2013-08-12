@@ -38,9 +38,9 @@
  *
  * @param fileName The name of the file to create.
  */
-condor2nav::COStream::COStream(const boost::filesystem::path &fileName)
+condor2nav::COStream::COStream(boost::filesystem::path fileName) :
+  _pathList{{std::move(fileName)}}
 {
-  _pathList.push_back(fileName);
 }
 
 
@@ -51,8 +51,8 @@ condor2nav::COStream::COStream(const boost::filesystem::path &fileName)
  *
  * @param pathList The list of files to create.
  */
-condor2nav::COStream::COStream(const CPathList &pathList):
-_pathList(pathList)
+condor2nav::COStream::COStream(CPathList pathList) :
+  _pathList{std::move(pathList)}
 {
 }
 
@@ -66,28 +66,38 @@ _pathList(pathList)
 condor2nav::COStream::~COStream()
 {
   if(Buffer().str().size()) {
-    std::for_each(_pathList.begin(), _pathList.end(), [this](const boost::filesystem::path &path)
-    {
+    for(auto &path : _pathList) {
       switch(Type(path)) {
-        case TYPE_LOCAL:
-          {
-            boost::filesystem::ofstream stream(path, std::ios_base::out | std::ios_base::binary);
-            if(!stream)
-              throw EOperationFailed("ERROR: Couldn't open file '" + path.string() + "' for writing!!!");
-            stream << Buffer().str();
-          }
-          break;
+      case TType::LOCAL:
+        {
+          boost::filesystem::ofstream stream{path, std::ios_base::out | std::ios_base::binary};
+          if(!stream)
+            throw EOperationFailed{"ERROR: Couldn't open file '" + path.string() + "' for writing!!!"};
+          stream << Buffer().str();
+        }
+        break;
 
-        case TYPE_ACTIVE_SYNC:
-          {
-            CActiveSync &activeSync(CActiveSync::Instance());
-            activeSync.Write(path, Buffer().str());
-          }
-          break;
-
-        default:
-          throw EOperationFailed("ERROR: Unknown stream type (" + Convert(Type(path)) + ")!!!");
+      case TType::ACTIVE_SYNC:
+        CActiveSync::Instance().Write(path, Buffer().str());
+        break;
       }
-    });
+    }
   }
+}
+
+
+/**
+* @brief Writes binary buffer to a stream.
+*
+* Method writes binary buffer to a stream.
+*
+* @param buffer Buffer data.
+* @param num Buffer size.
+*
+* @return Stream instance.
+*/
+condor2nav::COStream &condor2nav::COStream::Write(const char *buffer, std::streamsize num)
+{
+  Buffer().write(buffer, num);
+  return *this;
 }

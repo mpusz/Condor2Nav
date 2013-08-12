@@ -29,6 +29,7 @@
 #include "widgets.h"
 #include <richedit.h>
 #include <memory>
+#include <array>
 
 
 /**
@@ -38,8 +39,8 @@
  * @param id         Windows control identifier. 
  * @param disabled   Specifies if a widget should be initially disabled. 
  */
-condor2nav::gui::CWidget::CWidget(HWND hwndParent, int id, bool disabled /*= false*/):
-_hWnd(GetDlgItem(hwndParent, id))
+condor2nav::gui::CWidget::CWidget(HWND hwndParent, int id, bool disabled /*= false*/) :
+  _hWnd{GetDlgItem(hwndParent, id)}
 {
   if(disabled)
     Disable();
@@ -80,8 +81,8 @@ void condor2nav::gui::CWidget::Disable() const
  * @param id         Windows control identifier. 
  * @param disabled   Specifies if a widget should be initially disabled. 
  */
-condor2nav::gui::CWidgetButton::CWidgetButton(HWND hwndParent, int id, bool disabled /*= false*/):
-CWidget(hwndParent, id, disabled)
+condor2nav::gui::CWidgetButton::CWidgetButton(HWND hwndParent, int id, bool disabled /*= false*/) :
+  CWidget{hwndParent, id, disabled}
 {
 
 }
@@ -103,8 +104,8 @@ void condor2nav::gui::CWidgetButton::Click() const
 * @param id         Windows control identifier. 
 * @param disabled   Specifies if a widget should be initially disabled. 
 */
-condor2nav::gui::CWidgetRadioButton::CWidgetRadioButton(HWND hwndParent, int id, bool disabled /*= false*/):
-CWidgetButton(hwndParent, id, disabled)
+condor2nav::gui::CWidgetRadioButton::CWidgetRadioButton(HWND hwndParent, int id, bool disabled /*= false*/) :
+  CWidgetButton{hwndParent, id, disabled}
 {
 
 }
@@ -137,8 +138,8 @@ void condor2nav::gui::CWidgetRadioButton::Select() const
 * @param id         Windows control identifier. 
 * @param disabled   Specifies if a widget should be initially disabled. 
 */
-condor2nav::gui::CWidgetEdit::CWidgetEdit(HWND hwndParent, int id, bool disabled /*= false*/):
-CWidget(hwndParent, id, disabled)
+condor2nav::gui::CWidgetEdit::CWidgetEdit(HWND hwndParent, int id, bool disabled /*= false*/) :
+  CWidget{hwndParent, id, disabled}
 {
 
 }
@@ -162,13 +163,13 @@ void condor2nav::gui::CWidgetEdit::String(const std::string &str) const
  */
 std::string condor2nav::gui::CWidgetEdit::String() const
 {
-  unsigned len = static_cast<unsigned>(SendMessage (Hwnd(), WM_GETTEXTLENGTH, 0, 0));
+  const auto len = static_cast<unsigned>(SendMessage(Hwnd(), WM_GETTEXTLENGTH, 0, 0));
   if(len == 0)
     return "";
   
-  std::unique_ptr<char[]> buf(new char[len + 1]);
+  auto buf = std::make_unique<char[]>(len + 1);
   SendMessage(Hwnd(), WM_GETTEXT, (WPARAM)(len + 1), (LPARAM)buf.get());
-  return buf.release();
+  return buf.get();
 }
 
 
@@ -180,8 +181,8 @@ std::string condor2nav::gui::CWidgetEdit::String() const
 * @param id         Windows control identifier. 
 * @param disabled   Specifies if a widget should be initially disabled. 
 */
-condor2nav::gui::CWidgetComboBox::CWidgetComboBox(HWND hwndParent, int id, bool disabled /*= false*/):
-CWidget(hwndParent, id, disabled)
+condor2nav::gui::CWidgetComboBox::CWidgetComboBox(HWND hwndParent, int id, bool disabled /*= false*/) :
+  CWidget{hwndParent, id, disabled}
 {
 
 }
@@ -205,10 +206,9 @@ void condor2nav::gui::CWidgetComboBox::Add(const std::string &str) const
  */
 std::string condor2nav::gui::CWidgetComboBox::Selection() const
 {
-  const unsigned BUF_SIZE = 255;
-  char buf[BUF_SIZE];
-  SendMessage(Hwnd(), WM_GETTEXT, (WPARAM)BUF_SIZE, (LPARAM)buf);
-  return buf;
+  std::array<char, 255> buf;
+  SendMessage(Hwnd(), WM_GETTEXT, (WPARAM)buf.size(), (LPARAM)buf.data());
+  return buf.data();
 }
 
 
@@ -242,9 +242,9 @@ void condor2nav::gui::CWidgetComboBox::String(const std::string &str) const
 * @param id         Windows control identifier. 
 * @param disabled   Specifies if a widget should be initially disabled. 
 */
-condor2nav::gui::CWidgetRichEdit::CWidgetRichEdit(HWND hwndParent, int id, bool disabled /*= false*/):
-CWidget(hwndParent, id, disabled),
-_effectMask(EFFECT_NONE), _color(COLOR_AUTO)
+condor2nav::gui::CWidgetRichEdit::CWidgetRichEdit(HWND hwndParent, int id, bool disabled /*= false*/) :
+  CWidget{hwndParent, id, disabled},
+  _effectMask{EFFECT_NONE}, _color{TColor::AUTO}
 {
 
 }
@@ -256,7 +256,7 @@ _effectMask(EFFECT_NONE), _color(COLOR_AUTO)
 void condor2nav::gui::CWidgetRichEdit::Clear()
 {
   SendMessage(Hwnd(), WM_SETTEXT, 0, (LPARAM)"");
-  Format(EFFECT_NONE, COLOR_AUTO);
+  Format(EFFECT_NONE, TColor::AUTO);
 }
 
 
@@ -283,23 +283,24 @@ void condor2nav::gui::CWidgetRichEdit::Format(unsigned effectMask, TColor color)
   if(effectMask & EFFECT_ITALIC)
     format.dwEffects |= CFE_ITALIC;
   switch(color) {
-  case COLOR_AUTO:
+  case TColor::AUTO:
     format.dwEffects |= CFE_AUTOCOLOR;
     break;
-  case COLOR_RED:
-    format.crTextColor = RGB(255, 0, 0);
+  case TColor::RED:
+    format.crTextColor = RGB(0xFF, 0, 0);
     break;
-  case COLOR_GREEN:
-    format.crTextColor = RGB(0, 255, 0);
+  case TColor::GREEN:
+    format.crTextColor = RGB(0, 0xFF, 0);
     break;
-  case COLOR_BLUE:
-    format.crTextColor = RGB(0, 0, 255);
+  case TColor::BLUE:
+    format.crTextColor = RGB(0, 0, 0xFF);
     break;
-  case COLOR_BLACK:
+  case TColor::ORANGE:
+    format.crTextColor = RGB(0xFF, 0x99, 0x00);
+    break;
+  case TColor::BLACK:
     format.crTextColor = RGB(0, 0, 0);
     break;
-  default:
-    throw EOperationFailed("Unsupported color specified (" + Convert(color) + "!!!");
   }
 
   SendMessage(Hwnd(), EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&format);

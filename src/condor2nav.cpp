@@ -35,15 +35,15 @@ const char *condor2nav::CCondor2Nav::CONFIG_FILE_NAME = "condor2nav.ini";
  *
  * @param type The logger type. 
  */
-condor2nav::CCondor2Nav::CLogger::CLogger(TType type):
-_type(type)
+condor2nav::CCondor2Nav::CLogger::CLogger(TType type) :
+  _type{type}
 {
 
 }
 
 
-condor2nav::CCondor2Nav::CCondor2Nav():
-_configParser(CONFIG_FILE_NAME)
+condor2nav::CCondor2Nav::CCondor2Nav() :
+  _configParser{CONFIG_FILE_NAME}
 {
 }
 
@@ -58,9 +58,8 @@ void condor2nav::CCondor2Nav::OnStart(std::function<bool()> abort)
       if(allTemplates.size()) {
         // new templates found - check if better maps can be used
         auto newMaps = db.LandscapesMatch(std::move(allTemplates));
-        if(newMaps.size() && !abort()) {
+        if(newMaps.size() && !abort())
           db.LKMDownload(newMaps, abort);
-        }
       }
       LogHigh() << "LK8000 maps synchronization FINISH" << std::endl;
     }

@@ -26,8 +26,9 @@
  */
 
 #include "istream.h"
+#include <algorithm>
 #include <boost/asio/ip/tcp.hpp>
-#include "activeSync.h"
+#include "activeSync.h"   // has to be included after boost/asio
 #include <boost/filesystem/fstream.hpp>
 
 
@@ -41,24 +42,18 @@
 condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName)
 {
   switch(Type(fileName)) {
-    case TYPE_LOCAL:
-      {
-        boost::filesystem::fstream stream(fileName, std::ios_base::in);
-        if(!stream)
-          throw EOperationFailed("ERROR: Couldn't open file '" + fileName.string() + "' for reading!!!");
-        Buffer() << stream.rdbuf();
-      }
-      break;
+  case TType::LOCAL:
+    {
+      boost::filesystem::fstream stream{fileName, std::ios_base::in};
+      if(!stream)
+        throw EOperationFailed{"ERROR: Couldn't open file '" + fileName.string() + "' for reading!!!"};
+      Buffer() << stream.rdbuf();
+    }
+    break;
 
-    case TYPE_ACTIVE_SYNC:
-      {
-        CActiveSync &activeSync(CActiveSync::Instance());
-        Buffer().str(activeSync.Read(fileName));
-      }
-      break;
-
-    default:
-      throw EOperationFailed("ERROR: Unknown stream type!!!");
+  case TType::ACTIVE_SYNC:
+    Buffer().str(CActiveSync::Instance().Read(fileName));
+    break;
   }
 }
 
@@ -71,7 +66,7 @@ condor2nav::CIStream::CIStream(const std::string &server, const boost::filesyste
   // establish a connection to the server.
   http.connect(server, "http");
   if(!http)
-    throw EOperationFailed("ERROR: Unable to connect to: '" + server + url.generic_string() + "', error: " + http.error().message());
+    throw EOperationFailed{"ERROR: Unable to connect to: '" + server + url.generic_string() + "', error: " + http.error().message()};
 
   // Send the request. We specify the "Connection: close" header so that the
   // server will close the socket after transmitting the response. This will
@@ -89,9 +84,9 @@ condor2nav::CIStream::CIStream(const std::string &server, const boost::filesyste
   std::string status_message;
   std::getline(http, status_message);
   if(!http || http_version.substr(0, 5) != "HTTP/")
-    throw EOperationFailed("ERROR: Invalid response from: '" + server + url.generic_string() + "'");
+    throw EOperationFailed{"ERROR: Invalid response from: '" + server + url.generic_string() + "'"};
   if(status_code != 200)
-    throw EOperationFailed("ERROR: '" + server + url.generic_string() + "' returned a response with status code: " + Convert(status_code));
+    throw EOperationFailed{"ERROR: '" + server + url.generic_string() + "' returned a response with status code: " + Convert(status_code)};
 
   // Process the response headers, which are terminated by a blank line.
   std::string header;
@@ -102,5 +97,5 @@ condor2nav::CIStream::CIStream(const std::string &server, const boost::filesyste
   Buffer() << http.rdbuf();
 
   if(http.error() == boost::asio::error::operation_aborted)
-    throw EOperationFailed("ERROR: Download timeout (" + Convert(timeout) + " seconds) exceeded!");
+    throw EOperationFailed{"ERROR: Download timeout (" + Convert(timeout) + " seconds) exceeded!"};
 }

@@ -42,7 +42,7 @@ namespace condor2nav {
     std::mutex _mutex;
   public:
     CWaitQueue() {}
-    void Push(T &&msg)
+    void Push(T msg)
     {
       bool wasEmpty;
       {

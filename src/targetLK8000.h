@@ -70,25 +70,25 @@ namespace condor2nav {
     COStream::CPathList _outputSystemProfilePathList;    ///< @brief The path where output configuration paths should be located
     COStream::CPathList _outputAircraftProfilePathList;  ///< @brief The path where output configuration paths should be located
 
-    virtual void TaskDump(CFileParserINI &profileParser,
-                          const CFileParserINI &taskParser,
-                          const xcsoar::SETTINGS_TASK &settingsTask, 
-                          const xcsoar::TASK_POINT taskPointArray[],
-                          const xcsoar::START_POINT startPointArray[],
-                          const CWaypointArray &waypointArray) const override;
+    void TaskDump(CFileParserINI &profileParser,
+                  const CFileParserINI &taskParser,
+                  const xcsoar::SETTINGS_TASK &settingsTask,
+                  const xcsoar::TASK_POINT taskPointArray[],
+                  const xcsoar::START_POINT startPointArray[],
+                  const CWaypointArray &waypointArray) const override;
 
   public:
     explicit CTargetLK8000(const CTranslator &translator);
     virtual ~CTargetLK8000();
 
-    virtual const char *Name() const override { return "LK8000"; }
-    virtual void Gps() override;
-    virtual void SceneryMap(const CFileParserCSV::CStringArray &sceneryData) override;
-    virtual void SceneryTime() override;
-    virtual void Glider(const CFileParserCSV::CStringArray &gliderData) override;
-    virtual void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime) override;
-    virtual void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) override;
-    virtual void Weather(const CFileParserINI &taskParser) override;
+    const char *Name() const override { return "LK8000"; }
+    void Gps() override;
+    void SceneryMap(const CFileParserCSV::CStringArray &sceneryData) override;
+    void SceneryTime() override;
+    void Glider(const CFileParserCSV::CStringArray &gliderData) override;
+    void Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime) override;
+    void PenaltyZones(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv) override;
+    void Weather(const CFileParserINI &taskParser) override;
   };
 
 }

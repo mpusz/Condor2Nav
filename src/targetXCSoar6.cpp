@@ -37,8 +37,8 @@
  *
  * @param translator Configuration INI file parser.
  */
-condor2nav::CTargetXCSoar6::CTargetXCSoar6(const CTranslator &translator):
-CTargetXCSoar(translator)
+condor2nav::CTargetXCSoar6::CTargetXCSoar6(const CTranslator &translator) :
+  CTargetXCSoar{translator}
 {
 }
 
@@ -64,7 +64,7 @@ void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
 {
   using namespace xcsoar;
 
-  COStream tskFile(_outputTaskFilePathList);  
+  COStream tskFile{_outputTaskFilePathList};
 
   if(settingsTask.AATEnabled) {
     tskFile << "<Task type=\"AAT\" task_scored=\"1\" aat_min_time=\""
@@ -97,9 +97,9 @@ void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
     tskFile << "\t\t\t<Location longitude=\"" << waypointArray[i].longitude << "\" latitude=\""<< waypointArray[i].latitude << "\"/>" << std::endl;
     tskFile << "\t\t</Waypoint>" << std::endl;
 
-    std::string tpIdxStr(Convert(i + 1));
-    unsigned radius(Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr)));
-    unsigned angle(Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr)));
+    const auto tpIdxStr = Convert(i + 1);
+    const auto radius = Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr));
+    const auto angle = Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr));
     if(angle == 360)
       tskFile << "\t\t<ObservationZone type=\"Cylinder\" radius=\"" << radius <<"\"/>" << std::endl;
     else {
@@ -110,11 +110,14 @@ void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
         unsigned angle1;
         unsigned angle2;
         if(i == 0)
-          angle1 = WaypointBearing(waypointArray[i+1].longitude, waypointArray[i+1].latitude, waypointArray[i].longitude, waypointArray[i].latitude);
+          angle1 = WaypointBearing(TLongitude{waypointArray[i + 1].longitude}, TLatitude{waypointArray[i + 1].latitude},
+                                   TLongitude{waypointArray[i].longitude},     TLatitude{waypointArray[i].latitude});
         else
-          angle1 = WaypointBearing(waypointArray[i-1].longitude, waypointArray[i-1].latitude, waypointArray[i].longitude, waypointArray[i].latitude);                    
-        if(i < (waypointArray.size()-1))
-          angle2 = WaypointBearing(waypointArray[i+1].longitude, waypointArray[i+1].latitude, waypointArray[i].longitude, waypointArray[i].latitude);	  
+          angle1 = WaypointBearing(TLongitude{waypointArray[i - 1].longitude}, TLatitude{waypointArray[i - 1].latitude},
+                                   TLongitude{waypointArray[i].longitude},     TLatitude{waypointArray[i].latitude});
+        if(i < (waypointArray.size() - 1))
+          angle2 = WaypointBearing(TLongitude{waypointArray[i + 1].longitude}, TLatitude{waypointArray[i + 1].latitude},
+                                   TLongitude{waypointArray[i].longitude},     TLatitude{waypointArray[i].latitude});
         else
           angle2=angle1;
 
@@ -126,8 +129,8 @@ void condor2nav::CTargetXCSoar6::TaskDump(CFileParserINI &profileParser,
           if((angle1 > angle2 && angle1 - angle2 > 180) || (angle1 < angle2 && angle2 - angle1 > 180))
             halfAngle = (halfAngle + 180) % 360;
         }
-        double astart = static_cast<unsigned>(360 + halfAngle - angle / 2.0) % 360;
-        double aend = static_cast<unsigned>(360 + halfAngle + angle / 2.0) % 360;
+        const double astart = static_cast<unsigned>(360 + halfAngle - angle / 2.0) % 360;
+        const double aend = static_cast<unsigned>(360 + halfAngle + angle / 2.0) % 360;
         tskFile << "<ObservationZone type=\"Sector\" radius=\"" << radius << "\" start_radial=\""<< astart <<"\" end_radial=\""<< aend <<"\" />\r\n";
       }
     }

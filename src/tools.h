@@ -30,8 +30,13 @@
 
 #include "exception.h"
 #include <sstream>
-#include <boost/filesystem.hpp>
 #include <Windows.h>
+
+namespace boost {
+  namespace filesystem {
+    class path;
+  }
+}
 
 namespace condor2nav {
 
@@ -41,7 +46,7 @@ namespace condor2nav {
    * Pointer version of std::less used for STL containers sorting.
    */
   struct CPtrCmp {
-    template <class T>
+    template<class T>
     bool operator()(T v1, T v2) const
     {
       return *v1 < *v2;
@@ -53,8 +58,9 @@ namespace condor2nav {
    */
   struct CHModuleDeleter {
     typedef HMODULE pointer;
-    void operator ()(HMODULE hmod) const { ::FreeLibrary(hmod); }
+    void operator()(HMODULE hmod) const { ::FreeLibrary(hmod); }
   };
+
 
   // conversions
   template<class T> T Convert(const std::string &str);
@@ -62,17 +68,33 @@ namespace condor2nav {
 
   void Trim(std::string &str);
 
-  std::string DDFF2DDMMFF(double value, bool longitude);
-  std::string DDFF2DDMMSS(double value, bool longitude);
+  struct TLongitude {
+    static const unsigned degStrLength = 3;
+    double value;
+    explicit TLongitude(double v) : value{v} {}
+    char Sign() const { return value > 0 ? 'E' : 'W'; }
+  };
+
+  struct TLatitude {
+    static const unsigned degStrLength = 2;
+    double value;
+    explicit TLatitude(double v) : value{v} {}
+    char Sign() const { return value > 0 ? 'N' : 'S'; }
+  };
+
+  std::string Coord2DDMMFF(TLongitude coord);
+  std::string Coord2DDMMFF(TLatitude coord);
+  std::string Coord2DDMMSS(TLongitude coord);
+  std::string Coord2DDMMSS(TLatitude coord);
+
+  template<typename LON, typename LAT>
+  bool InsideArea(LON outerLonMin, LON outerLonMax, LAT outerLatMin, LAT outerLatMax,
+                  LON innerLonMin, LON innerLonMax, LAT innerLatMin, LAT innerLatMax);
 
   unsigned KmH2MS(unsigned value);
 
   double Deg2Rad(double angle);
   double Rad2Deg(double angle);
-
-  template<typename T>
-  bool InsideArea(T outerLonMin, T outerLonMax, T outerLatMin, T outerLatMax,
-                  T innerLonMin, T innerLonMax, T innerLatMin, T innerLatMax);
 
   // disk operations
   void DirectoryCreate(const boost::filesystem::path &dirName);
@@ -102,7 +124,7 @@ T condor2nav::Convert(const std::string &str)
   std::stringstream stream(str);
   stream >> value;
   if(stream.fail() && !stream.eof())
-    throw EOperationFailed("Cannot convert '" + str + "' to requested type!!!");
+    throw EOperationFailed{"Cannot convert '" + str + "' to requested type!!!"};
   return value;
 }
 
@@ -129,12 +151,12 @@ std::string condor2nav::Convert(const T &val)
 }
 
 
-template<typename T>
-bool condor2nav::InsideArea(T outerLonMin, T outerLonMax, T outerLatMin, T outerLatMax,
-  T innerLonMin, T innerLonMax, T innerLatMin, T innerLatMax)
+template<typename LON, typename LAT>
+bool condor2nav::InsideArea(LON outerLonMin, LON outerLonMax, LAT outerLatMin, LAT outerLatMax,
+                            LON innerLonMin, LON innerLonMax, LAT innerLatMin, LAT innerLatMax)
 {
-  return innerLonMin >= outerLonMin && innerLonMax <= outerLonMax &&
-    innerLatMin >= outerLatMin && innerLatMax <= outerLatMax;
+  return innerLonMin.value >= outerLonMin.value && innerLonMax.value <= outerLonMax.value &&
+    innerLatMin.value >= outerLatMin.value && innerLatMax.value <= outerLatMax.value;
 }
 
 

@@ -26,6 +26,7 @@
  */
 
 #include "fileParser.h"
+#include "ostream.h"
 #include "tools.h"
 #include <string>
 
@@ -37,8 +38,8 @@
  *
  * @param filePath The path of the file to parse.
  */
-condor2nav::CFileParser::CFileParser(const boost::filesystem::path &filePath):
-_filePath(filePath)
+condor2nav::CFileParser::CFileParser(const boost::filesystem::path &filePath) :
+  _filePath{filePath}
 {
 }
 
@@ -57,44 +58,62 @@ const boost::filesystem::path &condor2nav::CFileParser::Path() const
 
 
 /**
- * @brief Parses the line as key=value pairs.
- *
- * Method parses the line as key=value pairs.
- *
- * @param line           The line to parse. 
- * @param [in,out] key   Parsed key. 
- * @param [in,out] value Parsed value. 
- *
- * @exception std Thrown when operation failed.
- */
-void condor2nav::CFileParser::LineParseKeyValue(const std::string &line, std::string &key, std::string &value) const
+* @brief Dumps class data to the file.
+*
+* Method dumps class data to the file in the same format as input file has.
+*
+* @param filePath Path of the file to create (empty means overwrite input file).
+*/
+void condor2nav::CFileParser::Dump(const boost::filesystem::path &filePath /* = "" */) const
 {
-  size_t pos = line.find_first_of("=");
-  if(pos == std::string::npos)
-    throw EOperationFailed("ERROR: '=' sign not found in '" + Path().string() + "' file line '" + line + "'!!!");
-  
-  key = line.substr(0, pos);
-  Trim(key);
+  COStream ostream{filePath.empty() ? Path() : filePath};
+  Write(ostream);
+}
 
-  value = line.substr(pos + 1);
-  Trim(value);
+
+
+
+
+/**
+* @brief Parses the line as key=value pairs.
+*
+* Method parses the line as key=value pairs.
+*
+* @param line           The line to parse.
+*
+* @return Key and value pair.
+*
+* @exception std Thrown when operation failed.
+*/
+std::pair<std::string, std::string> condor2nav::LineParseKeyValue(const std::string &line)
+{
+  auto pos = line.find_first_of("=");
+  if(pos == std::string::npos)
+    throw EOperationFailed{"ERROR: '=' sign not found in line '" + line + "'!!!"};
+
+  auto ret = std::make_pair(line.substr(0, pos), line.substr(pos + 1));
+  Trim(ret.first);
+  Trim(ret.second);
+  return ret;
 }
 
 
 /**
- * @brief Parses the line as CSV (Comma Separated Values).
- *
- * Method parses the line as CSV (Comma Separated Values).
- *
- * @param line            The line to parse.
- * @param [in,out] values Parsed values.
- */
-void condor2nav::CFileParser::LineParseCSV(const std::string &line, CStringArray &values) const
+* @brief Parses the line as CSV (Comma Separated Values).
+*
+* Method parses the line as CSV (Comma Separated Values).
+*
+* @param line            The line to parse.
+*
+* @return Parsed values.
+*/
+std::vector<std::string> condor2nav::LineParseCSV(const std::string &line)
 {
+  std::vector<std::string> values;
   bool insideQuote = false;
   size_t pos = 0, newValuePos = 0;
   do {
-    size_t posOld = pos;
+    auto posOld = pos;
     if(insideQuote) {
       pos = line.find_first_of("\"", posOld);
       insideQuote = false;
@@ -105,13 +124,13 @@ void condor2nav::CFileParser::LineParseCSV(const std::string &line, CStringArray
         insideQuote = true;
       }
       else {
-        size_t len = (pos != std::string::npos) ? (pos - newValuePos) : pos;
-        std::string value = line.substr(newValuePos, len);
+        auto len = (pos != std::string::npos) ? (pos - newValuePos) : pos;
+        auto value = line.substr(newValuePos, len);
         Trim(value);
         if(!value.empty() && value[0] == '\"')
           // remove quotes
           value = value.substr(1, value.size() - 2);
-        values.push_back(std::move(value));
+        values.emplace_back(std::move(value));
         if(pos != std::string::npos)
           newValuePos = pos + 1;
       }
@@ -120,4 +139,6 @@ void condor2nav::CFileParser::LineParseCSV(const std::string &line, CStringArray
       pos++;
   }
   while(pos != std::string::npos);
+
+  return values;
 }

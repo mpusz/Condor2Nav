@@ -41,7 +41,7 @@ namespace condor2nav {
   public:
     CActiveObject();
     ~CActiveObject();
-    void Send(CMessage &&msg);
+    void Send(CMessage msg);
   };
 
 }

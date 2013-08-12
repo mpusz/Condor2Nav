@@ -32,29 +32,8 @@
  *
  * @param error The error string. 
  */
-condor2nav::Exception::Exception(const std::string &error) throw():
-_error(error)
-{
-
-}
-
-
-/**
- * @brief Class copy-constructor. 
- *
- * @param org The original copy of the class. 
- */
-condor2nav::Exception::Exception(const Exception &org) throw():
-_error(org._error)
-{
-
-}
-
-
-/**
- * @brief Class destructor. 
- */
-condor2nav::Exception::~Exception()
+condor2nav::Exception::Exception(const std::string &error) throw() :
+  _error{error}
 {
 }
 
@@ -67,10 +46,4 @@ condor2nav::Exception::~Exception()
 const char *condor2nav::Exception::what() const throw()
 {
   return _error.c_str();
-}
-
-
-condor2nav::EOperationFailed::EOperationFailed(const std::string &error) throw():
-Exception(error)
-{
 }

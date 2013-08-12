@@ -39,16 +39,19 @@ namespace condor2nav {
      *
      * condor2nav::gui::CWidget is a base for all Condor2Nav GUI widgets. Basically
      * their role is to be a wrapper over cumbersome Windows API interface.
+     *
+     * NOTE: That is not a polymorphic type
      */
     class CWidget : CNonCopyable {
       const HWND _hWnd;	                      ///< @brief Widget handler
+    protected:
+      HWND Hwnd() const { return _hWnd; }
     public:
       CWidget(HWND hwndParent, int id, bool disabled = false);
-      virtual ~CWidget() {}
+      ~CWidget() {}
       void Focus() const;
       void Enable() const;
       void Disable() const;
-      HWND Hwnd() const;
     };
 
 
@@ -62,27 +65,6 @@ namespace condor2nav {
       CWidgetButton(HWND hwndParent, int id, bool disabled = false);
       void Click() const;
     };
-
-
-    //class CWidgetCheckBox : public CWidgetButton
-    //{
-    //public:
-    //  CWidgetCheckBox(HWND hwndParent, int id, bool disabled = false)
-    //    : CWidgetButton(hwndParent, id, disabled)
-    //  {}
-    //  bool Checked() const
-    //  {
-    //    return(SendMessage(Hwnd(), BM_GETCHECK, 0, 0) == BST_CHECKED);
-    //  }
-    //  void Check()
-    //  {
-    //    SendMessage(Hwnd(), BM_SETCHECK, (WPARAM) BST_CHECKED, 0);
-    //  }
-    //  void UnCheck() 
-    //  {
-    //    SendMessage(Hwnd(), BM_SETCHECK, (WPARAM) BST_UNCHECKED, 0);
-    //  }
-    //};
 
 
     /**
@@ -104,22 +86,6 @@ namespace condor2nav {
       CWidgetEdit(HWND hwndParent, int id, bool disabled = false);
       void String(const std::string &str) const;
       std::string String() const;
-
-      //// code is the HIWORD (wParam)
-      //static bool Changed(int code)
-      //{
-      //  return code == EN_CHANGE;
-      //}
-
-      //void Select()
-      //{
-      //  SendMessage (Hwnd(), EM_SETSEL, 0, -1);
-      //}
-
-      //void ClearSelection ()
-      //{
-      //  SendMessage (Hwnd(), EM_SETSEL, -1, 0);
-      //}
     };
 
 
@@ -144,12 +110,13 @@ namespace condor2nav {
       /**
       * @brief Values that represent text color.
       */
-      enum TColor {
-        COLOR_AUTO,
-        COLOR_RED,
-        COLOR_GREEN,
-        COLOR_BLUE,
-        COLOR_BLACK
+      enum class TColor {
+        AUTO,
+        RED,
+        GREEN,
+        BLUE,
+        ORANGE,
+        BLACK
       };
 
       /**
@@ -175,17 +142,6 @@ namespace condor2nav {
   } // namespace gui
 
 } // namespace condor2nav
-
-
-/**
- * @brief Returns handler to current widget.
- *
- * @return The handler to current widget.
- */
-inline HWND condor2nav::gui::CWidget::Hwnd() const
-{
-  return _hWnd;
-}
 
 
 #endif // __WIDGETS_H__

@@ -41,19 +41,18 @@ const boost::filesystem::path condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME = "
  *
  * @param translator Configuration INI file parser.
  */
-condor2nav::CTargetXCSoar::CTargetXCSoar(const CTranslator &translator):
-CTargetXCSoarCommon(translator),
-_outputXCSoarDataPath(OutputPath() / "XCSoarData")
+condor2nav::CTargetXCSoar::CTargetXCSoar(const CTranslator &translator) :
+  CTargetXCSoarCommon{translator}, _outputXCSoarDataPath{OutputPath() / "XCSoarData"}
 {
-  boost::filesystem::path subDir = ConfigParser().Value("XCSoar", "Condor2NavDataSubDir");
+  const boost::filesystem::path subDir{ConfigParser().Value("XCSoar", "Condor2NavDataSubDir")};
   _outputCondor2NavDataPath = _outputXCSoarDataPath / subDir;
   _condor2navDataPathString = ConfigParser().Value("XCSoar", "XCSoarDataPath") + "\\" + subDir.string();
 
   DirectoryCreate(_outputCondor2NavDataPath);
 
-  _outputTaskFilePathList.push_back(_outputCondor2NavDataPath / TASK_FILE_NAME);
+  _outputTaskFilePathList.emplace_back(_outputCondor2NavDataPath / TASK_FILE_NAME);
   if(Convert<unsigned>(ConfigParser().Value("XCSoar", "DefaultTaskOverwrite")))
-    _outputTaskFilePathList.push_back(_outputXCSoarDataPath / DEFAULT_TASK_FILE_NAME);
+    _outputTaskFilePathList.emplace_back(_outputXCSoarDataPath / DEFAULT_TASK_FILE_NAME);
 
   auto profilePath = _outputCondor2NavDataPath / OUTPUT_PROFILE_NAME;
   if(!FileExists(profilePath)) {
@@ -61,10 +60,10 @@ _outputXCSoarDataPath(OutputPath() / "XCSoarData")
     if(!FileExists(profilePath)) {
       profilePath = CTranslator::DATA_PATH / XCSOAR_PROFILE_NAME;
       if(!FileExists(profilePath))
-        throw EOperationFailed("ERROR: Please copy '" + XCSOAR_PROFILE_NAME.string() + "' file to '" + CTranslator::DATA_PATH.string() + "' directory.");
+        throw EOperationFailed{"ERROR: Please copy '" + XCSOAR_PROFILE_NAME.string() + "' file to '" + CTranslator::DATA_PATH.string() + "' directory."};
     }
   }
-  _profileParser = std::unique_ptr<CFileParserINI>(new CFileParserINI(profilePath));
+  _profileParser = std::make_unique<CFileParserINI>(profilePath);
 }
 
 
@@ -123,14 +122,14 @@ void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
   memset(startWaypointArray.data(), 0, startWaypointArray.size() * sizeof(startWaypointArray[0]));
 
   for(size_t i=0; i<waypointArray.size(); i++) {
-    taskWaypointArray[i].Number = waypointArray[i].number;
-    taskWaypointArray[i].Latitude = waypointArray[i].latitude;
+    taskWaypointArray[i].Number    = waypointArray[i].number;
+    taskWaypointArray[i].Latitude  = waypointArray[i].latitude;
     taskWaypointArray[i].Longitude = waypointArray[i].longitude;
-    taskWaypointArray[i].Altitude = waypointArray[i].altitude;
-    taskWaypointArray[i].Flags = waypointArray[i].flags;
+    taskWaypointArray[i].Altitude  = waypointArray[i].altitude;
+    taskWaypointArray[i].Flags     = waypointArray[i].flags;
     mbstowcs(taskWaypointArray[i].Name, waypointArray[i].name.c_str(), NAME_SIZE);
     mbstowcs(taskWaypointArray[i].Comment, waypointArray[i].comment.c_str(), COMMENT_SIZE);
-    taskWaypointArray[i].InTask = true;
+    taskWaypointArray[i].InTask    = true;
   }
   
   tskFile.Write(reinterpret_cast<const char *>(taskWaypointArray.data()), taskWaypointArray.size() * sizeof(taskWaypointArray[0]));
@@ -147,9 +146,7 @@ void condor2nav::CTargetXCSoar::TaskDump(CFileParserINI &profileParser,
 void condor2nav::CTargetXCSoar::Gps()
 {
   _profileParser->Value("", "DeviceA", "\"Condor\"");
-  
-  // copy deviceA to deviceB
-  _profileParser->Value("", "DeviceB", _profileParser->Value("", "DeviceA"));
+  _profileParser->Value("", "DeviceB", _profileParser->Value("", "DeviceA"));    // copy deviceA to deviceB
   try {
     _profileParser->Value("", "Port2Index", _profileParser->Value("", "PortIndex"));
     _profileParser->Value("", "Speed2Index", _profileParser->Value("", "SpeedIndex"));
@@ -211,8 +208,7 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
   _profileParser->Value("", "BallastSecsToEmpty", waterBallastEmptyTime == "0" ? "10" : waterBallastEmptyTime);
 
   // create polar file
-  auto polarFileName = _outputCondor2NavDataPath / POLAR_FILE_NAME;
-  COStream polarFile(polarFileName);
+  COStream polarFile{_outputCondor2NavDataPath / POLAR_FILE_NAME};
 
   polarFile << "***************************************************************************************************" << std::endl;
   polarFile << "* " << gliderData.at(GLIDER_NAME) << " WinPilot POLAR file generated with Condor2Nav" << std::endl;
@@ -226,8 +222,8 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
   }
   polarFile << std::endl;
 
-  unsigned ballast(Convert<unsigned>(Condor().TaskParser().Value("Plane", "Water")));
-  unsigned maxBallast(Convert<unsigned>(gliderData.at(GLIDER_MAX_WATER_BALLAST)));
+  const auto ballast = Convert<unsigned>(Condor().TaskParser().Value("Plane", "Water"));
+  const auto maxBallast = Convert<unsigned>(gliderData.at(GLIDER_MAX_WATER_BALLAST));
   if(maxBallast > 0 && ballast > 0) {
     unsigned xcsoarPercent = ballast * 100 / maxBallast;
     // round it to 5% increment steps
@@ -249,7 +245,7 @@ void condor2nav::CTargetXCSoar::Glider(const CFileParserCSV::CStringArray &glide
  */
 void condor2nav::CTargetXCSoar::Task(const CFileParserINI &taskParser, const CCondor::CCoordConverter &coordConv, const CFileParserCSV::CStringArray &sceneryData, unsigned aatTime)
 {
-  unsigned wpFile(Convert<unsigned>(ConfigParser().Value("XCSoar", "TaskWPFileGenerate")));
+  const auto wpFile = Convert<unsigned>(ConfigParser().Value("XCSoar", "TaskWPFileGenerate"));
   TaskProcess(*_profileParser, taskParser, coordConv, aatTime,
               xcsoar::MAXTASKPOINTS, xcsoar::MAXSTARTPOINTS,
               wpFile > 0, _outputCondor2NavDataPath);
@@ -279,8 +275,8 @@ void condor2nav::CTargetXCSoar::PenaltyZones(const CFileParserINI &taskParser, c
  */
 void condor2nav::CTargetXCSoar::Weather(const CFileParserINI &taskParser)
 {
-  unsigned dir = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindDir")) + 0.5);
-  unsigned speed = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindSpeed")) + 0.5);
+  const auto dir = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindDir")) + 0.5);
+  const auto speed = static_cast<unsigned>(Convert<float>(taskParser.Value("Weather", "WindSpeed")) + 0.5);
   _profileParser->Value("", "WindBearing", Convert(dir));
   _profileParser->Value("", "WindSpeed", Convert(speed));
 }

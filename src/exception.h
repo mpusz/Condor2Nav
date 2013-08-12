@@ -38,22 +38,19 @@ namespace condor2nav {
    */
   class Exception : public std::exception {
     const std::string _error;	///< @brief The error string
-    Exception &operator=(const Exception &) throw();
+    Exception &operator=(const Exception &);
   public:
-    explicit Exception(const std::string &error) throw();
-    Exception(const Exception &org) throw();
-    virtual ~Exception() = 0;
-
-    virtual const char *what() const throw();
+    explicit Exception(const std::string &error);
+    virtual ~Exception() = 0 {}
+    const char *what() const override;
   };
 
 
   /**
    * @brief Operation failed exception. 
    */
-  class EOperationFailed : public Exception {
-  public:
-    explicit EOperationFailed(const std::string &error) throw();
+  struct EOperationFailed : Exception {
+    explicit EOperationFailed(const std::string &error) : Exception(error) {}
   };
 
 }

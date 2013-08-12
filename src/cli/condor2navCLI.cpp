@@ -36,8 +36,8 @@
  *
  * @param type The logger type. 
  */
-condor2nav::cli::CCondor2NavCLI::CLogger::CLogger(TType type):
-CCondor2Nav::CLogger(type)
+condor2nav::cli::CCondor2NavCLI::CLogger::CLogger(TType type) :
+  CCondor2Nav::CLogger{type}
 {
 
 }
@@ -50,19 +50,17 @@ CCondor2Nav::CLogger(type)
  *
  * @exception EOperationFailed Thrown when operation failed to execute. 
  */
-void condor2nav::cli::CCondor2NavCLI::CLogger::Dump(const std::string &str) const
+void condor2nav::cli::CCondor2NavCLI::CLogger::Trace(const std::string &str) const
 {
   switch(Type()) {
-  case TYPE_LOG_NORMAL:
-  case TYPE_LOG_HIGH:
+  case TType::LOG_NORMAL:
+  case TType::LOG_HIGH:
     std::cout << str;
     break;
-  case TYPE_WARNING:
-  case TYPE_ERROR:
+  case TType::WARNING:
+  case TType::ERROR:
     std::cerr << str;
     break;
-  default:
-    throw EOperationFailed("ERROR: Unsupported logger type (" + Convert(Type()) + ")!!!");
   }
 }
 
@@ -70,11 +68,11 @@ void condor2nav::cli::CCondor2NavCLI::CLogger::Dump(const std::string &str) cons
 /**
  * @brief Default class constructor.
  */
-condor2nav::cli::CCondor2NavCLI::CCondor2NavCLI():
-_normal(CLogger::TYPE_LOG_NORMAL),
-_high(CLogger::TYPE_LOG_HIGH),
-_warning(CLogger::TYPE_WARNING),
-_error(CLogger::TYPE_ERROR)
+condor2nav::cli::CCondor2NavCLI::CCondor2NavCLI() :
+  _normal{CLogger::TType::LOG_NORMAL},
+  _high{CLogger::TType::LOG_HIGH},
+  _warning{CLogger::TType::WARNING},
+  _error{CLogger::TType::ERROR}
 {
 }
 
@@ -119,17 +117,14 @@ void condor2nav::cli::CCondor2NavCLI::Usage() const
  *
  * @param argc             Number of command line arguments. 
  * @param argv             The array of command line arguments. 
- * @param [in,out] fplType Type of the FPL file.
- * @param [in,out] fplPath Full pathname of the FPL file. 
- * @param [in,out] aatTime Minimum time of the AAT task. 
+ *
+ * @return Parsed parameters.
  *
  * @exception std::runtime_error Thrown when parsing error occurred.
  */
-void condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[], TFPLType &fplType, boost::filesystem::path &fplPath, unsigned &aatTime) const
+auto condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[]) const -> TOptions
 {
-  fplType = TYPE_DEFAULT;
-  fplPath = "";
-  aatTime = 0;
+  TOptions opt{};
 
   for(int i=1; i<argc; i++) {
     if(std::string(argv[i]) == "-h") {
@@ -138,28 +133,30 @@ void condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[], TFP
     }
     else if(std::string(argv[i]) == "--aat") {
       if(i + 1 == argc)
-        throw EOperationFailed("ERROR: AAT TASK_MIN_TIME not provided!!!");
+        throw EOperationFailed{"ERROR: AAT TASK_MIN_TIME not provided!!!"};
      
       std::stringstream stream(argv[++i]);
-      stream >> aatTime;
+      stream >> opt.aatTime;
       if(stream.fail())
-        throw EOperationFailed("ERROR: Invalid AAT TASK_MIN_TIME!!!");
+        throw EOperationFailed{"ERROR: Invalid AAT TASK_MIN_TIME!!!"};
     }
     else if(std::string(argv[i]) == "--default") {
       // nothing needs to be done here
-      fplType = TYPE_DEFAULT;
+      opt.fplType = TFPLType::DEFAULT;
     }
     else if(std::string(argv[i]) == "--last-race") {
-      fplType = TYPE_RESULT;
+      opt.fplType = TFPLType::RESULT;
     }
     else if(argv[i][0] == '-') {
-      throw EOperationFailed("ERROR: Unkown option '" + std::string(argv[i]) + "' provided!!!");
+      throw EOperationFailed{"ERROR: Unkown option '" + std::string(argv[i]) + "' provided!!!"};
     }
     else {
-      fplPath = argv[i];
-      fplType = TYPE_USER;
+      opt.fplPath = argv[i];
+      opt.fplType = TFPLType::USER;
     }
   }
+
+  return opt;
 }
 
 
@@ -177,13 +174,13 @@ void condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[], TFP
 bool condor2nav::cli::CCondor2NavCLI::AATCheck(const CCondor &condor, unsigned &aatTime) const
 {
   try {
-    const CFileParserINI &taskParser = condor.TaskParser();
+    const auto &taskParser = condor.TaskParser();
     if(taskParser.Value("Task", "AAT") == "Distance") {
       Error() << "ERROR: AAT/D tasks are not supported!!!" << std::endl;
     }
     else if(taskParser.Value("Task", "AAT") == "Speed") {
       try {
-        unsigned time = Convert<unsigned>(taskParser.Value("Task", "DesignatedTime"));
+        const auto time = Convert<unsigned>(taskParser.Value("Task", "DesignatedTime"));
         if(aatTime > 0 && aatTime != time) {
           Warning() << "WARNING: Provided AAT time (" << aatTime << ") is different than condor-club time (" << time << ")!" << std::endl;
         }
@@ -218,25 +215,22 @@ bool condor2nav::cli::CCondor2NavCLI::AATCheck(const CCondor &condor, unsigned &
 int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
 {
   // parse CLI options
-  TFPLType fplType;
-  boost::filesystem::path fplPath;
-  unsigned aatTime;
-  CLIParse(argc, argv, fplType, fplPath, aatTime);
+  auto options = CLIParse(argc, argv);
   
   // obtain Condor installation path
   auto condorPath = CCondor::InstallPath();
   
   // create Condor FPL file path
-  if(fplType != TYPE_USER)
-    fplPath = CCondor::FPLPath(ConfigParser(), fplType, condorPath);
+  if(options.fplType != TFPLType::USER)
+    options.fplPath = CCondor::FPLPath(ConfigParser(), options.fplType, condorPath);
   
   // create Condor wrapper
-  CCondor condor(condorPath, fplPath);
-  if(!AATCheck(condor, aatTime))
+  CCondor condor(condorPath, options.fplPath);
+  if(!AATCheck(condor, options.aatTime))
     return EXIT_FAILURE;
 
   // run translation
-  CTranslator translator(*this, ConfigParser(), condor, aatTime);
+  CTranslator translator(*this, ConfigParser(), condor, options.aatTime);
   translator.Run();
   
   return EXIT_SUCCESS;

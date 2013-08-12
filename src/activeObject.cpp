@@ -28,20 +28,20 @@
 #include "activeObject.h"
 
 
-condor2nav::CActiveObject::CActiveObject():
-_done(false), _thread([=]{ Run(); })
+condor2nav::CActiveObject::CActiveObject() :
+  _done{false}, _thread{[this]{ Run(); }}
 {
 }
 
 
 condor2nav::CActiveObject::~CActiveObject()
 {
-  Send([&]{ _done = true; });
+  Send([this]{ _done = true; });
   _thread.join();
 }
 
 
-void condor2nav::CActiveObject::Send(CMessage &&msg)
+void condor2nav::CActiveObject::Send(CMessage msg)
 {
   _msgQueue.Push(std::move(msg));
 }

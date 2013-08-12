@@ -46,8 +46,8 @@ namespace condor2nav {
     CPathList _pathList;
 
   public:
-    COStream(const boost::filesystem::path &fileName);
-    COStream(const CPathList &pathList);
+    explicit COStream(boost::filesystem::path fileName);
+    explicit COStream(CPathList pathList);
     ~COStream();
     COStream &Write(const char *buffer, std::streamsize num);
 
@@ -87,23 +87,6 @@ namespace condor2nav {
     }
   };
 
-}
-
-
-/**
-* @brief Writes binary buffer to a stream.
-*
-* Method writes binary buffer to a stream.
-*
-* @param buffer Buffer data. 
-* @param num Buffer size. 
-*
-* @return Stream instance.
- */
-inline condor2nav::COStream &condor2nav::COStream::Write(const char *buffer, std::streamsize num)
-{
-  Buffer().write(buffer, num);
-  return *this;
 }
 
 

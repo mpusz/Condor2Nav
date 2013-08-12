@@ -39,10 +39,9 @@
  * @param type   The logger type.
  * @param hDlg   Main dialog window handle.
  */
-condor2nav::gui::CCondor2NavGUI::CLogger::CLogger(TType type, HWND hDlg):
-condor2nav::CCondor2Nav::CLogger(type), _hDlg(hDlg)
+condor2nav::gui::CCondor2NavGUI::CLogger::CLogger(TType type, HWND hDlg) :
+  condor2nav::CCondor2Nav::CLogger{type}, _hDlg{hDlg}
 {
-
 }
 
 
@@ -53,10 +52,10 @@ condor2nav::CCondor2Nav::CLogger(type), _hDlg(hDlg)
  *
  * @exception EOperationFailed Thrown when operation failed to execute. 
  */
-void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) const
+void condor2nav::gui::CCondor2NavGUI::CLogger::Trace(const std::string &str) const
 {
-  std::unique_ptr<std::string> dup(new std::string(str));
-  PostMessage(_hDlg, WM_LOG, Type(), reinterpret_cast<WPARAM>(dup.release()));
+  auto dup = std::make_unique<std::string>(str);
+  PostMessage(_hDlg, WM_LOG, static_cast<int>(Type()), reinterpret_cast<WPARAM>(dup.release()));
 }
 
 
@@ -66,26 +65,26 @@ void condor2nav::gui::CCondor2NavGUI::CLogger::Dump(const std::string &str) cons
  * @param hInst The instance. 
  * @param hDlg  Handle of the dialog. 
  */
-condor2nav::gui::CCondor2NavGUI::CCondor2NavGUI(HINSTANCE hInst, HWND hDlg):
-_running(false),
-_abort(false),
-_normal(CLogger::TYPE_LOG_NORMAL, hDlg),
-_high(CLogger::TYPE_LOG_HIGH, hDlg),
-_warning(CLogger::TYPE_WARNING, hDlg),
-_error(CLogger::TYPE_ERROR, hDlg),
-_hDlg(hDlg),
-_condorPath(CCondor::InstallPath()),
-_fplDefault(hDlg, IDC_FPL_DEFAULT_RADIO),
-_fplLastRace(hDlg, IDC_FPL_LAST_RACE_RADIO),
-_fplOther(hDlg, IDC_FPL_OTHER_RADIO),
-_fplSelect(hDlg, IDC_FPL_SELECT_BUTTON, true),
-_fplPath(hDlg, IDC_FPL_PATH_EDIT),
-_aatOff(hDlg, IDC_AAT_OFF_RADIO),
-_aatOn(hDlg, IDC_AAT_ON_RADIO),
-_aatTime(hDlg, IDC_AAT_TIME_COMBO, true),
-_aatMinutes(hDlg, IDC_AAT_STATIC, true),
-_translate(hDlg, IDC_TRANSLATE_BUTTON),
-_log(hDlg, IDC_LOG_RICHEDIT2)
+condor2nav::gui::CCondor2NavGUI::CCondor2NavGUI(HINSTANCE hInst, HWND hDlg) :
+  _running{false},
+  _abort{false},
+  _normal{CLogger::TType::LOG_NORMAL, hDlg},
+  _high{CLogger::TType::LOG_HIGH, hDlg},
+  _warning{CLogger::TType::WARNING, hDlg},
+  _error{CLogger::TType::ERROR, hDlg},
+  _hDlg{hDlg},
+  _condorPath{CCondor::InstallPath()},
+  _fplDefault{hDlg, IDC_FPL_DEFAULT_RADIO},
+  _fplLastRace{hDlg, IDC_FPL_LAST_RACE_RADIO},
+  _fplOther{hDlg, IDC_FPL_OTHER_RADIO},
+  _fplSelect{hDlg, IDC_FPL_SELECT_BUTTON, true},
+  _fplPath{hDlg, IDC_FPL_PATH_EDIT},
+  _aatOff{hDlg, IDC_AAT_OFF_RADIO},
+  _aatOn{hDlg, IDC_AAT_ON_RADIO},
+  _aatTime{hDlg, IDC_AAT_TIME_COMBO, true},
+  _aatMinutes{hDlg, IDC_AAT_STATIC, true},
+  _translate{hDlg, IDC_TRANSLATE_BUTTON},
+  _log{hDlg, IDC_LOG_RICHEDIT2}
 {
   // Attach icon to main dialog
   SendMessage(hDlg, WM_SETICON, ICON_BIG, LPARAM(LoadIcon(hInst, MAKEINTRESOURCE(IDI_CONDOR2NAV))));
@@ -97,12 +96,11 @@ _log(hDlg, IDC_LOG_RICHEDIT2)
     _aatTime.Add(Convert(i * 15));
 
   // set default task
-  auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TYPE_DEFAULT, _condorPath);
+  auto fplPath = CCondor::FPLPath(ConfigParser(), TFPLType::DEFAULT, _condorPath);
 
   try {
-    CCondor condor(_condorPath, fplPath);
+    AATCheck(CCondor{_condorPath, fplPath});
     _fplPath.String(fplPath.string());
-    AATCheck(condor);
     _fplDefault.Select();
   }
   catch(const Exception &) {
@@ -113,7 +111,7 @@ _log(hDlg, IDC_LOG_RICHEDIT2)
 
   // check if last result is available
   try {
-    fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TYPE_RESULT, _condorPath);
+    fplPath = CCondor::FPLPath(ConfigParser(), TFPLType::RESULT, _condorPath);
   }
   catch(const Exception &) {
     _fplLastRace.Disable();
@@ -176,8 +174,8 @@ bool condor2nav::gui::CCondor2NavGUI::TranslateValid() const
  */
 void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int command)
 {
-  bool fplChanged = false;
-  bool changed = false;
+  bool fplChanged{false};
+  bool changed{false};
 
   switch(controlID) {
   case IDC_FPL_DEFAULT_RADIO:
@@ -185,7 +183,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       _fplSelect.Disable();
 
       // create Condor FPL file path
-      auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TYPE_DEFAULT, _condorPath);
+      const auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TFPLType::DEFAULT, _condorPath);
       _fplPath.String(fplPath.string());
 
       fplChanged = true;
@@ -197,7 +195,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       _fplSelect.Disable();
 
       // create Condor FPL file path
-      auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TYPE_RESULT, _condorPath);
+      const auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TFPLType::RESULT, _condorPath);
       _fplPath.String(fplPath.string());
 
       fplChanged = true;
@@ -274,8 +272,8 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
           _running = true;
           _translate.Disable();
 
-          CCondor condor(_condorPath, _fplPath.String());
-          CTranslator(*this, ConfigParser(), condor, _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
+          CTranslator(*this, ConfigParser(), CCondor{_condorPath, _fplPath.String()},
+                      _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
 
           _running = false;
           if(TranslateValid())
@@ -290,8 +288,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
   }
 
   if(fplChanged) {
-    CCondor condor(_condorPath, _fplPath.String());
-    AATCheck(condor);
+    AATCheck(CCondor{_condorPath, _fplPath.String()});
   }
   if(changed || fplChanged) {
     if(TranslateValid())
@@ -308,7 +305,7 @@ void condor2nav::gui::CCondor2NavGUI::OnStart(std::function<bool()> abort)
     try {
       _running = true;
       _translate.Disable();
-      this->CCondor2Nav::OnStart(abort);
+      this->CCondor2Nav::OnStart(std::move(abort));
       _running = false;
       if(TranslateValid())
         _translate.Enable();
@@ -320,23 +317,21 @@ void condor2nav::gui::CCondor2NavGUI::OnStart(std::function<bool()> abort)
 }
 
 
-void condor2nav::gui::CCondor2NavGUI::Log(CLogger::TType type, std::unique_ptr<std::string> &&str)
+void condor2nav::gui::CCondor2NavGUI::Log(CLogger::TType type, std::unique_ptr<std::string> str)
 {
   switch(type) {
-  case CLogger::TYPE_LOG_NORMAL:
-    _log.Format(0, CWidgetRichEdit::COLOR_AUTO);
+  case CLogger::TType::LOG_NORMAL:
+    _log.Format(0, CWidgetRichEdit::TColor::AUTO);
     break;
-  case CLogger::TYPE_LOG_HIGH:
-    _log.Format(0, CWidgetRichEdit::COLOR_BLUE);
+  case CLogger::TType::LOG_HIGH:
+    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::TColor::BLUE);
     break;
-  case CLogger::TYPE_WARNING:
-    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_GREEN);
+  case CLogger::TType::WARNING:
+    _log.Format(CWidgetRichEdit::EFFECT_ITALIC, CWidgetRichEdit::TColor::ORANGE);
     break;
-  case CLogger::TYPE_ERROR:
-    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::COLOR_RED);
+  case CLogger::TType::ERROR:
+    _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::TColor::RED);
     break;
-  default:
-    throw EOperationFailed("ERROR: Unsupported logger type (" + Convert(type) + ")!!!");
   }
-  _log.Append(*str.release());
+  _log.Append(move(*str));
 }

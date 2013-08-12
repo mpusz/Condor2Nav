@@ -35,7 +35,40 @@
 const boost::filesystem::path condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
 const boost::filesystem::path condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
 
+namespace {
 
+  typedef int   (WINAPI *FNaviConInit)(const char *trnFile);  ///< @brief NaviCon.dll interface
+  typedef float (WINAPI *FXYToLon)(float X, float Y);         ///< @brief NaviCon.dll interface
+  typedef float (WINAPI *FXYToLat)(float X, float Y);         ///< @brief NaviCon.dll interface
+  typedef float (WINAPI *FGetMaxX)();                         ///< @brief NaviCon.dll interface
+  typedef float (WINAPI *FGetMaxY)();                         ///< @brief NaviCon.dll interface
+
+
+  template<typename SYMBOL_TYPE>
+  inline void Symbol(const HMODULE &module, const std::string &name, SYMBOL_TYPE &out)
+  {
+    SYMBOL_TYPE sym = reinterpret_cast<SYMBOL_TYPE>(GetProcAddress(module, name.c_str()));
+    if(!sym)
+      throw condor2nav::EOperationFailed{"ERROR: Couldn't map " + name + "() from 'NaviCon.dll'!!!"};
+    out = sym;
+  }
+
+}
+
+namespace condor2nav {
+
+  /**
+  * @brief NaviCon.dll interface.
+  */
+  struct CCondor::CCoordConverter::TDLLIface {
+    FNaviConInit naviConInit;
+    FGetMaxX     getMaxX;
+    FGetMaxY     getMaxY;
+    FXYToLon     xyToLon;
+    FXYToLat     xyToLat;
+  };
+
+}
 
 /* ******************** C O N D O R   -   C O O R D   C O N V E R T E R ********************* */
 
@@ -48,35 +81,31 @@ const boost::filesystem::path condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResu
  * @param condorPath The path to Condor directory
  * @param trnName The name of the terrain used in task
  */
-condor2nav::CCondor::CCoordConverter::CCoordConverter(const boost::filesystem::path &condorPath, const std::string &trnName):
-_hInstLib(::LoadLibrary((condorPath / "NaviCon.dll").string().c_str()))
+condor2nav::CCondor::CCoordConverter::CCoordConverter(const boost::filesystem::path &condorPath, const std::string &trnName) :
+  _iface{std::make_unique<TDLLIface>()}, _hInstLib{::LoadLibrary((condorPath / "NaviCon.dll").string().c_str())}
 {
   if(!_hInstLib.get())
-    throw EOperationFailed("ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath.string() + "'!!!");
+    throw EOperationFailed{"ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath.string() + "'!!!"};
   
-  _iface.naviConInit = (FNaviConInit)GetProcAddress(_hInstLib.get(), "NaviConInit");
-  if(!_iface.naviConInit)
-    throw EOperationFailed("ERROR: Couldn't map NaviConInit() from 'NaviCon.dll'!!!");
-
-  _iface.getMaxX = (FGetMaxX)GetProcAddress(_hInstLib.get(), "GetMaxX");
-  if(!_iface.getMaxX)
-    throw EOperationFailed("ERROR: Couldn't map GetMaxX() from 'NaviCon.dll'!!!");
-
-  _iface.getMaxY = (FGetMaxY)GetProcAddress(_hInstLib.get(), "GetMaxY");
-  if(!_iface.getMaxY)
-    throw EOperationFailed("ERROR: Couldn't map GetMaxY() from 'NaviCon.dll'!!!");
-
-  _iface.xyToLon = (FXYToLon)GetProcAddress(_hInstLib.get(), "XYToLon");
-  if(!_iface.xyToLon)
-    throw EOperationFailed("ERROR: Couldn't map XYToLon() from 'NaviCon.dll'!!!");
-
-  _iface.xyToLat = (FXYToLon)GetProcAddress(_hInstLib.get(), "XYToLat");
-  if(!_iface.xyToLat)
-    throw EOperationFailed("ERROR: Couldn't map XYToLat() from 'NaviCon.dll'!!!");
+  Symbol(_hInstLib.get(), "NaviConInit", _iface->naviConInit);
+  Symbol(_hInstLib.get(), "GetMaxX",     _iface->getMaxX);
+  Symbol(_hInstLib.get(), "GetMaxY",     _iface->getMaxY);
+  Symbol(_hInstLib.get(), "XYToLon",     _iface->xyToLon);
+  Symbol(_hInstLib.get(), "XYToLat",     _iface->xyToLat);
 
   // init coordinates
-  boost::filesystem::path trnPath(condorPath / "Landscapes" / trnName / (trnName + ".trn"));
-  _iface.naviConInit(trnPath.string().c_str());
+  auto trnPath = condorPath / "Landscapes" / trnName / (trnName + ".trn");
+  _iface->naviConInit(trnPath.string().c_str());
+}
+
+
+/**
+* @brief Class constructor
+*
+* NOTE: Destructor definition is needed here to make sure that TDLLIface is defined.
+*/
+condor2nav::CCondor::CCoordConverter::~CCoordConverter()
+{
 }
 
 
@@ -90,14 +119,14 @@ _hInstLib(::LoadLibrary((condorPath / "NaviCon.dll").string().c_str()))
  *
  * @return Converted double longitude value.
  */
-double condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y) const
+condor2nav::TLongitude condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y) const
 {
-  float xVal(Convert<float>(x));
-  float yVal(Convert<float>(y));
-  double lon = _iface.xyToLon(xVal, yVal);
-  int deg = static_cast<int>(lon);
-  double min = static_cast<int>(floor((lon - deg) * 60.0 * 1000 + 0.5)) / static_cast<double>(1000.0);
-  return deg + min / 60;
+  auto xVal = Convert<float>(x);
+  auto yVal = Convert<float>(y);
+  auto lon = _iface->xyToLon(xVal, yVal);
+  auto deg = static_cast<int>(lon);
+  auto min = static_cast<int>(floor((lon - deg) * 60.0 * 1000 + 0.5)) / static_cast<double>(1000.0);
+  return TLongitude{deg + min / 60};
 }
 
 
@@ -111,75 +140,20 @@ double condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, con
  *
  * @return Converted double latitude value.
  */
-double condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y) const
+condor2nav::TLatitude condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y) const
 {
-  float xVal(Convert<float>(x));
-  float yVal(Convert<float>(y));
-  double lat = _iface.xyToLat(xVal, yVal);
-  int deg = static_cast<int>(lat);
-  double min = static_cast<int>(floor((lat - deg) * 60.0 * 1000 + 0.5)) / static_cast<double>(1000.0);
-  return deg + min / 60;
-}
-
-
-/**
- * @brief Converts Condor coordinates to longitude.
- *        
- * Method converts Condor coordinates to longitude. 
- *
- * @param x      The x coordinate. 
- * @param y      The y coordinate. 
- * @param format Coordinate output string format. 
- *
- * @exception std::out_of_range Thrown when unsupported output format is provided. 
- *
- * @return Converted coordinate string. 
- */
-std::string condor2nav::CCondor::CCoordConverter::Longitude(const std::string &x, const std::string &y, TOutputFormat format) const
-{
-  double longitude(Longitude(x, y));
-  switch(format) {
-  case FORMAT_DDMMFF:
-    return DDFF2DDMMFF(longitude, true);
-  case FORMAT_DDMMSS:
-    return DDFF2DDMMSS(longitude, true);
-  default:
-    throw EOperationFailed("Not supported longitude format specified!!!");
-  }
-}
-
-
-/**
- * @brief Converts Condor coordinates to latitude.
- *        
- * Method converts Condor coordinates to latitude. 
- *
- * @param x      The x coordinate. 
- * @param y      The y coordinate. 
- * @param format Coordinate output string format. 
- *
- * @exception std::out_of_range Thrown when unsupported output format is provided. 
- *
- * @return Converted coordinate string. 
- */
-std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x, const std::string &y, TOutputFormat format) const
-{
-  double latitude(Latitude(x, y));
-  switch(format) {
-  case FORMAT_DDMMFF:
-    return DDFF2DDMMFF(latitude, false);
-  case FORMAT_DDMMSS:
-    return DDFF2DDMMSS(latitude, false);
-  default:
-    throw EOperationFailed("Not supported latitude format specified!!!");
-  }
+  auto xVal = Convert<float>(x);
+  auto yVal = Convert<float>(y);
+  auto lat = _iface->xyToLat(xVal, yVal);
+  auto deg = static_cast<int>(lat);
+  auto min = static_cast<int>(floor((lat - deg) * 60.0 * 1000 + 0.5)) / static_cast<double>(1000.0);
+  return TLatitude{deg + min / 60};
 }
 
 
 
 
 /* ************************************* C O N D O R **************************************** */
-
 
 /**
 * @brief Returns a path to Condor: The Competition Soaring Simulator
@@ -190,21 +164,18 @@ std::string condor2nav::CCondor::CCoordConverter::Latitude(const std::string &x,
 */
 boost::filesystem::path condor2nav::CCondor::InstallPath()
 {
-  boost::filesystem::path condorPath;
   HKEY hTestKey;
-
   if((RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
     DWORD bufferSize = 0;
     RegQueryValueEx(hTestKey, "InstallDir", nullptr, nullptr, nullptr, &bufferSize);
-    std::unique_ptr<char[]> buffer(new char[bufferSize]);
+    auto buffer = std::make_unique<char[]>(bufferSize);
     RegQueryValueEx(hTestKey, "InstallDir", nullptr, nullptr, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
-    condorPath = buffer.get();
+    boost::filesystem::path condorPath{buffer.get()};
     RegCloseKey(hTestKey);
+    return condorPath;
   }
   else
-    throw EOperationFailed("ERROR: Condor installation not found!!!");
-
-  return condorPath;
+    throw EOperationFailed{"ERROR: Condor installation not found!!!"};
 }
 
 
@@ -226,29 +197,29 @@ boost::filesystem::path condor2nav::CCondor::FPLPath(const CFileParserINI &confi
                                                      const boost::filesystem::path &condorPath)
 {
   boost::filesystem::path fplPath;
-  if(fplType == CCondor2Nav::TYPE_DEFAULT) {
-    boost::filesystem::path fplPathUser = configParser.Value("Condor", "FlightPlansPath");
+  if(fplType == CCondor2Nav::TFPLType::DEFAULT) {
+    auto fplPathUser = boost::filesystem::path{configParser.Value("Condor", "FlightPlansPath")};
     if(fplPathUser.empty())
       fplPath = condorPath / FLIGHT_PLANS_PATH / (configParser.Value("Condor", "DefaultTaskName") + ".fpl");
     else
       fplPath = fplPathUser / (configParser.Value("Condor", "DefaultTaskName") + ".fpl");
   }
-  else if(fplType == CCondor2Nav::TYPE_RESULT) {
-    boost::filesystem::path resultsPath = configParser.Value("Condor", "RaceResultsPath");
+  else if(fplType == CCondor2Nav::TFPLType::RESULT) {
+    auto resultsPath = boost::filesystem::path{configParser.Value("Condor", "RaceResultsPath")};
     if(resultsPath.empty())
       resultsPath = condorPath / RACE_RESULTS_PATH;
 
     // find the latest race result
     std::vector<boost::filesystem::path> results;
     std::copy_if(boost::filesystem::directory_iterator(resultsPath), boost::filesystem::directory_iterator(), std::back_inserter(results),
-      [](const boost::filesystem::path &f){ return CStringNoCase(f.extension().string().c_str()) == ".fpl"; });
-    auto result = std::max_element(results.begin(), results.end(),
-      [](const boost::filesystem::path &f1, const boost::filesystem::path &f2)
-    { return boost::filesystem::last_write_time(f1) < boost::filesystem::last_write_time(f2); });
+                 [](const boost::filesystem::path &f){ return CStringNoCase{f.extension().string().c_str()} == ".fpl"; });
+    auto result = std::max_element(cbegin(results), cend(results),
+                                   [](const boost::filesystem::path &f1, const boost::filesystem::path &f2)
+                                   { return boost::filesystem::last_write_time(f1) < boost::filesystem::last_write_time(f2); });
     if(result != results.end())
       fplPath = result->string();
     else
-      throw EOperationFailed("ERROR: Cannot find last result FPL file in '" + fplPath.string() + "'(" + Convert(GetLastError()) + ")!!!");
+      throw EOperationFailed{"ERROR: Cannot find last result FPL file in '" + fplPath.string() + "'(" + Convert(GetLastError()) + ")!!!"};
   }
   return fplPath;
 }
@@ -270,5 +241,5 @@ _taskParser(fplPath),
 _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
 {
   if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) < CONDOR_VERSION_SUPPORTED)
-    throw EOperationFailed("Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!");
+    throw EOperationFailed{"Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!"};
 }

@@ -29,13 +29,13 @@
 #define __TRANSLATOR_H__
 
 #include "condor.h"
-#include "fileParserINI.h"
 #include "fileParserCSV.h"
 
 
 namespace condor2nav {
 
   class CCondor2Nav;
+  class CFileParserINI;
 
   /**
    * @brief Translator class.
@@ -45,7 +45,7 @@ namespace condor2nav {
   class CTranslator : CNonCopyable {
   public:
     /**
-    * @brief Translation targets hierarchy base class.
+     * @brief Translation targets hierarchy base class.
      *
      * condor2nav::CTranslator::CTarget is a base abstract class for all translation targets.
      */

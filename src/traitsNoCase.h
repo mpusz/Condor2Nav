@@ -30,7 +30,6 @@
 
 #include <string>
 #include <cctype>
-#include <iostream>
 
 namespace condor2nav {
 
@@ -182,10 +181,9 @@ namespace condor2nav {
    *
    * @return Resulting case-insensitive string.
    */
-  inline const CStringNoCase &operator+(const CStringNoCase &str1, const std::string &str2)
+  inline CStringNoCase operator+(CStringNoCase str1, const std::string &str2)
   {
-    CStringNoCase str(str1);
-    return str.append(str2.begin(), str2.end());
+    return str1.append(str2.begin(), str2.end());
   }
 
 
@@ -197,7 +195,7 @@ namespace condor2nav {
    *
    * @return Resulting case-insensitive string. 
    */
-  inline const CStringNoCase &operator+(const std::string &str1, const CStringNoCase &str2)
+  inline CStringNoCase operator+(const std::string &str1, const CStringNoCase &str2)
   {
     CStringNoCase str(str1.begin(), str1.end());
     return str += str2;

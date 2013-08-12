@@ -48,9 +48,9 @@ const boost::filesystem::path condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME   
  *
  * @param translator Translator class.
  */
-condor2nav::CTranslator::CTarget::CTarget(const CTranslator &translator):
-_translator(translator),
-_outputPath(_translator._configParser.Value("Condor2Nav", "OutputPath"))
+condor2nav::CTranslator::CTarget::CTarget(const CTranslator &translator) :
+  _translator{translator},
+  _outputPath{_translator._configParser.Value("Condor2Nav", "OutputPath")}
 {
   DirectoryCreate(_outputPath);
 }
@@ -127,11 +127,8 @@ const boost::filesystem::path &condor2nav::CTranslator::CTarget::OutputPath() co
  * @param condor       The Condor wrapper.
  * @param aatTime      Minimum time for AAT task. 
  */
-condor2nav::CTranslator::CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const CCondor &condor, unsigned aatTime):
-_app(app),
-_configParser(configParser),
-_condor(condor),
-_aatTime(aatTime)
+condor2nav::CTranslator::CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const CCondor &condor, unsigned aatTime) :
+  _app{app}, _configParser{configParser}, _condor{condor}, _aatTime{aatTime}
 {
 }
 
@@ -143,22 +140,22 @@ _aatTime(aatTime)
  *
  * @return Condor data translator target.
  */
-std::unique_ptr<condor2nav::CTranslator::CTarget> condor2nav::CTranslator::Target() const
+auto condor2nav::CTranslator::Target() const -> std::unique_ptr<CTarget>
 {
-  std::string target = _configParser.Value("Condor2Nav", "Target");
+  const auto &target = _configParser.Value("Condor2Nav", "Target");
   if(target == "XCSoar") {
-    std::string version = _configParser.Value("XCSoar", "Version");
+    const auto &version = _configParser.Value("XCSoar", "Version");
     if(version == "5")
-      return std::unique_ptr<CTarget>(new CTargetXCSoar(*this));
+      return std::make_unique<CTargetXCSoar>(*this);
     else if(version == "6")
-      return std::unique_ptr<CTarget>(new CTargetXCSoar6(*this));
+      return std::make_unique<CTargetXCSoar6>(*this);
     else
-      throw EOperationFailed("ERROR: Unknown XCSoar version '" + version + "'!!!");
+      throw EOperationFailed{"ERROR: Unknown XCSoar version '" + version + "'!!!"};
   }
   else if(target == "LK8000")
-    return std::unique_ptr<CTarget>(new CTargetLK8000(*this));
+    return std::make_unique<CTargetLK8000>(*this);
   else
-    throw EOperationFailed("ERROR: Unknown translation target '" + target + "'!!!");
+    throw EOperationFailed{"ERROR: Unknown translation target '" + target + "'!!!"};
 }
 
 
@@ -173,11 +170,11 @@ void condor2nav::CTranslator::Run()
   _app.LogHigh() << "Translation START" << std::endl;
 
   // create translation target
-  std::unique_ptr<CTarget> target(Target());
+  auto target = Target();
   
   {
-    const CFileParserCSV sceneriesParser(DATA_PATH / _configParser.Value("Condor2Nav", "Target") / SCENERIES_DATA_FILE_NAME);
-    auto &sceneryData = sceneriesParser.Row(_condor.TaskParser().Value("Task", "Landscape"), 0, true);
+    const CFileParserCSV sceneriesParser{DATA_PATH / _configParser.Value("Condor2Nav", "Target") / SCENERIES_DATA_FILE_NAME};
+    const auto &sceneryData = sceneriesParser.Row(_condor.TaskParser().Value("Task", "Landscape"), 0, true);
 
     // set Condor GPS data
     if(_configParser.Value("Condor2Nav", "SetGPS") == "1") {
@@ -206,7 +203,7 @@ void condor2nav::CTranslator::Run()
   // translate glider data
   if(_configParser.Value("Condor2Nav", "SetGlider") == "1") {
     _app.Log() << "Setting glider data..." << std::endl;
-    const CFileParserCSV glidersParser(DATA_PATH / GLIDERS_DATA_FILE_NAME);
+    const CFileParserCSV glidersParser{DATA_PATH / GLIDERS_DATA_FILE_NAME};
     target->Glider(glidersParser.Row(_condor.TaskParser().Value("Plane", "Name")));
   }
 

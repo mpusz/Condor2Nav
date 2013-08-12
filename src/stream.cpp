@@ -26,28 +26,7 @@
  */
 
 #include "stream.h"
-#include "activeSync.h"
-
-
-/**
- * @brief Class constructor.
- *
- * condor2nav::CStream class constructor.
- */
-condor2nav::CStream::CStream()
-{
-}
-
-
-/**
- * @brief Class destructor.
- *
- * condor2nav::CStream class destructor. Writes local buffer to
- * a file.
- */
-condor2nav::CStream::~CStream()
-{
-}
+#include <boost/filesystem.hpp>
 
 
 /**
@@ -57,9 +36,9 @@ condor2nav::CStream::~CStream()
  */
 condor2nav::CStream::TType condor2nav::CStream::Type(const boost::filesystem::path &fileName) const
 {
-  std::string str(fileName.string());
+  std::string str{fileName.string()};
   if(str.size() > 2 && str[0] == '\\' && str[1] != '\\')
-    return TYPE_ACTIVE_SYNC;
+    return TType::ACTIVE_SYNC;
   else
-    return TYPE_LOCAL;
+    return TType::LOCAL;
 }

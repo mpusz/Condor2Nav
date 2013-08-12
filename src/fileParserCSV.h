@@ -30,6 +30,8 @@
 
 #include "fileParser.h"
 #include <deque>
+#include <vector>
+#include <string>
 
 namespace condor2nav {
 
@@ -42,16 +44,15 @@ namespace condor2nav {
    */
   class CFileParserCSV : public CFileParser {
   public:
-    typedef std::deque<CStringArray> CRowsList;	 ///< @brief The list of string arrays. 
+    typedef std::vector<std::string> CStringArray; ///< @brief The array of strings.
+    typedef std::deque<CStringArray> CRowsList;	   ///< @brief The list of string arrays. 
 
   private:
-    CRowsList _rowsList;	                     ///< @brief The list of file rows.
+    CRowsList _rowsList;	                       ///< @brief The list of file rows.
+    void Write(COStream &stream) const override;
 
   public:
     explicit CFileParserCSV(const boost::filesystem::path &filePath);
-
-    virtual void Dump(const boost::filesystem::path &filePath = "") const override;
-    
     const CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false) const;
     CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false);
     const CRowsList &Rows() const;

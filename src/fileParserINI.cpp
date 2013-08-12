@@ -37,11 +37,11 @@
  *
  * @param filePath The path of the INI file to parse.
  */
-condor2nav::CFileParserINI::CFileParserINI(const boost::filesystem::path &filePath):
-CFileParser(filePath)
+condor2nav::CFileParserINI::CFileParserINI(const boost::filesystem::path &filePath) :
+  CFileParser{filePath}
 {
   // open input INI file
-  CIStream inputStream(filePath);
+  CIStream inputStream{filePath};
   Parse(inputStream);
 }
 
@@ -54,10 +54,10 @@ CFileParser(filePath)
  * @param server The server from which to download the INI file.
  * @param url The path on the server to the INI file.
  */
-condor2nav::CFileParserINI::CFileParserINI(const std::string &server, const boost::filesystem::path &url):
-CFileParser(server + url.generic_string())
+condor2nav::CFileParserINI::CFileParserINI(const std::string &server, const boost::filesystem::path &url) :
+  CFileParser{server + url.generic_string()}
 {
-  CIStream inputStream(server, url.generic_string());
+  CIStream inputStream{server, url.generic_string()};
   Parse(inputStream);
 }
 
@@ -78,7 +78,7 @@ void condor2nav::CFileParserINI::Parse(CIStream &inputStream)
     if(line.empty())
       continue;
 
-    size_t pos = line.find_first_not_of(" ");
+    auto pos = line.find_first_not_of(" ");
     if(pos == std::string::npos)
       continue;
 
@@ -88,30 +88,28 @@ void condor2nav::CFileParserINI::Parse(CIStream &inputStream)
 
     if(line[pos] == '[') {
       // new chapter
-      size_t pos = line.find_first_of("]");
-      if(pos == std::string::npos)
-        throw EOperationFailed("ERROR: ']' not found in file line '" + line + "' in '" + Path().string() + "' INI !!!");
+      auto pos2 = line.find_first_of("]");
+      if(pos2 == std::string::npos)
+        throw EOperationFailed{"ERROR: ']' not found in file line '" + line + "' in '" + Path().string() + "' INI !!!"};
       
-      std::unique_ptr<TChapter> chapter(new TChapter);
-      chapter->name = line.substr(1, pos - 1);
+      auto chapter = std::make_unique<TChapter>();
+      chapter->name = line.substr(1, pos2 - 1);
       Trim(chapter->name);
       currentMap = &chapter->valuesMap;
-      _chaptersList.push_back(std::move(chapter));
+      _chaptersList.emplace_back(std::move(chapter));
       continue;
     }
     
     // parse line as key=value
-    std::string key;
-    std::string value;
-    LineParseKeyValue(line, key, value);
+    auto ret = LineParseKeyValue(line);
 
-    if(currentMap->find(&key) != currentMap->end())
-      throw EOperationFailed("ERROR: Entry '" + key + "' provided more than once in '" + Path().string() + "' INI file!!!");
+    if(currentMap->find(&ret.first) != currentMap->end())
+      throw EOperationFailed{"ERROR: Entry '" + ret.first + "' provided more than once in '" + Path().string() + "' INI file!!!"};
 
     // add new entry
-    std::unique_ptr<TKeyValue> data(new TKeyValue);
-    data->key = std::move(key);
-    data->value = std::move(value);
+    auto data = std::make_unique<TKeyValue>();
+    data->key = std::move(ret.first);
+    data->value = std::move(ret.second);
     (*currentMap)[&data->key] = std::move(data);
   }
 }
@@ -128,13 +126,12 @@ void condor2nav::CFileParserINI::Parse(CIStream &inputStream)
  *
  * @return Requested chapter.
  */
-condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const std::string &chapter)
+auto condor2nav::CFileParserINI::Chapter(const std::string &chapter) -> TChapter &
 {
-  for(auto it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
-    if((*it)->name == chapter)
-      return **it;
-
-  throw EOperationFailed("ERROR: Chapter '" + chapter + "' not found in '" + Path().string() + "' INI file!!!");
+  for(auto &ch : _chaptersList)
+    if(ch->name == chapter)
+      return *ch;
+  throw EOperationFailed{"ERROR: Chapter '" + chapter + "' not found in '" + Path().string() + "' INI file!!!"};
 }
 
 
@@ -149,13 +146,10 @@ condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const 
  *
  * @return Requested chapter.
  */
-const condor2nav::CFileParserINI::TChapter &condor2nav::CFileParserINI::Chapter(const std::string &chapter) const
+auto condor2nav::CFileParserINI::Chapter(const std::string &chapter) const -> const TChapter &
 {
-  for(auto it=_chaptersList.begin(); it!=_chaptersList.end(); ++it)
-    if((*it)->name == chapter)
-      return **it;
-
-  throw EOperationFailed("ERROR: Chapter '" + chapter + "' not found in '" + Path().string() + "' INI file!!!");
+  auto nonConst = const_cast<CFileParserINI *>(this);
+  return nonConst->Chapter(chapter);
 }
 
 
@@ -180,7 +174,7 @@ const std::string &condor2nav::CFileParserINI::Value(const std::string &chapter,
 
   auto it = mapPtr->find(&key);
   if(it == mapPtr->end())
-    throw EOperationFailed("ERROR: Entry '" + key + "' not found in '" + Path().string() + "' INI file!!!");
+    throw EOperationFailed{"ERROR: Entry '" + key + "' not found in '" + Path().string() + "' INI file!!!"};
   return it->second->value;
 }
 
@@ -203,7 +197,7 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
   auto it = mapPtr->find(&key);
   if(it == mapPtr->end()) {
     // add new entry
-    std::unique_ptr<TKeyValue> data(new TKeyValue);
+    auto data = std::make_unique<TKeyValue>();
     data->key = key;
     data->value = value;
     (*mapPtr)[&data->key] = std::move(data);
@@ -215,29 +209,25 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
 
 
 /**
- * @brief Dumps class data to the file.
+ * @brief Dumps class data to the stream.
  *
- * Method dumps class data to the file in the same format as input file has.
- * 
- * @param filePath Path of the file to create (empty means overwrite input file).
+ * Method dumps class data to the stream in the same format as input file has.
+ *
+ * @param stream Dump data to the stream.
  */
-void condor2nav::CFileParserINI::Dump(const boost::filesystem::path &filePath /* = "" */) const
+void condor2nav::CFileParserINI::Write(COStream &stream) const
 {
-  // open output file
-  auto path = filePath.empty() ? Path() : filePath;
-  COStream outputStream(path);
-
   // dump global scope
-  for(auto it=_valuesMap.begin(); it!=_valuesMap.end(); ++it)
-    outputStream << *it->first << "=" << it->second->value << std::endl;
+  for(const auto &v : _valuesMap)
+    stream << *v.first << "=" << v.second->value << std::endl;
 
   // dump chapters
   for(auto it=_chaptersList.begin(); it!=_chaptersList.end(); ++it) {
     if(it != _chaptersList.begin() || _valuesMap.size())
-      outputStream << std::endl;
+      stream << std::endl;
 
-    outputStream << "[" << (*it)->name << "]" << std::endl;
-    for(auto it2=(*it)->valuesMap.begin(); it2!=(*it)->valuesMap.end(); ++it2)
-      outputStream << *it2->first << "=" << it2->second->value << std::endl;
+    stream << "[" << (*it)->name << "]" << std::endl;
+    for(const auto &v : (*it)->valuesMap)
+      stream << *v.first << "=" << v.second->value << std::endl;
   }
 }

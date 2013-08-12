@@ -30,7 +30,12 @@
 
 #include "nonCopyable.h"
 #include <sstream>
-#include <boost/filesystem.hpp>
+
+namespace boost {
+  namespace filesystem {
+    class path;
+  }
+}
 
 namespace condor2nav {
 
@@ -38,6 +43,7 @@ namespace condor2nav {
    * @brief Stream wrapper
    *
    * condor2nav::CStream class is a wrapper for different stream types.
+   * NOTE: This class is not polymorphic.
    */
   class CStream : CNonCopyable {
     std::stringstream _buffer;            ///< @brief Buffer with file data. 
@@ -46,15 +52,14 @@ namespace condor2nav {
     /*
      * @brief Stream types
      */
-    enum TType {
-      TYPE_LOCAL,                         ///< @brief Local path. 
-      TYPE_ACTIVE_SYNC                    ///< @brief ActiveSync (remote device) path. 
+    enum class TType {
+      LOCAL,                              ///< @brief Local path. 
+      ACTIVE_SYNC                         ///< @brief ActiveSync (remote device) path. 
     };
 
     TType Type(const boost::filesystem::path &fileName) const;
+    CStream() {}
   public:
-    CStream();
-    virtual ~CStream() = 0;
     const std::stringstream &Buffer() const { return _buffer; }
     std::stringstream &Buffer() { return _buffer; }
   };

@@ -39,13 +39,9 @@ namespace condor2nav {
    */
   class CIStream : public CStream {
   public:
-    CIStream(const boost::filesystem::path &fileName);
+    explicit CIStream(const boost::filesystem::path &fileName);
     CIStream(const std::string &server, const boost::filesystem::path &url, unsigned timeout = 30);
-
-    std::istream &GetLine(std::string &line)
-    {
-      return getline(Buffer(), line);
-    }
+    std::istream &GetLine(std::string &line) { return getline(Buffer(), line); }
   };
 
 }

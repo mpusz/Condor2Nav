@@ -67,17 +67,14 @@ namespace condor2nav {
     CValuesMap _valuesMap;	                          ///< @brief The map of plain key=value pairs. 
     CChaptersList _chaptersList;                      ///< @brief The list of chapters and their data found in the file.
 
+    void Write(COStream &stream) const override;
     void Parse(CIStream &inputStream);
-
     TChapter &Chapter(const std::string &chapter);
     const TChapter &Chapter(const std::string &chapter) const;
-    
+
   public:
     explicit CFileParserINI(const boost::filesystem::path &filePath);
-    explicit CFileParserINI(const std::string &server, const boost::filesystem::path &url);
-
-    virtual void Dump(const boost::filesystem::path &filePath = "") const override;
-
+    CFileParserINI(const std::string &server, const boost::filesystem::path &url);
     const std::string &Value(const std::string &chapter, const std::string &key) const;
     void Value(const std::string &chapter, const std::string &key, const std::string &value);
   };

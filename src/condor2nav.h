@@ -31,7 +31,8 @@
 #include "nonCopyable.h"
 #include "fileParserINI.h"
 #include <sstream>
-#include <functional>
+
+#undef ERROR   // workaround v\for some VS headers macro
 
 /**
  * @brief Condor2Nav project namespace.
@@ -51,10 +52,10 @@ namespace condor2nav {
     /**
      * @brief Values that represent different types of supported flight plan types. 
      */
-    enum TFPLType {
-      TYPE_DEFAULT,	          ///< @brief Default task name (from INI) file will be run. 
-      TYPE_RESULT,	          ///< @brief Use last flown FPL from race result directory.
-      TYPE_USER	              ///< @brief User provided exact path to FPL file. 
+    enum class TFPLType {
+      DEFAULT,	              ///< @brief Default task name (from INI) file will be run. 
+      RESULT,	              ///< @brief Use last flown FPL from race result directory.
+      USER	                  ///< @brief User provided exact path to FPL file. 
     };
 
     /**
@@ -67,11 +68,11 @@ namespace condor2nav {
       /**
        * @brief Values that represent logger types.
        */
-      enum TType {
-        TYPE_LOG_NORMAL,      ///< @brief All normal processing logs.
-        TYPE_LOG_HIGH,        ///< @brief Important processing logs.
-        TYPE_WARNING,         ///< @brief Warning level logs (not critical errors).
-        TYPE_ERROR            ///< @brief Critical errors.
+      enum class TType {
+        LOG_NORMAL,           ///< @brief All normal processing logs.
+        LOG_HIGH,             ///< @brief Important processing logs.
+        WARNING,              ///< @brief Warning level logs (not critical errors).
+        ERROR                 ///< @brief Critical errors.
       };
 
     private:
@@ -82,13 +83,13 @@ namespace condor2nav {
        *
        * @param str The string to dump. 
        */
-      virtual void Dump(const std::string &str) const = 0;
+      virtual void Trace(const std::string &str) const = 0;
 
     protected:
       TType Type() const { return _type; }
 
     public:
-      CLogger(TType type);
+      explicit CLogger(TType type);
       virtual ~CLogger() {}
       
       /**
@@ -106,7 +107,7 @@ namespace condor2nav {
       {
         std::stringstream stream;
         stream << obj;
-        logger.Dump(stream.str());
+        logger.Trace(stream.str());
         return logger;
       }
 
@@ -124,7 +125,7 @@ namespace condor2nav {
       {
         std::stringstream stream;
         stream << f;
-        logger.Dump(stream.str());
+        logger.Trace(stream.str());
         return logger;
       }
     };
@@ -143,6 +144,8 @@ namespace condor2nav {
 
     /**
      * @brief Handler triggered on application startup. 
+     *
+     * @param abort Funtion to call to check if execution should be aborted.
      */
     virtual void OnStart(std::function<bool()> abort);
 
