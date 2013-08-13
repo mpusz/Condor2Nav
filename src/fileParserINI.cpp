@@ -37,8 +37,8 @@
  *
  * @param filePath The path of the INI file to parse.
  */
-condor2nav::CFileParserINI::CFileParserINI(const boost::filesystem::path &filePath) :
-  CFileParser{filePath}
+condor2nav::CFileParserINI::CFileParserINI(boost::filesystem::path filePath) :
+  _filePath{std::move(filePath)}
 {
   // open input INI file
   CIStream inputStream{filePath};
@@ -55,7 +55,7 @@ condor2nav::CFileParserINI::CFileParserINI(const boost::filesystem::path &filePa
  * @param url The path on the server to the INI file.
  */
 condor2nav::CFileParserINI::CFileParserINI(const std::string &server, const boost::filesystem::path &url) :
-  CFileParser{server + url.generic_string()}
+  _filePath{server + url.generic_string()}
 {
   CIStream inputStream{server, url.generic_string()};
   Parse(inputStream);
@@ -209,25 +209,26 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
 
 
 /**
- * @brief Dumps class data to the stream.
- *
- * Method dumps class data to the stream in the same format as input file has.
- *
- * @param stream Dump data to the stream.
- */
-void condor2nav::CFileParserINI::Write(COStream &stream) const
+* @brief Dumps class data to the file.
+*
+* Method dumps class data to the file in the same format as input file has.
+*
+* @param filePath Path of the file to create (empty means overwrite input file).
+*/
+void condor2nav::CFileParserINI::Dump(const boost::filesystem::path &filePath /* = "" */) const
 {
+  COStream ostream{filePath.empty() ? Path() : filePath};
   // dump global scope
   for(const auto &v : _valuesMap)
-    stream << *v.first << "=" << v.second->value << std::endl;
+    ostream << *v.first << "=" << v.second->value << std::endl;
 
   // dump chapters
   for(auto it=_chaptersList.begin(); it!=_chaptersList.end(); ++it) {
     if(it != _chaptersList.begin() || _valuesMap.size())
-      stream << std::endl;
+      ostream << std::endl;
 
-    stream << "[" << (*it)->name << "]" << std::endl;
+    ostream << "[" << (*it)->name << "]" << std::endl;
     for(const auto &v : (*it)->valuesMap)
-      stream << *v.first << "=" << v.second->value << std::endl;
+      ostream << *v.first << "=" << v.second->value << std::endl;
   }
 }

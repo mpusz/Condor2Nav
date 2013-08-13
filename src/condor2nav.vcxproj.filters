@@ -23,9 +23,6 @@
     <ClCompile Include="condor2nav.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fileParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="fileParserCSV.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -77,9 +74,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="condor2nav.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fileParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fileParserCSV.h">

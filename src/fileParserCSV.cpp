@@ -40,8 +40,8 @@
  *
  * @param filePath The path of the CSV file to parse.
  */
-condor2nav::CFileParserCSV::CFileParserCSV(const boost::filesystem::path &filePath) :
-  CFileParser{filePath}
+condor2nav::CFileParserCSV::CFileParserCSV(boost::filesystem::path filePath) :
+  _filePath{std::move(filePath)}
 {
   // open CSV file
   CIStream inputStream{filePath};
@@ -125,20 +125,21 @@ auto condor2nav::CFileParserCSV::Rows() -> CRowsList &
 
 
 /**
- * @brief Dumps class data to the stream.
- *
- * Method dumps class data to the stream in the same format as input file has.
- *
- * @param stream Dump data to the stream.
- */
-void condor2nav::CFileParserCSV::Write(COStream &stream) const
+* @brief Dumps class data to the file.
+*
+* Method dumps class data to the file in the same format as input file has.
+*
+* @param filePath Path of the file to create (empty means overwrite input file).
+*/
+void condor2nav::CFileParserCSV::Dump(const boost::filesystem::path &filePath /* = "" */) const
 {
+  COStream ostream{filePath.empty() ? Path() : filePath};
   for(const auto &row : _rowsList) {
-    for(size_t i=0; i<row.size(); ++i) {
+    for(size_t i = 0; i < row.size(); ++i) {
       if(i)
-        stream << ",";
-      stream << row[i];
+        ostream << ",";
+      ostream << row[i];
     }
-    stream << std::endl;
+    ostream << std::endl;
   }
 }

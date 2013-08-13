@@ -28,10 +28,11 @@
 #ifndef __FILEPARSERCSV_H__
 #define __FILEPARSERCSV_H__
 
-#include "fileParser.h"
+#include "nonCopyable.h"
 #include <deque>
 #include <vector>
 #include <string>
+#include <boost/filesystem.hpp>
 
 namespace condor2nav {
 
@@ -42,21 +43,23 @@ namespace condor2nav {
    * files parser. Any file that provides values separated with commas can
    * be processed with that class.
    */
-  class CFileParserCSV : public CFileParser {
+  class CFileParserCSV : CNonCopyable {
   public:
     typedef std::vector<std::string> CStringArray; ///< @brief The array of strings.
     typedef std::deque<CStringArray> CRowsList;	   ///< @brief The list of string arrays. 
 
   private:
+    const boost::filesystem::path _filePath;       ///< @brief Input file path.
     CRowsList _rowsList;	                       ///< @brief The list of file rows.
-    void Write(COStream &stream) const override;
 
   public:
-    explicit CFileParserCSV(const boost::filesystem::path &filePath);
+    explicit CFileParserCSV(boost::filesystem::path filePath);
+    const boost::filesystem::path &Path() const { return _filePath; }
     const CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false) const;
     CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false);
     const CRowsList &Rows() const;
     CRowsList &Rows();
+    void Dump(const boost::filesystem::path &filePath = "") const;
   };
 
 }

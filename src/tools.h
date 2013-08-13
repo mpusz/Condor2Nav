@@ -30,6 +30,7 @@
 
 #include "exception.h"
 #include <sstream>
+#include <vector>
 #include <Windows.h>
 
 namespace boost {
@@ -67,6 +68,8 @@ namespace condor2nav {
   template<class T> std::string Convert(const T &val);
 
   void Trim(std::string &str);
+  std::pair<std::string, std::string> LineParseKeyValue(const std::string &line);
+  std::vector<std::string> LineParseCSV(const std::string &line);
 
   struct TLongitude {
     static const unsigned degStrLength = 3;

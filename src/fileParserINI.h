@@ -28,10 +28,12 @@
 #ifndef __FILEPARSERINI_H__
 #define __FILEPARSERINI_H__
 
-#include "fileParser.h"
+#include "nonCopyable.h"
 #include "tools.h"
+#include <memory>
 #include <deque>
 #include <map>
+#include <boost/filesystem.hpp>
 
 namespace condor2nav {
 
@@ -45,7 +47,7 @@ namespace condor2nav {
    * may have those pairs grouped into chapters or provide one plain set
    * of pairs (set "" for chapter name in that case).
    */
-  class CFileParserINI : public CFileParser {
+  class CFileParserINI : CNonCopyable {
     /**
      * @brief Stores key=value pairs.
      */
@@ -64,19 +66,21 @@ namespace condor2nav {
     };
     typedef std::deque<std::unique_ptr<TChapter>> CChaptersList;	  ///< @brief The list of INI file chapters.
 
+    const boost::filesystem::path _filePath;          ///< @brief Input file path.
     CValuesMap _valuesMap;	                          ///< @brief The map of plain key=value pairs. 
     CChaptersList _chaptersList;                      ///< @brief The list of chapters and their data found in the file.
 
-    void Write(COStream &stream) const override;
     void Parse(CIStream &inputStream);
     TChapter &Chapter(const std::string &chapter);
     const TChapter &Chapter(const std::string &chapter) const;
 
   public:
-    explicit CFileParserINI(const boost::filesystem::path &filePath);
+    explicit CFileParserINI(boost::filesystem::path filePath);
+    const boost::filesystem::path &Path() const { return _filePath; }
     CFileParserINI(const std::string &server, const boost::filesystem::path &url);
     const std::string &Value(const std::string &chapter, const std::string &key) const;
     void Value(const std::string &chapter, const std::string &key, const std::string &value);
+    void Dump(const boost::filesystem::path &filePath = "") const;
   };
 
 }
