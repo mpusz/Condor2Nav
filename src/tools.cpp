@@ -160,6 +160,21 @@ std::string condor2nav::Coord2DDMMSS(TLatitude coord)
 
 
 /**
+* @brief Checks inner rectangle is spaced inside outer area.
+*
+* Method checks inner rectangle is spaced inside outer area.
+*
+* @return True if rectangle is inside area.
+*/
+bool condor2nav::InsideArea(TLongitude outerLonMin, TLongitude outerLonMax, TLatitude outerLatMin, TLatitude outerLatMax,
+                            TLongitude innerLonMin, TLongitude innerLonMax, TLatitude innerLatMin, TLatitude innerLatMax)
+{
+  return innerLonMin.value >= outerLonMin.value && innerLonMax.value <= outerLonMax.value &&
+    innerLatMin.value >= outerLatMin.value && innerLatMax.value <= outerLatMax.value;
+}
+
+
+/**
  * @brief Converts the speed units.
  *
  * Function converts the speed units from km/h to m/s.

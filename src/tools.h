@@ -87,9 +87,8 @@ namespace condor2nav {
   std::string Coord2DDMMSS(TLongitude coord);
   std::string Coord2DDMMSS(TLatitude coord);
 
-  template<typename LON, typename LAT>
-  bool InsideArea(LON outerLonMin, LON outerLonMax, LAT outerLatMin, LAT outerLatMax,
-                  LON innerLonMin, LON innerLonMax, LAT innerLatMin, LAT innerLatMax);
+  bool InsideArea(TLongitude outerLonMin, TLongitude outerLonMax, TLatitude outerLatMin, TLatitude outerLatMax,
+                  TLongitude innerLonMin, TLongitude innerLonMax, TLatitude innerLatMin, TLatitude innerLatMax);
 
   unsigned KmH2MS(unsigned value);
 
@@ -149,16 +148,6 @@ std::string condor2nav::Convert(const T &val)
   stream << val;
   return stream.str();
 }
-
-
-template<typename LON, typename LAT>
-bool condor2nav::InsideArea(LON outerLonMin, LON outerLonMax, LAT outerLatMin, LAT outerLatMax,
-                            LON innerLonMin, LON innerLonMax, LAT innerLatMin, LAT innerLatMax)
-{
-  return innerLonMin.value >= outerLonMin.value && innerLonMax.value <= outerLonMax.value &&
-    innerLatMin.value >= outerLatMin.value && innerLatMax.value <= outerLatMax.value;
-}
-
 
 
 #endif /* __TOOLS_H__ */
