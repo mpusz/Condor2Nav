@@ -33,6 +33,56 @@
 #include <string>
 
 
+namespace {
+
+  /**
+  * @brief Parses the line as CSV (Comma Separated Values).
+  *
+  * Method parses the line as CSV (Comma Separated Values).
+  *
+  * @param line            The line to parse.
+  *
+  * @return Parsed values.
+  */
+  std::vector<std::string> LineParseCSV(const std::string &line)
+  {
+    using namespace condor2nav;
+    std::vector<std::string> values;
+    bool insideQuote = false;
+    size_t pos = 0, newValuePos = 0;
+    do {
+      auto posOld = pos;
+      if(insideQuote) {
+        pos = line.find_first_of("\"", posOld);
+        insideQuote = false;
+      }
+      else {
+        pos = line.find_first_of(",\"", posOld);
+        if(pos != std::string::npos && line[pos] == '\"') {
+          insideQuote = true;
+        }
+        else {
+          auto len = (pos != std::string::npos) ? (pos - newValuePos) : pos;
+          auto value = line.substr(newValuePos, len);
+          Trim(value);
+          if(!value.empty() && value[0] == '\"')
+            // remove quotes
+            value = value.substr(1, value.size() - 2);
+          values.emplace_back(std::move(value));
+          if(pos != std::string::npos)
+            newValuePos = pos + 1;
+        }
+      }
+      if(pos != std::string::npos)
+        pos++;
+    }
+    while(pos != std::string::npos);
+
+    return values;
+  }
+
+}
+
 /**
  * @brief Class constructor.
  *

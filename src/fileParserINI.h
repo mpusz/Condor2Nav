@@ -48,14 +48,7 @@ namespace condor2nav {
    * of pairs (set "" for chapter name in that case).
    */
   class CFileParserINI : CNonCopyable {
-    /**
-     * @brief Stores key=value pairs.
-     */
-    struct TKeyValue {
-      std::string key;
-      std::string value;
-    };
-    typedef std::map<const std::string *, std::unique_ptr<TKeyValue>, CPtrCmp> CValuesMap;	///< @brief The map of key=value pairs. 
+    typedef std::map<std::string, std::string> CValuesMap;	///< @brief The map of key=value pairs. 
 
     /**
      * @brief INI file chapter data.
@@ -64,7 +57,7 @@ namespace condor2nav {
       std::string name;
       CValuesMap valuesMap;
     };
-    typedef std::deque<std::unique_ptr<TChapter>> CChaptersList;	  ///< @brief The list of INI file chapters.
+    typedef std::deque<TChapter> CChaptersList;	      ///< @brief The list of INI file chapters.
 
     const boost::filesystem::path _filePath;          ///< @brief Input file path.
     CValuesMap _valuesMap;	                          ///< @brief The map of plain key=value pairs. 
@@ -79,7 +72,7 @@ namespace condor2nav {
     const boost::filesystem::path &Path() const { return _filePath; }
     CFileParserINI(const std::string &server, const boost::filesystem::path &url);
     const std::string &Value(const std::string &chapter, const std::string &key) const;
-    void Value(const std::string &chapter, const std::string &key, const std::string &value);
+    void Value(const std::string &chapter, const std::string &key, std::string value);
     void Dump(const boost::filesystem::path &filePath = "") const;
   };
 
