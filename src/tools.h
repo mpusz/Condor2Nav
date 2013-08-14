@@ -41,19 +41,6 @@ namespace boost {
 namespace condor2nav {
 
   /**
-   * @brief Pointer version of std::less
-   *
-   * Pointer version of std::less used for STL containers sorting.
-   */
-  struct CPtrCmp {
-    template<class T>
-    bool operator()(T v1, T v2) const
-    {
-      return *v1 < *v2;
-    }
-  };
-
-  /**
    * @brief Deleter for HModule
    */
   struct CHModuleDeleter {
