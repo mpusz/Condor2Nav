@@ -26,7 +26,6 @@
  */
 
 #include "condor2navCLI.h"
-#include "tools.h"
 #include <iostream>
 
 
