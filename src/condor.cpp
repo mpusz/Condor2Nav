@@ -81,17 +81,17 @@ namespace condor2nav {
  * @param condorPath The path to Condor directory
  * @param trnName The name of the terrain used in task
  */
-  _iface{std::make_unique<TDLLIface>()}, _hInstLib{::LoadLibrary((condorPath / "NaviCon.dll").string().c_str())}
 condor2nav::CCondor::CCoordConverter::CCoordConverter(const bfs::path &condorPath, const std::string &trnName) :
+  _iface{std::make_unique<TDLLIface>()}, _lib{::LoadLibrary((condorPath / "NaviCon.dll").string().c_str())}
 {
-  if(!_hInstLib.get())
+  if(!_lib.get())
     throw EOperationFailed{"ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath.string() + "'!!!"};
   
-  Symbol(_hInstLib.get(), "NaviConInit", _iface->naviConInit);
-  Symbol(_hInstLib.get(), "GetMaxX",     _iface->getMaxX);
-  Symbol(_hInstLib.get(), "GetMaxY",     _iface->getMaxY);
-  Symbol(_hInstLib.get(), "XYToLon",     _iface->xyToLon);
-  Symbol(_hInstLib.get(), "XYToLat",     _iface->xyToLat);
+  Symbol(_lib.get(), "NaviConInit", _iface->naviConInit);
+  Symbol(_lib.get(), "GetMaxX",     _iface->getMaxX);
+  Symbol(_lib.get(), "GetMaxY",     _iface->getMaxY);
+  Symbol(_lib.get(), "XYToLon",     _iface->xyToLon);
+  Symbol(_lib.get(), "XYToLat",     _iface->xyToLat);
 
   // init coordinates
   auto trnPath = condorPath / "Landscapes" / trnName / (trnName + ".trn");

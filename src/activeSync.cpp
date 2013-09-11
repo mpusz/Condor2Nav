@@ -91,8 +91,16 @@ namespace condor2nav {
     FCeCreateDirectory ceCreateDirectory;
   };
 
-  void CActiveSync::CRapiDeleter::operator()(bool status) const         { _iface.ceRapiUninit(); }
-  void CActiveSync::CRapiHandleDeleter::operator()(HANDLE handle) const { _iface.ceCloseHandle(handle); }
+  class CActiveSync::CRapiHandleDeleter {
+    const TDLLIface &_iface;
+  public:
+    using pointer = HANDLE;
+    CRapiHandleDeleter(const TDLLIface &iface) : _iface{iface} {}
+    CRapiHandleDeleter &operator =(const CRapiHandleDeleter &) = delete;
+    void operator ()(pointer handle) const { _iface.ceCloseHandle(handle); }
+  };
+
+  void CActiveSync::CRapiDeleter::operator()(pointer status) const       { _iface.ceRapiUninit(); }
 
 }
 
@@ -118,19 +126,19 @@ condor2nav::CActiveSync &condor2nav::CActiveSync::Instance()
  * condor2nav::CActiveSync class constructor.
  */
 condor2nav::CActiveSync::CActiveSync() :
-  _hInstLib{::LoadLibrary("rapi.dll")}, _iface{std::make_unique<TDLLIface>()}, _rapi{false, CRapiDeleter(*_iface)}
+  _lib{::LoadLibrary("rapi.dll")}, _iface{std::make_unique<TDLLIface>()}, _rapi{false, CRapiDeleter(*_iface)}
 {
-  if(!_hInstLib.get())
+  if(!_lib.get())
     throw EOperationFailed{"ERROR: Couldn't open 'rapi.dll' library!!! Please check that ActiveSync is installed correctly."};
-  Symbol(_hInstLib.get(), "CeRapiInitEx",      _iface->ceRapiInitEx);
-  Symbol(_hInstLib.get(), "CeRapiUninit",      _iface->ceRapiUninit);
-  Symbol(_hInstLib.get(), "CeGetLastError",    _iface->ceGetLastError);
-  Symbol(_hInstLib.get(), "CeCreateFile",      _iface->ceCreateFile);
-  Symbol(_hInstLib.get(), "CeGetFileSize",     _iface->ceGetFileSize);
-  Symbol(_hInstLib.get(), "CeReadFile",        _iface->ceReadFile);
-  Symbol(_hInstLib.get(), "CeWriteFile",       _iface->ceWriteFile);
-  Symbol(_hInstLib.get(), "CeCloseHandle",     _iface->ceCloseHandle);
-  Symbol(_hInstLib.get(), "CeCreateDirectory", _iface->ceCreateDirectory);
+  Symbol(_lib.get(), "CeRapiInitEx",      _iface->ceRapiInitEx);
+  Symbol(_lib.get(), "CeRapiUninit",      _iface->ceRapiUninit);
+  Symbol(_lib.get(), "CeGetLastError",    _iface->ceGetLastError);
+  Symbol(_lib.get(), "CeCreateFile",      _iface->ceCreateFile);
+  Symbol(_lib.get(), "CeGetFileSize",     _iface->ceGetFileSize);
+  Symbol(_lib.get(), "CeReadFile",        _iface->ceReadFile);
+  Symbol(_lib.get(), "CeWriteFile",       _iface->ceWriteFile);
+  Symbol(_lib.get(), "CeCloseHandle",     _iface->ceCloseHandle);
+  Symbol(_lib.get(), "CeCreateDirectory", _iface->ceCreateDirectory);
 
   // init RAPI
   RAPIINIT initData{};

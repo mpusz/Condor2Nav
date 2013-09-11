@@ -62,8 +62,8 @@ namespace condor2nav {
      */
     class CCoordConverter : CNonCopyable {
       struct TDLLIface;
-      std::unique_ptr<TDLLIface> _iface;	                ///< @brief DLL interface.
-      std::unique_ptr<HMODULE, CHModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
+      std::unique_ptr<TDLLIface> _iface;	       ///< @brief DLL interface.
+      CLibraryRes _lib;                            ///< @brief DLL instance. 
     public:
       CCoordConverter(const bfs::path &condorPath, const std::string &trnName);
       ~CCoordConverter();

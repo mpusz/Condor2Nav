@@ -144,7 +144,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char *cmdParam, int
 {
   try {
     // init RichEdit controls
-    std::unique_ptr<HMODULE, condor2nav::CHModuleDeleter> _richEditLib(::LoadLibrary("RichEd20.dll"));
+    condor2nav::CLibraryRes _richEditLib(::LoadLibrary("RichEd20.dll"));
 
     // create MainDialog window
     HWND hDialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_MAIN_DIALOG), nullptr, (DLGPROC)condor2nav::gui::MainDialogProc);

@@ -46,30 +46,23 @@ namespace condor2nav {
    */
   class CActiveSync : CNonCopyable {
     struct TDLLIface;
+    class CRapiHandleDeleter;
 
     class CRapiDeleter {
       const TDLLIface &_iface;
-      CRapiDeleter &operator=(const CRapiDeleter &);
     public:
-      typedef bool pointer;
+      using pointer = bool;
       CRapiDeleter(const TDLLIface &iface) : _iface{iface} {}
-      void operator()(bool status) const;
+      CRapiDeleter &operator =(const CRapiDeleter &) = delete;
+      void operator ()(pointer status) const;
     };
+    using CRapiRes = std::unique_ptr<bool, CRapiDeleter>;
 
-    class CRapiHandleDeleter {
-      const TDLLIface &_iface;
-      CRapiHandleDeleter &operator=(const CRapiHandleDeleter &);
-    public:
-      typedef HANDLE pointer;
-      CRapiHandleDeleter(const TDLLIface &iface) : _iface{iface} {}
-      void operator()(HANDLE handle) const;
-    };
+    static const unsigned TIMEOUT = 5000;             ///< @brief Timeout in ms for ActiveSync initialization. 
 
-    static const unsigned TIMEOUT = 5000;                 ///< @brief Timeout in ms for ActiveSync initialization. 
-
-    std::unique_ptr<HMODULE, CHModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
-    std::unique_ptr<TDLLIface> _iface;	                  ///< @brief DLL interface.
-    std::unique_ptr<bool, CRapiDeleter> _rapi;            ///< @brief RAPI RAII wrapper. 
+    CLibraryRes _lib;                                 ///< @brief DLL instance. 
+    std::unique_ptr<TDLLIface> _iface;	              ///< @brief DLL interface.
+    CRapiRes _rapi;                                   ///< @brief RAPI RAII wrapper. 
 
     CActiveSync();
   public:

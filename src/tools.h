@@ -31,6 +31,7 @@
 #include "exception.h"
 #include "boostfwd.h"
 #include <sstream>
+#include <memory>
 #include <Windows.h>
 
 
@@ -39,11 +40,11 @@ namespace condor2nav {
   /**
    * @brief Deleter for HModule
    */
-  struct CHModuleDeleter {
+  struct CLibraryDeleter {
     typedef HMODULE pointer;
     void operator()(HMODULE hmod) const { ::FreeLibrary(hmod); }
   };
-
+  using CLibraryRes = std::unique_ptr<HMODULE, CLibraryDeleter>;
 
   // conversions
   template<class T> T Convert(const std::string &str);
