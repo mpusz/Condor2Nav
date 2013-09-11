@@ -39,12 +39,12 @@
  *
  * @param fileName The name of the file to read.
  */
-condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName)
+condor2nav::CIStream::CIStream(const bfs::path &fileName)
 {
   switch(Type(fileName)) {
   case TType::LOCAL:
     {
-      boost::filesystem::fstream stream{fileName, std::ios_base::in};
+      bfs::fstream stream{fileName, std::ios_base::in};
       if(!stream)
         throw EOperationFailed{"ERROR: Couldn't open file '" + fileName.string() + "' for reading!!!"};
       Buffer() << stream.rdbuf();
@@ -58,7 +58,7 @@ condor2nav::CIStream::CIStream(const boost::filesystem::path &fileName)
 }
 
 
-condor2nav::CIStream::CIStream(const std::string &server, const boost::filesystem::path &url, unsigned timeout /* = 30 */)
+condor2nav::CIStream::CIStream(const std::string &server, const bfs::path &url, unsigned timeout /* = 30 */)
 {
   boost::asio::ip::tcp::iostream http;
   http.expires_from_now(boost::posix_time::seconds(timeout));

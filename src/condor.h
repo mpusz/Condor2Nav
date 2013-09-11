@@ -31,13 +31,8 @@
 #include "condor2nav.h"
 #include "nonCopyable.h"
 #include "fileParserINI.h"
+#include "boostfwd.h"
 #include <windows.h>
-
-namespace boost {
-  namespace filesystem {
-    class path;
-  }
-}
 
 namespace condor2nav {
 
@@ -70,7 +65,7 @@ namespace condor2nav {
       std::unique_ptr<TDLLIface> _iface;	                ///< @brief DLL interface.
       std::unique_ptr<HMODULE, CHModuleDeleter> _hInstLib;  ///< @brief DLL instance. 
     public:
-      CCoordConverter(const boost::filesystem::path &condorPath, const std::string &trnName);
+      CCoordConverter(const bfs::path &condorPath, const std::string &trnName);
       ~CCoordConverter();
       TLongitude Longitude(const std::string &x, const std::string &y) const;
       TLatitude Latitude(const std::string &x, const std::string &y) const;
@@ -78,18 +73,18 @@ namespace condor2nav {
 
   private:
     static const unsigned CONDOR_VERSION_SUPPORTED = 1120;	  ///< @brief Supported Condor version.
-    static const boost::filesystem::path FLIGHT_PLANS_PATH;
-    static const boost::filesystem::path RACE_RESULTS_PATH;
+    static const bfs::path FLIGHT_PLANS_PATH;
+    static const bfs::path RACE_RESULTS_PATH;
     const CFileParserINI _taskParser;	           ///< @brief Condor task file parser. 
     const CCoordConverter _coordConverter;	       ///< @brief Condor map coordinates converter. 
 
   public:
-    static boost::filesystem::path InstallPath();
-    static boost::filesystem::path FPLPath(const CFileParserINI &configParser,
-                                           CCondor2Nav::TFPLType fplType,
-                                           const boost::filesystem::path &condorPath);
+    static bfs::path InstallPath();
+    static bfs::path FPLPath(const CFileParserINI &configParser,
+                             CCondor2Nav::TFPLType fplType,
+                             const bfs::path &condorPath);
 
-    CCondor(const boost::filesystem::path &condorPath, const boost::filesystem::path &fplPath);
+    CCondor(const bfs::path &condorPath, const bfs::path &fplPath);
     const CFileParserINI &TaskParser() const      { return _taskParser; }
     const CCoordConverter &CoordConverter() const { return _coordConverter; }
   };

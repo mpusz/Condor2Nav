@@ -65,7 +65,7 @@ namespace condor2nav {
     private:
       struct TOptions {
         TFPLType fplType;
-        boost::filesystem::path fplPath;
+        bfs::path fplPath;
         unsigned aatTime;
       };
 

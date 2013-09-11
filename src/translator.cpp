@@ -32,9 +32,9 @@
 #include "targetXCSoar6.h"
 #include "targetLK8000.h"
 
-const boost::filesystem::path condor2nav::CTranslator::DATA_PATH                = "data";
-const boost::filesystem::path condor2nav::CTranslator::SCENERIES_DATA_FILE_NAME = "SceneryData.csv";
-const boost::filesystem::path condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME   = "GliderData.csv";
+const bfs::path condor2nav::CTranslator::DATA_PATH                = "data";
+const bfs::path condor2nav::CTranslator::SCENERIES_DATA_FILE_NAME = "SceneryData.csv";
+const bfs::path condor2nav::CTranslator::GLIDERS_DATA_FILE_NAME   = "GliderData.csv";
 
 
 
@@ -106,7 +106,7 @@ const condor2nav::CCondor &condor2nav::CTranslator::CTarget::Condor() const
  *
  * @return Translation output directory. 
  */
-const boost::filesystem::path &condor2nav::CTranslator::CTarget::OutputPath() const
+const bfs::path &condor2nav::CTranslator::CTarget::OutputPath() const
 {
   return _outputPath;
 }

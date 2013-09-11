@@ -50,8 +50,8 @@ namespace condor2nav {
      * condor2nav::CTranslator::CTarget is a base abstract class for all translation targets.
      */
     class CTarget : CNonCopyable {
-      const CTranslator &_translator;               ///< @brief Translator class
-      const boost::filesystem::path _outputPath;    ///< @brief Translation output directory
+      const CTranslator &_translator;     ///< @brief Translator class
+      const bfs::path _outputPath;        ///< @brief Translation output directory
 
     public:
       /**
@@ -88,7 +88,7 @@ namespace condor2nav {
       const CTranslator &Translator() const;
       const CFileParserINI &ConfigParser() const;
       const CCondor &Condor() const;
-      const boost::filesystem::path &OutputPath() const;
+      const bfs::path &OutputPath() const;
 
     public:
       explicit CTarget(const CTranslator &translator);
@@ -176,9 +176,9 @@ namespace condor2nav {
 
   public:
     // inputs
-    static const boost::filesystem::path DATA_PATH;                 ///< @brief Application data directory path. 
-    static const boost::filesystem::path SCENERIES_DATA_FILE_NAME;  ///< @brief Sceneries data CSV file name. 
-    static const boost::filesystem::path GLIDERS_DATA_FILE_NAME;    ///< @brief Gliders data CSV file name.
+    static const bfs::path DATA_PATH;                     ///< @brief Application data directory path. 
+    static const bfs::path SCENERIES_DATA_FILE_NAME;      ///< @brief Sceneries data CSV file name. 
+    static const bfs::path GLIDERS_DATA_FILE_NAME;        ///< @brief Gliders data CSV file name.
 
     CTranslator(const CCondor2Nav &app, const CFileParserINI &configParser, const CCondor &condor, unsigned aatTime);
     void Run();

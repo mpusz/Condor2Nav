@@ -30,14 +30,9 @@
 
 #include "nonCopyable.h"
 #include "tools.h"
+#include "boostfwd.h"
 #include <functional>
-#include <memory>
 
-namespace boost {
-  namespace filesystem {
-    class path;
-  }
-}
 
 namespace condor2nav {
 
@@ -79,10 +74,10 @@ namespace condor2nav {
     CActiveSync();
   public:
     static CActiveSync &Instance();
-    std::string Read(const boost::filesystem::path &src) const;
-    void Write(const boost::filesystem::path &dest, const std::string &buffer) const;
-    void DirectoryCreate(const boost::filesystem::path &path) const;
-    bool FileExists(const boost::filesystem::path &path) const;
+    std::string Read(const bfs::path &src) const;
+    void Write(const bfs::path &dest, const std::string &buffer) const;
+    void DirectoryCreate(const bfs::path &path) const;
+    bool FileExists(const bfs::path &path) const;
   };
 
 }

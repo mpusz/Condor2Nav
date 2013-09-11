@@ -29,6 +29,7 @@
 #define __FILEPARSERCSV_H__
 
 #include "nonCopyable.h"
+#include "boostfwd.h"
 #include <deque>
 #include <vector>
 #include <string>
@@ -49,17 +50,17 @@ namespace condor2nav {
     typedef std::deque<CStringArray> CRowsList;	   ///< @brief The list of string arrays. 
 
   private:
-    const boost::filesystem::path _filePath;       ///< @brief Input file path.
+    const bfs::path _filePath;                     ///< @brief Input file path.
     CRowsList _rowsList;	                       ///< @brief The list of file rows.
 
   public:
-    explicit CFileParserCSV(boost::filesystem::path filePath);
-    const boost::filesystem::path &Path() const { return _filePath; }
+    explicit CFileParserCSV(bfs::path filePath);
+    const bfs::path &Path() const { return _filePath; }
     const CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false) const;
     CStringArray &Row(const std::string &value, unsigned column = 0, bool nocase = false);
     const CRowsList &Rows() const;
     CRowsList &Rows();
-    void Dump(const boost::filesystem::path &filePath = "") const;
+    void Dump(const bfs::path &filePath = "") const;
   };
 
 }

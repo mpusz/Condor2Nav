@@ -90,7 +90,7 @@ namespace {
  *
  * @param filePath The path of the CSV file to parse.
  */
-condor2nav::CFileParserCSV::CFileParserCSV(boost::filesystem::path filePath) :
+condor2nav::CFileParserCSV::CFileParserCSV(bfs::path filePath) :
   _filePath{std::move(filePath)}
 {
   // open CSV file
@@ -181,7 +181,7 @@ auto condor2nav::CFileParserCSV::Rows() -> CRowsList &
 *
 * @param filePath Path of the file to create (empty means overwrite input file).
 */
-void condor2nav::CFileParserCSV::Dump(const boost::filesystem::path &filePath /* = "" */) const
+void condor2nav::CFileParserCSV::Dump(const bfs::path &filePath /* = "" */) const
 {
   COStream ostream{filePath.empty() ? Path() : filePath};
   for(const auto &row : _rowsList) {

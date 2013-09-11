@@ -65,7 +65,7 @@ namespace {
  *
  * @param filePath The path of the INI file to parse.
  */
-condor2nav::CFileParserINI::CFileParserINI(boost::filesystem::path filePath) :
+condor2nav::CFileParserINI::CFileParserINI(bfs::path filePath) :
   _filePath{std::move(filePath)}
 {
   // open input INI file
@@ -82,7 +82,7 @@ condor2nav::CFileParserINI::CFileParserINI(boost::filesystem::path filePath) :
  * @param server The server from which to download the INI file.
  * @param url The path on the server to the INI file.
  */
-condor2nav::CFileParserINI::CFileParserINI(const std::string &server, const boost::filesystem::path &url) :
+condor2nav::CFileParserINI::CFileParserINI(const std::string &server, const bfs::path &url) :
   _filePath{server + url.generic_string()}
 {
   CIStream inputStream{server, url.generic_string()};
@@ -220,7 +220,7 @@ void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::st
 *
 * @param filePath Path of the file to create (empty means overwrite input file).
 */
-void condor2nav::CFileParserINI::Dump(const boost::filesystem::path &filePath /* = "" */) const
+void condor2nav::CFileParserINI::Dump(const bfs::path &filePath /* = "" */) const
 {
   COStream ostream{filePath.empty() ? Path() : filePath};
   // dump global scope

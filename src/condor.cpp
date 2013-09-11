@@ -32,8 +32,8 @@
 #include <algorithm>
 #include <cmath>
 
-const boost::filesystem::path condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
-const boost::filesystem::path condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
+const bfs::path condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
+const bfs::path condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
 
 namespace {
 
@@ -81,8 +81,8 @@ namespace condor2nav {
  * @param condorPath The path to Condor directory
  * @param trnName The name of the terrain used in task
  */
-condor2nav::CCondor::CCoordConverter::CCoordConverter(const boost::filesystem::path &condorPath, const std::string &trnName) :
   _iface{std::make_unique<TDLLIface>()}, _hInstLib{::LoadLibrary((condorPath / "NaviCon.dll").string().c_str())}
+condor2nav::CCondor::CCoordConverter::CCoordConverter(const bfs::path &condorPath, const std::string &trnName) :
 {
   if(!_hInstLib.get())
     throw EOperationFailed{"ERROR: Couldn't open 'NaviCon.dll' from Condor directory '" + condorPath.string() + "'!!!"};
@@ -162,7 +162,7 @@ condor2nav::TLatitude condor2nav::CCondor::CCoordConverter::Latitude(const std::
 *
 * @return Path to Condor: The Competition Soaring Simulator
 */
-boost::filesystem::path condor2nav::CCondor::InstallPath()
+bfs::path condor2nav::CCondor::InstallPath()
 {
   HKEY hTestKey;
   if((RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
@@ -170,7 +170,7 @@ boost::filesystem::path condor2nav::CCondor::InstallPath()
     RegQueryValueEx(hTestKey, "InstallDir", nullptr, nullptr, nullptr, &bufferSize);
     auto buffer = std::make_unique<char[]>(bufferSize);
     RegQueryValueEx(hTestKey, "InstallDir", nullptr, nullptr, reinterpret_cast<BYTE *>(buffer.get()), &bufferSize);
-    boost::filesystem::path condorPath{buffer.get()};
+    bfs::path condorPath{buffer.get()};
     RegCloseKey(hTestKey);
     return condorPath;
   }
@@ -192,30 +192,30 @@ boost::filesystem::path condor2nav::CCondor::InstallPath()
 *
 * @return Full pathname of the FPL file. 
  */
-boost::filesystem::path condor2nav::CCondor::FPLPath(const CFileParserINI &configParser,
-                                                     CCondor2Nav::TFPLType fplType,
-                                                     const boost::filesystem::path &condorPath)
+bfs::path condor2nav::CCondor::FPLPath(const CFileParserINI &configParser,
+                                       CCondor2Nav::TFPLType fplType,
+                                       const bfs::path &condorPath)
 {
-  boost::filesystem::path fplPath;
+  bfs::path fplPath;
   if(fplType == CCondor2Nav::TFPLType::DEFAULT) {
-    auto fplPathUser = boost::filesystem::path{configParser.Value("Condor", "FlightPlansPath")};
+    auto fplPathUser = bfs::path{configParser.Value("Condor", "FlightPlansPath")};
     if(fplPathUser.empty())
       fplPath = condorPath / FLIGHT_PLANS_PATH / (configParser.Value("Condor", "DefaultTaskName") + ".fpl");
     else
       fplPath = fplPathUser / (configParser.Value("Condor", "DefaultTaskName") + ".fpl");
   }
   else if(fplType == CCondor2Nav::TFPLType::RESULT) {
-    auto resultsPath = boost::filesystem::path{configParser.Value("Condor", "RaceResultsPath")};
+    auto resultsPath = bfs::path{configParser.Value("Condor", "RaceResultsPath")};
     if(resultsPath.empty())
       resultsPath = condorPath / RACE_RESULTS_PATH;
 
     // find the latest race result
-    std::vector<boost::filesystem::path> results;
-    std::copy_if(boost::filesystem::directory_iterator(resultsPath), boost::filesystem::directory_iterator(), std::back_inserter(results),
-                 [](const boost::filesystem::path &f){ return CStringNoCase{f.extension().string().c_str()} == ".fpl"; });
+    std::vector<bfs::path> results;
+    std::copy_if(bfs::directory_iterator(resultsPath), bfs::directory_iterator(), std::back_inserter(results),
+                 [](const bfs::path &f){ return CStringNoCase{f.extension().string().c_str()} == ".fpl"; });
     auto result = std::max_element(cbegin(results), cend(results),
-                                   [](const boost::filesystem::path &f1, const boost::filesystem::path &f2)
-                                   { return boost::filesystem::last_write_time(f1) < boost::filesystem::last_write_time(f2); });
+                                   [](const bfs::path &f1, const bfs::path &f2)
+                                   { return bfs::last_write_time(f1) < bfs::last_write_time(f2); });
     if(result != results.end())
       fplPath = result->string();
     else
@@ -236,7 +236,7 @@ boost::filesystem::path condor2nav::CCondor::FPLPath(const CFileParserINI &confi
  *
  * @exception std Thrown when not supported Condor version.
  */
-condor2nav::CCondor::CCondor(const boost::filesystem::path &condorPath, const boost::filesystem::path &fplPath):
+condor2nav::CCondor::CCondor(const bfs::path &condorPath, const bfs::path &fplPath):
 _taskParser(fplPath),
 _coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
 {

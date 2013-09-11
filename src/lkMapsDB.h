@@ -31,14 +31,9 @@
 #include "nonCopyable.h"
 #include "traitsNoCase.h"
 #include "fileParserCSV.h"
+#include "boostfwd.h"
 #include <vector>
 #include <map>
-
-namespace boost {
-  namespace filesystem {
-    class path;
-  }
-}
 
 namespace condor2nav {
 
@@ -55,12 +50,12 @@ namespace condor2nav {
     typedef std::vector<CStringNoCase> CNamesList;
     typedef std::map<CStringNoCase, std::shared_ptr<CFileParserINI>> CParsersMap;
   private:
-    static const boost::filesystem::path CONDOR_TEMPLATES_DIR;
-    static const boost::filesystem::path CONDOR2NAV_LK8000_TEMPLATES_DIR;
-    static const boost::filesystem::path CONDOR2NAV_LK8000_MAPS_DIR;
-    static const boost::filesystem::path LK8000_MAPS_URL;
-    static const std::string             LKM_TEMPLATES_INDEX_SERVER;
-    static const boost::filesystem::path LKM_TEMPLATES_INDEX_URL;
+    static const bfs::path   CONDOR_TEMPLATES_DIR;
+    static const bfs::path   CONDOR2NAV_LK8000_TEMPLATES_DIR;
+    static const bfs::path   CONDOR2NAV_LK8000_MAPS_DIR;
+    static const bfs::path   LK8000_MAPS_URL;
+    static const std::string LKM_TEMPLATES_INDEX_SERVER;
+    static const bfs::path   LKM_TEMPLATES_INDEX_URL;
 
     const CCondor2Nav &_app;
     CFileParserCSV _sceneriesParser;

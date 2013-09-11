@@ -34,12 +34,12 @@
 #include <algorithm>
 
 
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::OUTPUT_PROFILE_NAME    = "Condor.prf";
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::TASK_FILE_NAME         = "Condor.tsk";
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::DEFAULT_TASK_FILE_NAME = "Default.tsk";
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::POLAR_FILE_NAME        = "Condor.plr";
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::AIRSPACES_FILE_NAME    = "Condor.txt";
-const boost::filesystem::path condor2nav::CTargetXCSoarCommon::WP_FILE_NAME           = "Condor.dat";
+const bfs::path condor2nav::CTargetXCSoarCommon::OUTPUT_PROFILE_NAME    = "Condor.prf";
+const bfs::path condor2nav::CTargetXCSoarCommon::TASK_FILE_NAME         = "Condor.tsk";
+const bfs::path condor2nav::CTargetXCSoarCommon::DEFAULT_TASK_FILE_NAME = "Default.tsk";
+const bfs::path condor2nav::CTargetXCSoarCommon::POLAR_FILE_NAME        = "Condor.plr";
+const bfs::path condor2nav::CTargetXCSoarCommon::AIRSPACES_FILE_NAME    = "Condor.txt";
+const bfs::path condor2nav::CTargetXCSoarCommon::WP_FILE_NAME           = "Condor.dat";
 
 /**
  * @brief Class constructor.
@@ -114,7 +114,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
                                                   const CCondor::CCoordConverter &coordConv,
                                                   unsigned aatTime,
                                                   unsigned maxTaskPoints, unsigned maxStartPoints,
-                                                  bool generateWPFile, const boost::filesystem::path &wpOutputPathPrefix) const
+                                                  bool generateWPFile, const bfs::path &wpOutputPathPrefix) const
 {
   using namespace xcsoar;
 
@@ -361,8 +361,8 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
 void condor2nav::CTargetXCSoarCommon::PenaltyZonesProcess(CFileParserINI &profileParser,
                                                           const CFileParserINI &taskParser,
                                                           const CCondor::CCoordConverter &coordConv,
-                                                          const boost::filesystem::path &pathPrefix,
-                                                          const boost::filesystem::path &outputPathPrefix) const
+                                                          const bfs::path &pathPrefix,
+                                                          const bfs::path &outputPathPrefix) const
 {
   const auto pzNum = Convert<unsigned>(taskParser.Value("Task", "PZCount"));
   if(pzNum == 0) {

@@ -42,33 +42,33 @@ namespace condor2nav {
    */
   class CTargetLK8000 : public CTargetXCSoarCommon {
     // dirs
-    static const boost::filesystem::path AIRSPACES_SUBDIR;  ///< @brief LK8000 airspaces subdirectory. 
-    static const boost::filesystem::path CONFIG_SUBDIR;     ///< @brief LK8000 configuration subdirectory. 
-    static const boost::filesystem::path MAPS_SUBDIR;       ///< @brief LK8000 maps subdirectory. 
-    static const boost::filesystem::path POLARS_SUBDIR;     ///< @brief LK8000 polars subdirectory. 
-    static const boost::filesystem::path TASKS_SUBDIR;      ///< @brief LK8000 tasks subdirectory.
-    static const boost::filesystem::path WAYPOINTS_SUBDIR;  ///< @brief LK8000 waypoints subdirectory.
+    static const bfs::path AIRSPACES_SUBDIR;              ///< @brief LK8000 airspaces subdirectory. 
+    static const bfs::path CONFIG_SUBDIR;                 ///< @brief LK8000 configuration subdirectory. 
+    static const bfs::path MAPS_SUBDIR;                   ///< @brief LK8000 maps subdirectory. 
+    static const bfs::path POLARS_SUBDIR;                 ///< @brief LK8000 polars subdirectory. 
+    static const bfs::path TASKS_SUBDIR;                  ///< @brief LK8000 tasks subdirectory.
+    static const bfs::path WAYPOINTS_SUBDIR;              ///< @brief LK8000 waypoints subdirectory.
 
     // inputs
-    static const boost::filesystem::path DEFAULT_SYSTEM_PROFILE_NAME;   ///< @brief LK8000 system profile file name. 
-    static const boost::filesystem::path DEFAULT_AIRCRAFT_PROFILE_NAME; ///< @brief LK8000 aircraft profile file name.
+    static const bfs::path DEFAULT_SYSTEM_PROFILE_NAME;   ///< @brief LK8000 system profile file name. 
+    static const bfs::path DEFAULT_AIRCRAFT_PROFILE_NAME; ///< @brief LK8000 aircraft profile file name.
 
     // outputs
-    static const boost::filesystem::path OUTPUT_AIRCRAFT_PROFILE_NAME;  ///< @brief The name of LK8000 aircraft profile file to generate. 
+    static const bfs::path OUTPUT_AIRCRAFT_PROFILE_NAME;  ///< @brief The name of LK8000 aircraft profile file to generate. 
 
-    std::unique_ptr<CFileParserINI> _systemParser;       ///< @brief LK8000 system profile file parser. 
-    std::unique_ptr<CFileParserINI> _aircraftParser;     ///< @brief LK8000 aircraft profile file parser. 
-    const boost::filesystem::path _outputLK8000DataPath; ///< @brief The path to the output LK8000 directory.
-    std::string _condor2navDataPathString;               ///< @brief The Condor2Nav destination data directory path (in LK8000 format) on the target device that runs LK8000.
+    std::unique_ptr<CFileParserINI> _systemParser;        ///< @brief LK8000 system profile file parser. 
+    std::unique_ptr<CFileParserINI> _aircraftParser;      ///< @brief LK8000 aircraft profile file parser. 
+    const bfs::path _outputLK8000DataPath;                ///< @brief The path to the output LK8000 directory.
+    std::string _condor2navDataPathString;                ///< @brief The Condor2Nav destination data directory path (in LK8000 format) on the target device that runs LK8000.
 
-    boost::filesystem::path _outputAirspacesSubDir;      ///< @brief The subdirectory where output LK8000 airspaces file should be located
-    boost::filesystem::path _outputMapsSubDir;           ///< @brief The subdirectory where output LK8000 airspaces file should be located
-    boost::filesystem::path _outputPolarsSubDir;         ///< @brief The subdirectory where output LK8000 polars file should be located
-    boost::filesystem::path _outputWaypointsSubDir;      ///< @brief The subdirectory where output LK8000 waypoints file should be located
+    bfs::path _outputAirspacesSubDir;                     ///< @brief The subdirectory where output LK8000 airspaces file should be located
+    bfs::path _outputMapsSubDir;                          ///< @brief The subdirectory where output LK8000 airspaces file should be located
+    bfs::path _outputPolarsSubDir;                        ///< @brief The subdirectory where output LK8000 polars file should be located
+    bfs::path _outputWaypointsSubDir;                     ///< @brief The subdirectory where output LK8000 waypoints file should be located
 
-    COStream::CPathList _outputTaskFilePathList;         ///< @brief The path where output LK8000 task file should be located
-    COStream::CPathList _outputSystemProfilePathList;    ///< @brief The path where output configuration paths should be located
-    COStream::CPathList _outputAircraftProfilePathList;  ///< @brief The path where output configuration paths should be located
+    COStream::CPathList _outputTaskFilePathList;          ///< @brief The path where output LK8000 task file should be located
+    COStream::CPathList _outputSystemProfilePathList;     ///< @brief The path where output configuration paths should be located
+    COStream::CPathList _outputAircraftProfilePathList;   ///< @brief The path where output configuration paths should be located
 
     void TaskDump(CFileParserINI &profileParser,
                   const CFileParserINI &taskParser,

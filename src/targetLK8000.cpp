@@ -31,17 +31,17 @@
 #include <array>
 
 
-const boost::filesystem::path condor2nav::CTargetLK8000::AIRSPACES_SUBDIR    = "_Airspaces";
-const boost::filesystem::path condor2nav::CTargetLK8000::CONFIG_SUBDIR       = "_Configuration";
-const boost::filesystem::path condor2nav::CTargetLK8000::MAPS_SUBDIR         = "_Maps";
-const boost::filesystem::path condor2nav::CTargetLK8000::POLARS_SUBDIR       = "_Polars";
-const boost::filesystem::path condor2nav::CTargetLK8000::TASKS_SUBDIR        = "_Tasks";
-const boost::filesystem::path condor2nav::CTargetLK8000::WAYPOINTS_SUBDIR    = "_Waypoints";
+const bfs::path condor2nav::CTargetLK8000::AIRSPACES_SUBDIR    = "_Airspaces";
+const bfs::path condor2nav::CTargetLK8000::CONFIG_SUBDIR       = "_Configuration";
+const bfs::path condor2nav::CTargetLK8000::MAPS_SUBDIR         = "_Maps";
+const bfs::path condor2nav::CTargetLK8000::POLARS_SUBDIR       = "_Polars";
+const bfs::path condor2nav::CTargetLK8000::TASKS_SUBDIR        = "_Tasks";
+const bfs::path condor2nav::CTargetLK8000::WAYPOINTS_SUBDIR    = "_Waypoints";
 
-const boost::filesystem::path condor2nav::CTargetLK8000::DEFAULT_SYSTEM_PROFILE_NAME   = "DEFAULT_PROFILE.prf";
-const boost::filesystem::path condor2nav::CTargetLK8000::DEFAULT_AIRCRAFT_PROFILE_NAME = "DEFAULT_AIRCRAFT.acf";
+const bfs::path condor2nav::CTargetLK8000::DEFAULT_SYSTEM_PROFILE_NAME   = "DEFAULT_PROFILE.prf";
+const bfs::path condor2nav::CTargetLK8000::DEFAULT_AIRCRAFT_PROFILE_NAME = "DEFAULT_AIRCRAFT.acf";
 
-const boost::filesystem::path condor2nav::CTargetLK8000::OUTPUT_AIRCRAFT_PROFILE_NAME  = "Condor.acf";
+const bfs::path condor2nav::CTargetLK8000::OUTPUT_AIRCRAFT_PROFILE_NAME  = "Condor.acf";
 
 
 /**
@@ -57,7 +57,7 @@ condor2nav::CTargetLK8000::CTargetLK8000(const CTranslator &translator) :
   _condor2navDataPathString{ConfigParser().Value("LK8000", "LK8000Path")}
 {
   // prepare directory names
-  const boost::filesystem::path subDir{"condor2nav"};
+  const bfs::path subDir{"condor2nav"};
   _outputAirspacesSubDir = AIRSPACES_SUBDIR / subDir;
   _outputMapsSubDir      = MAPS_SUBDIR / subDir;
   _outputPolarsSubDir    = POLARS_SUBDIR / subDir;

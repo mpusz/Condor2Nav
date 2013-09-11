@@ -20,25 +20,22 @@
 //
 
 /**
- * @file stream.cpp
+ * @file boostfwd.h
  *
- * @brief Implements the Stream wrapper class. 
+ * @brief Boost forward declarations.
  */
 
-#include "stream.h"
-#include <boost/filesystem.hpp>
+#ifndef __BOOSTFWD_H__
+#define __BOOSTFWD_H__
 
+namespace boost {
+  namespace filesystem {
 
-/**
- * @brief Returns file type.
- *
- * Determinates file type based on its name.
- */
-condor2nav::CStream::TType condor2nav::CStream::Type(const bfs::path &fileName) const
-{
-  std::string str{fileName.string()};
-  if(str.size() > 2 && str[0] == '\\' && str[1] != '\\')
-    return TType::ACTIVE_SYNC;
-  else
-    return TType::LOCAL;
+    class path;
+
+  }
 }
+
+namespace bfs = boost::filesystem;
+
+#endif /* __BOOSTFWD_H__ */

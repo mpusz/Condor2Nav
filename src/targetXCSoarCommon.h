@@ -60,13 +60,13 @@ namespace condor2nav {
     typedef std::vector<TWaypoint> CWaypointArray;
 
     // outputs
-    static const boost::filesystem::path OUTPUT_PROFILE_NAME;    ///< @brief The name of XCSoar profile file to generate. 
-    static const boost::filesystem::path TASK_FILE_NAME;         ///< @brief The name of XCSoar task file to generate. 
-    static const boost::filesystem::path DEFAULT_TASK_FILE_NAME; ///< @brief The name of the default XCSoar task file. 
-    static const boost::filesystem::path POLAR_FILE_NAME;        ///< @brief The name of XCSoar glider polar file to generate.
-    static const boost::filesystem::path AIRSPACES_FILE_NAME;    ///< @brief The name of XCSoar airspaces file to generate. 
-    static const boost::filesystem::path WP_FILE_NAME;           ///< @brief The name of XCSoar WP file with task waypoints.
-    static const unsigned WAYPOINT_INDEX_OFFSET = 100000;        ///< @brief A big value that should point behind all the waypoints
+    static const bfs::path OUTPUT_PROFILE_NAME;             ///< @brief The name of XCSoar profile file to generate. 
+    static const bfs::path TASK_FILE_NAME;                  ///< @brief The name of XCSoar task file to generate. 
+    static const bfs::path DEFAULT_TASK_FILE_NAME;          ///< @brief The name of the default XCSoar task file. 
+    static const bfs::path POLAR_FILE_NAME;                 ///< @brief The name of XCSoar glider polar file to generate.
+    static const bfs::path AIRSPACES_FILE_NAME;             ///< @brief The name of XCSoar airspaces file to generate. 
+    static const bfs::path WP_FILE_NAME;                    ///< @brief The name of XCSoar WP file with task waypoints.
+    static const unsigned WAYPOINT_INDEX_OFFSET = 100000;   ///< @brief A big value that should point behind all the waypoints
 
     unsigned WaypointBearing(TLongitude lon1, TLatitude lat1, TLongitude lon2, TLatitude lat2) const;
     virtual void TaskDump(CFileParserINI &profileParser,
@@ -83,12 +83,12 @@ namespace condor2nav {
                      unsigned maxTaskPoints,
                      unsigned maxStartPoints,
                      bool generateWPFile,
-                     const boost::filesystem::path &wpOutputPathPrefix) const;
+                     const bfs::path &wpOutputPathPrefix) const;
     void PenaltyZonesProcess(CFileParserINI &profileParser,
                              const CFileParserINI &taskParser,
                              const CCondor::CCoordConverter &coordConv,
-                             const boost::filesystem::path &pathPrefix,
-                             const boost::filesystem::path &outputPathPrefix) const;
+                             const bfs::path &pathPrefix,
+                             const bfs::path &outputPathPrefix) const;
 
   public:
     explicit CTargetXCSoarCommon(const CTranslator &translator);

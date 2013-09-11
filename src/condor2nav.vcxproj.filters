@@ -133,6 +133,9 @@
     <ClInclude Include="activeObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="boostfwd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CHANGELOG.txt" />

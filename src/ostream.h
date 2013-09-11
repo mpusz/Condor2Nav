@@ -40,18 +40,18 @@ namespace condor2nav {
    */
   class COStream : public CStream {
   public:
-    typedef std::vector<boost::filesystem::path> CPathList;
+    typedef std::vector<bfs::path> CPathList;
 
   private:
     CPathList _pathList;
 
   public:
-    explicit COStream(boost::filesystem::path fileName);
+    explicit COStream(bfs::path fileName);
     explicit COStream(CPathList pathList);
     ~COStream();
     COStream &Write(const char *buffer, std::streamsize num);
 
-    void Dump(const boost::filesystem::path &fileName);
+    void Dump(const bfs::path &fileName);
 
     /**
      * @brief Writes new data to a stream. 

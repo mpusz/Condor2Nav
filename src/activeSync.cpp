@@ -172,7 +172,7 @@ condor2nav::CActiveSync::CActiveSync() :
  * 
  * @return String with file content. 
  */
-std::string condor2nav::CActiveSync::Read(const boost::filesystem::path &src) const
+std::string condor2nav::CActiveSync::Read(const bfs::path &src) const
 {
   std::unique_ptr<HANDLE, CRapiHandleDeleter> hSrc{_iface->ceCreateFile(src.wstring().c_str(),
                                                                         GENERIC_READ,
@@ -207,7 +207,7 @@ std::string condor2nav::CActiveSync::Read(const boost::filesystem::path &src) co
  * @param dest Target file path. 
  * @param buffer Buffer with file content. 
  */
-void condor2nav::CActiveSync::Write(const boost::filesystem::path &dest, const std::string &buffer) const
+void condor2nav::CActiveSync::Write(const bfs::path &dest, const std::string &buffer) const
 {
   std::unique_ptr<HANDLE, CRapiHandleDeleter> hDest{_iface->ceCreateFile(dest.wstring().c_str(),
                                                                          GENERIC_WRITE,
@@ -233,7 +233,7 @@ void condor2nav::CActiveSync::Write(const boost::filesystem::path &dest, const s
  *
  * @param path Target directory path. 
  */
-void condor2nav::CActiveSync::DirectoryCreate(const boost::filesystem::path &path) const
+void condor2nav::CActiveSync::DirectoryCreate(const bfs::path &path) const
 {
   if(!_iface->ceCreateDirectory(path.wstring().c_str(), nullptr) && _iface->ceGetLastError() != ERROR_ALREADY_EXISTS)
     throw EOperationFailed{"ERROR: Creating ActiveSync directory '" + path.string() + "'!!!"};
@@ -249,7 +249,7 @@ void condor2nav::CActiveSync::DirectoryCreate(const boost::filesystem::path &pat
  *
  * @return @p true if file exists.
  */
-bool condor2nav::CActiveSync::FileExists(const boost::filesystem::path &path) const
+bool condor2nav::CActiveSync::FileExists(const bfs::path &path) const
 {
   std::unique_ptr<HANDLE, CRapiHandleDeleter> hDest{_iface->ceCreateFile(path.wstring().c_str(),
                                                                          GENERIC_READ,

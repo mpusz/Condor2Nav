@@ -58,7 +58,7 @@ namespace condor2nav {
        * Class is responsible for logging Condor2Nav traces to the logging window
        */
       class CLogger : public CCondor2Nav::CLogger {
-        const HWND _hDlg;	              ///< @brief The logging window widget
+        const HWND _hDlg;	                     ///< @brief The logging window widget
         void Trace(const std::string &str) const override;
       public:
         CLogger(TType type, HWND hDlg);
@@ -66,7 +66,7 @@ namespace condor2nav {
 
     private:
       const HWND _hDlg;	                         ///< @brief The dialog handle
-      const boost::filesystem::path _condorPath; ///< @brief Full pathname of the Condor directory
+      const bfs::path _condorPath;               ///< @brief Full pathname of the Condor directory
 
       bool _running;
       bool _abort;

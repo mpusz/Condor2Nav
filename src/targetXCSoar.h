@@ -42,12 +42,12 @@ namespace condor2nav {
    */
   class CTargetXCSoar : public CTargetXCSoarCommon {
     // inputs
-    static const boost::filesystem::path XCSOAR_PROFILE_NAME; ///< @brief XCSoar profile file name to use for input. 
+    static const bfs::path XCSOAR_PROFILE_NAME;           ///< @brief XCSoar profile file name to use for input. 
 
-    std::unique_ptr<CFileParserINI> _profileParser;           ///< @brief XCSoar profile file parser. 
-    const boost::filesystem::path _outputXCSoarDataPath;      ///< @brief The path to the output XCSoarData directory.
-    boost::filesystem::path _outputCondor2NavDataPath;        ///< @brief The path to the output Condor2Nav directory.
-    std::string _condor2navDataPathString;                    ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar.
+    std::unique_ptr<CFileParserINI> _profileParser;       ///< @brief XCSoar profile file parser. 
+    const bfs::path _outputXCSoarDataPath;                ///< @brief The path to the output XCSoarData directory.
+    bfs::path _outputCondor2NavDataPath;                  ///< @brief The path to the output Condor2Nav directory.
+    std::string _condor2navDataPathString;                ///< @brief The Condor2Nav destination data directory path (in XCSoar format) on the target device that runs XCSoar.
     
     void TaskDump(CFileParserINI &profileParser,
                   const CFileParserINI &taskParser,
@@ -57,7 +57,7 @@ namespace condor2nav {
                   const CWaypointArray &waypointArray) const override;
 
   protected:
-    COStream::CPathList _outputTaskFilePathList;              ///< @brief The path where output XCSoar task file should be located
+    COStream::CPathList _outputTaskFilePathList;          ///< @brief The path where output XCSoar task file should be located
 
   public:
     explicit CTargetXCSoar(const CTranslator &translator);

@@ -29,14 +29,10 @@
 #define __TOOLS_H__
 
 #include "exception.h"
+#include "boostfwd.h"
 #include <sstream>
 #include <Windows.h>
 
-namespace boost {
-  namespace filesystem {
-    class path;
-  }
-}
 
 namespace condor2nav {
 
@@ -83,9 +79,9 @@ namespace condor2nav {
   double Rad2Deg(double angle);
 
   // disk operations
-  void DirectoryCreate(const boost::filesystem::path &dirName);
-  bool FileExists(const boost::filesystem::path &fileName);
-  void Download(const std::string &server, const boost::filesystem::path &url, const boost::filesystem::path &fileName, unsigned timeout = 30);
+  void DirectoryCreate(const bfs::path &dirName);
+  bool FileExists(const bfs::path &fileName);
+  void Download(const std::string &server, const bfs::path &url, const bfs::path &fileName, unsigned timeout = 30);
 
 }
 

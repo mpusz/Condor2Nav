@@ -38,7 +38,7 @@
  *
  * @param fileName The name of the file to create.
  */
-condor2nav::COStream::COStream(boost::filesystem::path fileName) :
+condor2nav::COStream::COStream(bfs::path fileName) :
   _pathList{{std::move(fileName)}}
 {
 }
@@ -70,7 +70,7 @@ condor2nav::COStream::~COStream()
       switch(Type(path)) {
       case TType::LOCAL:
         {
-          boost::filesystem::ofstream stream{path, std::ios_base::out | std::ios_base::binary};
+          bfs::ofstream stream{path, std::ios_base::out | std::ios_base::binary};
           if(!stream)
             throw EOperationFailed{"ERROR: Couldn't open file '" + path.string() + "' for writing!!!"};
           stream << Buffer().str();

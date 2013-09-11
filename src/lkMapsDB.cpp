@@ -40,12 +40,12 @@ namespace condor2nav {
 
 }
 
-const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR_TEMPLATES_DIR            = "data/Landscapes";
-const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_TEMPLATES_DIR = "data/LK8000/LKMTemplates";
-const boost::filesystem::path condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_MAPS_DIR      = "data/LK8000/_Maps/condor2nav";
-const boost::filesystem::path condor2nav::CLKMapsDB::LK8000_MAPS_URL                 = "/listing/LKMAPS";
-const std::string             condor2nav::CLKMapsDB::LKM_TEMPLATES_INDEX_SERVER      = "cloud.github.com";
-const boost::filesystem::path condor2nav::CLKMapsDB::LKM_TEMPLATES_INDEX_URL         = "/downloads/mpusz/Condor2Nav/LKMTemplates.txt";
+const bfs::path   condor2nav::CLKMapsDB::CONDOR_TEMPLATES_DIR            = "data/Landscapes";
+const bfs::path   condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_TEMPLATES_DIR = "data/LK8000/LKMTemplates";
+const bfs::path   condor2nav::CLKMapsDB::CONDOR2NAV_LK8000_MAPS_DIR      = "data/LK8000/_Maps/condor2nav";
+const bfs::path   condor2nav::CLKMapsDB::LK8000_MAPS_URL                 = "/listing/LKMAPS";
+const std::string condor2nav::CLKMapsDB::LKM_TEMPLATES_INDEX_SERVER      = "cloud.github.com";
+const bfs::path   condor2nav::CLKMapsDB::LKM_TEMPLATES_INDEX_URL         = "/downloads/mpusz/Condor2Nav/LKMTemplates.txt";
 
 
 unsigned condor2nav::MapScale(const CFileParserINI &map)
@@ -65,22 +65,19 @@ unsigned condor2nav::MapScale(const CFileParserINI &map)
 condor2nav::CLKMapsDB::CLKMapsDB(const CCondor2Nav &app) :
   _app{app}, _sceneriesParser{CTranslator::DATA_PATH / _app.ConfigParser().Value("Condor2Nav", "Target") / CTranslator::SCENERIES_DATA_FILE_NAME}
 {
-  using namespace boost::filesystem;
   // fill the list of Condor landscapes templates
-  std::for_each(directory_iterator(CONDOR_TEMPLATES_DIR), directory_iterator(),
-    [this](const path &p) { _condor.emplace_back(p.filename().string().c_str()); });
+  std::for_each(bfs::directory_iterator(CONDOR_TEMPLATES_DIR), bfs::directory_iterator(),
+    [this](const bfs::path &p) { _condor.emplace_back(p.filename().string().c_str()); });
   DirectoryCreate(CONDOR2NAV_LK8000_TEMPLATES_DIR);
 }
 
 
 auto condor2nav::CLKMapsDB::LKMTemplatesSync(const std::function<bool()> &abort) const -> CNamesList
 {
-  using namespace boost::filesystem;
-
   // fill the list of already downloaded LKMaps templates
   CNamesList lkLocal;
-  std::for_each(directory_iterator(CONDOR2NAV_LK8000_TEMPLATES_DIR), directory_iterator(),
-    [&](const path &p) { lkLocal.emplace_back(p.filename().string().c_str()); });
+  std::for_each(bfs::directory_iterator(CONDOR2NAV_LK8000_TEMPLATES_DIR), bfs::directory_iterator(),
+    [&](const bfs::path &p) { lkLocal.emplace_back(p.filename().string().c_str()); });
   sort(begin(lkLocal), end(lkLocal));
 
   // get the list of all LKMaps templates on LK8000 server
@@ -134,8 +131,6 @@ auto condor2nav::CLKMapsDB::LKMTemplatesSync(const std::function<bool()> &abort)
 
 auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList allTemplates) -> CParsersMap
 {
-  using namespace boost::filesystem;
-
   _app.Log() << "Looking for new/better maps match..." << std::endl;
 
   // fill a list of Condor sceneries data
@@ -147,7 +142,7 @@ auto condor2nav::CLKMapsDB::LandscapesMatch(CNamesList allTemplates) -> CParsers
   CNamesList lkmLocal;
   CNamesList demLocal;
   if(exists(CONDOR2NAV_LK8000_MAPS_DIR)) {
-    std::for_each(directory_iterator(CONDOR2NAV_LK8000_MAPS_DIR), directory_iterator(), [&](const path &p)
+    std::for_each(bfs::directory_iterator(CONDOR2NAV_LK8000_MAPS_DIR), bfs::directory_iterator(), [&](const bfs::path &p)
     {
       if(p.extension() == ".LKM")
         lkmLocal.emplace_back(p.stem().string().c_str());
@@ -224,7 +219,7 @@ void condor2nav::CLKMapsDB::LKMDownload(CParsersMap &maps, const std::function<b
   _app.Log() << "Downloading new LK8000 maps..." << std::endl;
   for(auto &map : maps) {
     try {
-      boost::filesystem::path path = LK8000_MAPS_URL;
+      bfs::path path = LK8000_MAPS_URL;
       if(map.second->Value("", "DIR") == "CONDOR")
         path /= "EUR/CONDOR.DIR";
       else

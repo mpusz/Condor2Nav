@@ -31,7 +31,7 @@
 #include <array>
 
 
-const boost::filesystem::path condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registry.prf";
+const bfs::path condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME = "xcsoar-registry.prf";
 
 
 /**
@@ -44,7 +44,7 @@ const boost::filesystem::path condor2nav::CTargetXCSoar::XCSOAR_PROFILE_NAME = "
 condor2nav::CTargetXCSoar::CTargetXCSoar(const CTranslator &translator) :
   CTargetXCSoarCommon{translator}, _outputXCSoarDataPath{OutputPath() / "XCSoarData"}
 {
-  const boost::filesystem::path subDir{ConfigParser().Value("XCSoar", "Condor2NavDataSubDir")};
+  const bfs::path subDir{ConfigParser().Value("XCSoar", "Condor2NavDataSubDir")};
   _outputCondor2NavDataPath = _outputXCSoarDataPath / subDir;
   _condor2navDataPathString = ConfigParser().Value("XCSoar", "XCSoarDataPath") + "\\" + subDir.string();
 

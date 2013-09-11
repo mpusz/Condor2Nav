@@ -126,6 +126,7 @@ copy /Y ..\data\LK8000\Waypoints\*.cup  ..\dist\$(Configuration)\condor2nav\data
   <ItemGroup>
     <ClInclude Include="activeObject.h" />
     <ClInclude Include="activeSync.h" />
+    <ClInclude Include="boostfwd.h" />
     <ClInclude Include="condor.h" />
     <ClInclude Include="condor2nav.h" />
     <ClInclude Include="exception.h" />

@@ -228,7 +228,7 @@ double condor2nav::Rad2Deg(double angle)
  *
  * @exception std::runtime_error Operation did not succeed
  */
-void condor2nav::DirectoryCreate(const boost::filesystem::path &dirName)
+void condor2nav::DirectoryCreate(const bfs::path &dirName)
 {
   bool activeSync = false;
   const std::string str = dirName.string();
@@ -237,18 +237,18 @@ void condor2nav::DirectoryCreate(const boost::filesystem::path &dirName)
 
   if(!dirName.empty()) {
     if(!activeSync) {
-      boost::filesystem::create_directories(dirName);
+      bfs::create_directories(dirName);
     }
     else {
       auto path = dirName;
-      std::vector<boost::filesystem::path> dirs;
+      std::vector<bfs::path> dirs;
       while(path.parent_path() != "\\") {
         dirs.emplace_back(path);
         path = path.parent_path();
       }
       auto &activeSync = CActiveSync::Instance();
       std::for_each(dirs.crbegin(), dirs.crend(),
-        [&](const boost::filesystem::path &d){ activeSync.DirectoryCreate(d); });
+        [&](const bfs::path &d){ activeSync.DirectoryCreate(d); });
     }
   }
 }
@@ -263,7 +263,7 @@ void condor2nav::DirectoryCreate(const boost::filesystem::path &dirName)
  * 
  * @return Check status
  */
-bool condor2nav::FileExists(const boost::filesystem::path &fileName) 
+bool condor2nav::FileExists(const bfs::path &fileName) 
 {
   bool activeSync = false;
   const auto str = fileName.string();
@@ -273,14 +273,14 @@ bool condor2nav::FileExists(const boost::filesystem::path &fileName)
   if(activeSync)
     return CActiveSync::Instance().FileExists(fileName);
   else
-    return boost::filesystem::exists(fileName);
+    return bfs::exists(fileName);
 }
 
 
-void condor2nav::Download(const std::string &server, const boost::filesystem::path &url, const boost::filesystem::path &fileName, unsigned timeout /* = 30 */)
+void condor2nav::Download(const std::string &server, const bfs::path &url, const bfs::path &fileName, unsigned timeout /* = 30 */)
 {
   DirectoryCreate(fileName.parent_path());
   CIStream in{server, url.generic_string(), timeout};
-  boost::filesystem::ofstream out{fileName, std::ios_base::out | std::ios_base::binary};
+  bfs::ofstream out{fileName, std::ios_base::out | std::ios_base::binary};
   out << in.Buffer().rdbuf();
 }

@@ -29,13 +29,8 @@
 #define __STREAM_H__
 
 #include "nonCopyable.h"
+#include "boostfwd.h"
 #include <sstream>
-
-namespace boost {
-  namespace filesystem {
-    class path;
-  }
-}
 
 namespace condor2nav {
 
@@ -57,7 +52,7 @@ namespace condor2nav {
       ACTIVE_SYNC                         ///< @brief ActiveSync (remote device) path. 
     };
 
-    TType Type(const boost::filesystem::path &fileName) const;
+    TType Type(const bfs::path &fileName) const;
     CStream() {}
   public:
     const std::stringstream &Buffer() const { return _buffer; }

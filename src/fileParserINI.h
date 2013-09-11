@@ -59,7 +59,7 @@ namespace condor2nav {
     };
     typedef std::deque<TChapter> CChaptersList;	      ///< @brief The list of INI file chapters.
 
-    const boost::filesystem::path _filePath;          ///< @brief Input file path.
+    const bfs::path _filePath;                        ///< @brief Input file path.
     CValuesMap _valuesMap;	                          ///< @brief The map of plain key=value pairs. 
     CChaptersList _chaptersList;                      ///< @brief The list of chapters and their data found in the file.
 
@@ -68,12 +68,12 @@ namespace condor2nav {
     const TChapter &Chapter(const std::string &chapter) const;
 
   public:
-    explicit CFileParserINI(boost::filesystem::path filePath);
-    const boost::filesystem::path &Path() const { return _filePath; }
-    CFileParserINI(const std::string &server, const boost::filesystem::path &url);
+    explicit CFileParserINI(bfs::path filePath);
+    const bfs::path &Path() const { return _filePath; }
+    CFileParserINI(const std::string &server, const bfs::path &url);
     const std::string &Value(const std::string &chapter, const std::string &key) const;
     void Value(const std::string &chapter, const std::string &key, std::string value);
-    void Dump(const boost::filesystem::path &filePath = "") const;
+    void Dump(const bfs::path &filePath = "") const;
   };
 
 }
