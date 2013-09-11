@@ -112,7 +112,7 @@ INT_PTR CALLBACK condor2nav::gui::MainDialogProc(HWND hDlg, UINT message, WPARAM
     return TRUE;
 
   case WM_LOG:
-    app->Log(static_cast<CCondor2NavGUI::CLogger::TType>(wParam), std::unique_ptr<std::string>(reinterpret_cast<std::string*>(lParam)));
+    app->Log(static_cast<CCondor2NavGUI::CLogger::TType>(wParam), std::unique_ptr<const std::string>(reinterpret_cast<const std::string*>(lParam)));
     return TRUE;
 
   case WM_CLOSE:

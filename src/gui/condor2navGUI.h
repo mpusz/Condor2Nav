@@ -108,7 +108,7 @@ namespace condor2nav {
 
       void Command(HWND hwnd, int controlID, int command);
 
-      void Log(CLogger::TType type, std::unique_ptr<std::string> str);
+      void Log(CLogger::TType type, std::unique_ptr<const std::string> str);
 
       bool Abort() const { return _abort; }
     };

@@ -317,7 +317,7 @@ void condor2nav::gui::CCondor2NavGUI::OnStart(std::function<bool()> abort)
 }
 
 
-void condor2nav::gui::CCondor2NavGUI::Log(CLogger::TType type, std::unique_ptr<std::string> str)
+void condor2nav::gui::CCondor2NavGUI::Log(CLogger::TType type, std::unique_ptr<const std::string> str)
 {
   switch(type) {
   case CLogger::TType::LOG_NORMAL:
@@ -333,5 +333,5 @@ void condor2nav::gui::CCondor2NavGUI::Log(CLogger::TType type, std::unique_ptr<s
     _log.Format(CWidgetRichEdit::EFFECT_BOLD, CWidgetRichEdit::TColor::RED);
     break;
   }
-  _log.Append(move(*str));
+  _log.Append(*str);
 }
