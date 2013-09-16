@@ -126,32 +126,33 @@ auto condor2nav::cli::CCondor2NavCLI::CLIParse(int argc, const char *argv[]) con
 {
   TOptions opt{};
 
-  for(int i=1; i<argc; i++) {
-    if(std::string(argv[i]) == "-h") {
+  for(int i = 1; i < argc; i++) {
+    std::string arg{argv[i]};
+    if(arg == "-h") {
       Usage();
       exit(EXIT_SUCCESS);
     }
-    else if(std::string(argv[i]) == "--aat") {
+    else if(arg == "--aat") {
       if(i + 1 == argc)
         throw EOperationFailed{"ERROR: AAT TASK_MIN_TIME not provided!!!"};
-     
-      std::stringstream stream(argv[++i]);
+
+      std::stringstream stream{argv[++i]};
       stream >> opt.aatTime;
       if(stream.fail())
         throw EOperationFailed{"ERROR: Invalid AAT TASK_MIN_TIME!!!"};
     }
-    else if(std::string(argv[i]) == "--default") {
+    else if(arg == "--default") {
       // nothing needs to be done here
       opt.fplType = TFPLType::DEFAULT;
     }
-    else if(std::string(argv[i]) == "--last-race") {
+    else if(arg == "--last-race") {
       opt.fplType = TFPLType::RESULT;
     }
-    else if(argv[i][0] == '-') {
-      throw EOperationFailed{"ERROR: Unkown option '" + std::string(argv[i]) + "' provided!!!"};
+    else if(arg[0] == '-') {
+      throw EOperationFailed{"ERROR: Unkown option '" + arg + "' provided!!!"};
     }
     else {
-      opt.fplPath = argv[i];
+      opt.fplPath = arg;
       opt.fplType = TFPLType::USER;
     }
   }
@@ -223,14 +224,14 @@ int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
   // create Condor FPL file path
   if(options.fplType != TFPLType::USER)
     options.fplPath = CCondor::FPLPath(ConfigParser(), options.fplType, condorPath);
-  
+
   // create Condor wrapper
-  CCondor condor(condorPath, options.fplPath);
+  CCondor condor{condorPath, options.fplPath};
   if(!AATCheck(condor, options.aatTime))
     return EXIT_FAILURE;
 
   // run translation
-  CTranslator translator(*this, ConfigParser(), condor, options.aatTime);
+  CTranslator translator{*this, ConfigParser(), condor, options.aatTime};
   translator.Run();
   
   return EXIT_SUCCESS;

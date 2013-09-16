@@ -46,7 +46,7 @@ namespace condor2nav {
     {
       bool wasEmpty;
       {
-        std::lock_guard<std::mutex> lock(_mutex);
+        std::lock_guard<std::mutex> lock{_mutex};
         wasEmpty = _queue.empty();
         _queue.push(std::move(msg));
       }
@@ -55,7 +55,7 @@ namespace condor2nav {
     }
     T PopWait()
     {
-      std::unique_lock<std::mutex> lock(_mutex);
+      std::unique_lock<std::mutex> lock{_mutex};
       _newItemReady.wait(lock, [&]{ return _queue.size(); });
       T msg = std::move(_queue.front());
       _queue.pop();

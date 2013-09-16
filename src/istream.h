@@ -28,7 +28,9 @@
 #ifndef __ISTREAM_H__
 #define __ISTREAM_H__
 
-#include "stream.h"
+#include "nonCopyable.h"
+#include "boostfwd.h"
+#include <sstream>
 
 namespace condor2nav {
 
@@ -37,11 +39,20 @@ namespace condor2nav {
    *
    * condor2nav::CIStream class is a wrapper for different stream types.
    */
-  class CIStream : public CStream {
+  class CIStream : CNonCopyable {
+    std::stringstream _buffer;            ///< @brief Buffer with file data. 
   public:
     explicit CIStream(const bfs::path &fileName);
     CIStream(const std::string &server, const bfs::path &url, unsigned timeout = 30);
-    std::istream &GetLine(std::string &line) { return getline(Buffer(), line); }
+    explicit operator bool() const           { return static_cast<bool>(_buffer); }
+    std::istream &GetLine(std::string &line) { return getline(_buffer, line); }
+
+    template<class Stream>
+    friend Stream &operator<<(Stream &out, CIStream &in)
+    {
+      out << in._buffer.rdbuf();
+      return out;
+    }
   };
 
 }

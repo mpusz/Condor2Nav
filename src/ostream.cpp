@@ -65,20 +65,20 @@ condor2nav::COStream::COStream(CPathList pathList) :
  */
 condor2nav::COStream::~COStream()
 {
-  if(Buffer().str().size()) {
+  if(_buffer.str().size()) {
     for(auto &path : _pathList) {
-      switch(Type(path)) {
-      case TType::LOCAL:
+      switch(PathType(path)) {
+      case TPathType::LOCAL:
         {
           bfs::ofstream stream{path, std::ios_base::out | std::ios_base::binary};
           if(!stream)
             throw EOperationFailed{"ERROR: Couldn't open file '" + path.string() + "' for writing!!!"};
-          stream << Buffer().str();
+          stream << _buffer.str();
         }
         break;
 
-      case TType::ACTIVE_SYNC:
-        CActiveSync::Instance().Write(path, Buffer().str());
+      case TPathType::ACTIVE_SYNC:
+        CActiveSync::Instance().Write(path, _buffer.str());
         break;
       }
     }
@@ -98,6 +98,6 @@ condor2nav::COStream::~COStream()
 */
 condor2nav::COStream &condor2nav::COStream::Write(const char *buffer, std::streamsize num)
 {
-  Buffer().write(buffer, num);
+  _buffer.write(buffer, num);
   return *this;
 }

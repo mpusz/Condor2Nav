@@ -33,10 +33,12 @@
 namespace condor2nav {
 
   class CActiveObject : CNonCopyable {
-    typedef std::function<void()> CMessage;
-    bool _done;
+    using CMessage = std::function<void()>;
+
+    bool _done = false;
     CWaitQueue<CMessage> _msgQueue;
     std::thread _thread;
+
     void Run();
   public:
     CActiveObject();

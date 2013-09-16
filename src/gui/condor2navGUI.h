@@ -68,8 +68,13 @@ namespace condor2nav {
       const HWND _hDlg;	                         ///< @brief The dialog handle
       const bfs::path _condorPath;               ///< @brief Full pathname of the Condor directory
 
-      bool _running;
-      bool _abort;
+      bool _running = false;
+      bool _abort = false;
+
+      CLogger _normal;                           ///< @brief Normal logging level logger
+      CLogger _high;                             ///< @brief Important logging level logger
+      CLogger _warning;                          ///< @brief Warning logging level logger
+      CLogger _error;                            ///< @brief Error logging level logger
 
       CWidgetRadioButton _fplDefault;	         ///< @brief The default FPL button
       CWidgetRadioButton _fplLastRace;           ///< @brief The last race FPL button
@@ -85,11 +90,6 @@ namespace condor2nav {
       CWidgetButton _translate;                  ///< @brief The Condor2Nav start translation button
 
       CWidgetRichEdit _log;                      ///< @brief The Condor2Nav logging window
-
-      CLogger _normal;                           ///< @brief Normal logging level logger
-      CLogger _high;                             ///< @brief Important logging level logger
-      CLogger _warning;                          ///< @brief Warning logging level logger
-      CLogger _error;                            ///< @brief Error logging level logger
 
       CActiveObject _activeObject;               ///< @brief Active object
 

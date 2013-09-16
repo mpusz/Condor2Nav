@@ -28,7 +28,9 @@
 #ifndef __OSTREAM_H__
 #define __OSTREAM_H__
 
-#include "stream.h"
+#include "nonCopyable.h"
+#include "boostfwd.h"
+#include <sstream>
 #include <vector>
 
 namespace condor2nav {
@@ -38,11 +40,12 @@ namespace condor2nav {
    *
    * condor2nav::COStream class is a wrapper for different stream types.
    */
-  class COStream : public CStream {
+  class COStream : CNonCopyable {
   public:
-    typedef std::vector<bfs::path> CPathList;
+    using CPathList = std::vector<bfs::path>;
 
   private:
+    std::stringstream _buffer;            ///< @brief Buffer with file data. 
     CPathList _pathList;
 
   public:
@@ -66,7 +69,7 @@ namespace condor2nav {
     template<class T>
     friend COStream &operator<<(COStream &stream, const T &obj)
     {
-      stream.Buffer() << obj;
+      stream._buffer << obj;
       return stream;
     }
 
@@ -82,7 +85,7 @@ namespace condor2nav {
      */
     friend COStream &operator<<(COStream &stream, std::ostream &(*f)(std::ostream &))
     {
-      stream.Buffer() << f;
+      stream._buffer << f;
       return stream;
     }
   };

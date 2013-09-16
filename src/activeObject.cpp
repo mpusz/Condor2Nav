@@ -29,7 +29,7 @@
 
 
 condor2nav::CActiveObject::CActiveObject() :
-  _done{false}, _thread{[this]{ Run(); }}
+  _thread{[this]{ Run(); }}
 {
 }
 

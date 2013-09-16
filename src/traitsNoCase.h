@@ -30,16 +30,21 @@
 
 #include <string>
 #include <cctype>
+#include <cwctype>
 
 namespace condor2nav {
 
+  inline int    ToUpper(char ch)    { return std::toupper(ch); }
+  inline wint_t ToUpper(wchar_t ch) { return std::towupper(ch); }
+  
   /**
    * @brief Case-insensitive traits for strings. 
    *
    * Class implements case-insensitive traits for strings that should be compared
    * with any case.
    */
-  struct CTraitsNoCase : std::char_traits<char> {
+  template<typename Char>
+  struct CTraitsNoCase : std::char_traits<Char> {
 
     /**
      * @brief Compares 2 characters in case-insensitive manner.
@@ -49,9 +54,9 @@ namespace condor2nav {
      *
      * @return true if both characters are the same.
      */
-    static bool eq(const char &c1, const char &c2)
+    static bool eq(const Char &c1, const Char &c2)
     {
-      return std::toupper(c1) == std::toupper(c2);
+      return ToUpper(c1) == ToUpper(c2);
     }
 
     /**
@@ -62,9 +67,9 @@ namespace condor2nav {
     *
     * @return true if character 1 is smaller than character 2.
     */
-    static bool lt(const char &c1, const char &c2)
+    static bool lt(const Char &c1, const Char &c2)
     {
-      return toupper(c1) < toupper(c2);
+      return ToUpper(c1) < ToUpper(c2);
     }
 
 
@@ -78,9 +83,15 @@ namespace condor2nav {
      * @return Negative if 's1' is less than 's2', 0 if they are equal, or positive if it is
      *         greater. 
      */
-    static int compare(const char *s1, const char *s2, size_t N)
+    static int compare(const Char *s1, const Char *s2, size_t N)
     {
-      return _strnicmp(s1, s2, N);
+      for(size_t i = 0; i < N; ++i) {
+        if(lt(s1[i], s2[i]))
+          return -1;
+        if(lt(s2[i], s1[i]))
+          return +1;
+      }
+      return 0;
     }
 
 
@@ -94,25 +105,12 @@ namespace condor2nav {
      * @return A pointer to the first occurrence of the specified character in the range
      *         if a match is found; otherwise, a null pointer.
      */
-    static const char *find(const char *s, size_t N, const char &a)
+    static const Char *find(const Char *s, size_t N, const Char &a)
     {
       for(size_t i=0; i<N; ++i)
-        if(toupper(s[i]) == toupper(a))
+        if(ToUpper(s[i]) == ToUpper(a))
           return s+i;
       return 0;
-    }
-
-    /**
-     * @brief Tests whether two characters represented as int_types are equal or not. 
-     *
-     * @param c1 The first of the two characters to be tested for equality as int_types.
-     * @param c2 The second of the two characters to be tested for equality as int_types.
-     *
-     * @return true if the first character is equal to the second character; otherwise false. 
-     */
-    static bool eq_int_type(const int_type &c1, const int_type &c2)
-    {
-      return toupper(c1) == toupper(c2);
     }
   };
 
@@ -120,7 +118,8 @@ namespace condor2nav {
   /**
    * @brief Case-insensitive string.
    */
-  typedef std::basic_string<char, CTraitsNoCase> CStringNoCase;
+  using CStringNoCase  = std::basic_string<char, CTraitsNoCase<char>>;
+  using CWStringNoCase = std::basic_string<wchar_t, CTraitsNoCase<wchar_t>>;
 
 
   /**
@@ -150,7 +149,7 @@ namespace condor2nav {
     std::string s;
     is >> s;
     if(is)
-      str.assign(s.begin(), s.end());
+      str.assign(begin(s), end(s));
     return is;
   }
   
@@ -168,7 +167,7 @@ namespace condor2nav {
     std::string s;
     std::getline(is, s);
     if(is)
-      str.assign(s.begin(), s.end());
+      str.assign(begin(s), end(s));
     return is;
   }
 
@@ -183,7 +182,7 @@ namespace condor2nav {
    */
   inline CStringNoCase operator+(CStringNoCase str1, const std::string &str2)
   {
-    return str1.append(str2.begin(), str2.end());
+    return str1.append(begin(str2), end(str2));
   }
 
 
@@ -197,8 +196,7 @@ namespace condor2nav {
    */
   inline CStringNoCase operator+(const std::string &str1, const CStringNoCase &str2)
   {
-    CStringNoCase str(str1.begin(), str1.end());
-    return str += str2;
+    return CStringNoCase{begin(str1), end(str1)} + str2;
   }
 
 }

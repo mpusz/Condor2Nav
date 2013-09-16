@@ -37,11 +37,12 @@ const bfs::path condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
 
 namespace {
 
-  typedef int   (WINAPI *FNaviConInit)(const char *trnFile);  ///< @brief NaviCon.dll interface
-  typedef float (WINAPI *FXYToLon)(float X, float Y);         ///< @brief NaviCon.dll interface
-  typedef float (WINAPI *FXYToLat)(float X, float Y);         ///< @brief NaviCon.dll interface
-  typedef float (WINAPI *FGetMaxX)();                         ///< @brief NaviCon.dll interface
-  typedef float (WINAPI *FGetMaxY)();                         ///< @brief NaviCon.dll interface
+  // NaviCon.dll interface
+  using FNaviConInit = int(WINAPI*)(const char *trnFile);
+  using FXYToLon = float(WINAPI*)(float X, float Y);
+  using FXYToLat = float(WINAPI*)(float X, float Y);
+  using FGetMaxX = float(WINAPI*)();
+  using FGetMaxY = float(WINAPI*)();
 
 
   template<typename SYMBOL_TYPE>
@@ -237,8 +238,8 @@ bfs::path condor2nav::CCondor::FPLPath(const CFileParserINI &configParser,
  * @exception std Thrown when not supported Condor version.
  */
 condor2nav::CCondor::CCondor(const bfs::path &condorPath, const bfs::path &fplPath):
-_taskParser(fplPath),
-_coordConverter(condorPath, _taskParser.Value("Task", "Landscape"))
+_taskParser{fplPath},
+_coordConverter{condorPath, _taskParser.Value("Task", "Landscape")}
 {
   if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) < CONDOR_VERSION_SUPPORTED)
     throw EOperationFailed{"Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!"};

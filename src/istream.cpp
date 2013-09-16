@@ -41,18 +41,18 @@
  */
 condor2nav::CIStream::CIStream(const bfs::path &fileName)
 {
-  switch(Type(fileName)) {
-  case TType::LOCAL:
+  switch(PathType(fileName)) {
+  case TPathType::LOCAL:
     {
       bfs::fstream stream{fileName, std::ios_base::in};
       if(!stream)
         throw EOperationFailed{"ERROR: Couldn't open file '" + fileName.string() + "' for reading!!!"};
-      Buffer() << stream.rdbuf();
+      _buffer << stream.rdbuf();
     }
     break;
 
-  case TType::ACTIVE_SYNC:
-    Buffer().str(CActiveSync::Instance().Read(fileName));
+  case TPathType::ACTIVE_SYNC:
+    _buffer.str(CActiveSync::Instance().Read(fileName));
     break;
   }
 }
@@ -94,7 +94,7 @@ condor2nav::CIStream::CIStream(const std::string &server, const bfs::path &url, 
     ;
 
   // Write the remaining data to internal buffer
-  Buffer() << http.rdbuf();
+  _buffer << http.rdbuf();
 
   if(http.error() == boost::asio::error::operation_aborted)
     throw EOperationFailed{"ERROR: Download timeout (" + Convert(timeout) + " seconds) exceeded!"};

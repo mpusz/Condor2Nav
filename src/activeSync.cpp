@@ -33,34 +33,33 @@
 
 namespace {
 
-  typedef HRESULT(WINAPI *FCeRapiInitEx)(RAPIINIT *pRapiInit);    ///< @brief rapi.dll interface
-  typedef HRESULT(WINAPI *FCeRapiUninit)();                       ///< @brief rapi.dll interface
-  typedef DWORD(WINAPI *FCeGetLastError)();                       ///< @brief rapi.dll interface
+  // rapi.dll interface
+  using FCeRapiInitEx = HRESULT(WINAPI*)(RAPIINIT *pRapiInit);
+  using FCeRapiUninit = HRESULT(WINAPI*)();
+  using FCeGetLastError = DWORD(WINAPI*)();
 
-  typedef HANDLE(WINAPI *FCeCreateFile)(LPCWSTR lpFileName,
+  using FCeCreateFile = HANDLE(WINAPI*)(LPCWSTR lpFileName,
                                         DWORD dwDesiredAccess,
                                         DWORD dwShareMode,
                                         LPSECURITY_ATTRIBUTES lpSecurityAttributes,
                                         DWORD dwCreationDisposition,
                                         DWORD dwFlagsAndAttributes,
-                                        HANDLE hTemplateFile);    ///< @brief rapi.dll interface
-  typedef DWORD(WINAPI *FCeGetFileSize)(HANDLE hFile,
-                                        LPDWORD lpFileSizeHigh);  ///< @brief rapi.dll interface
-  typedef BOOL(WINAPI *FCeReadFile)(HANDLE hFile,
+                                        HANDLE hTemplateFile);
+  using FCeGetFileSize = DWORD(WINAPI*)(HANDLE hFile,
+                                        LPDWORD lpFileSizeHigh);
+  using FCeReadFile = BOOL(WINAPI*)(HANDLE hFile,
                                     LPVOID lpBuffer,
                                     DWORD nNumberOfBytesToRead,
                                     LPDWORD lpNumberOfBytesRead,
-                                    LPOVERLAPPED lpOverlapped);   ///< @brief rapi.dll interface
-  typedef BOOL(WINAPI *FCeWriteFile)(HANDLE hFile,
+                                    LPOVERLAPPED lpOverlapped);
+  using FCeWriteFile = BOOL(WINAPI*)(HANDLE hFile,
                                      LPCVOID lpBuffer,
                                      DWORD nNumberOfBytesToWrite,
                                      LPDWORD lpNumberOfBytesWritten,
-                                     LPOVERLAPPED lpOverlapped);  ///< @brief rapi.dll interface
-  typedef BOOL(WINAPI *FCeCloseHandle)(HANDLE hObject);           ///< @brief rapi.dll interface
-
-  typedef BOOL(WINAPI *FCeCreateDirectory)(LPCWSTR lpPathName,
-                                           LPSECURITY_ATTRIBUTES lpSecurityAttributes);  ///< @brief rapi.dll interface
-
+                                     LPOVERLAPPED lpOverlapped);
+  using FCeCloseHandle = BOOL(WINAPI*)(HANDLE hObject);
+  using FCeCreateDirectory = BOOL(WINAPI*)(LPCWSTR lpPathName,
+                                           LPSECURITY_ATTRIBUTES lpSecurityAttributes);
 
   template<typename SYMBOL_TYPE>
   inline void Symbol(const HMODULE &module, const std::string &name, SYMBOL_TYPE &out)
@@ -100,7 +99,7 @@ namespace condor2nav {
     void operator ()(pointer handle) const { _iface.ceCloseHandle(handle); }
   };
 
-  void CActiveSync::CRapiDeleter::operator()(pointer status) const       { _iface.ceRapiUninit(); }
+  void CActiveSync::CRapiDeleter::operator()(pointer status) const { _iface.ceRapiUninit(); }
 
 }
 
@@ -189,7 +188,7 @@ std::string condor2nav::CActiveSync::Read(const bfs::path &src) const
                                                                         OPEN_EXISTING,
                                                                         FILE_ATTRIBUTE_NORMAL,
                                                                         nullptr),
-                                                                        CRapiHandleDeleter(*_iface)};
+                                                   CRapiHandleDeleter{*_iface}};
   if(hSrc.get() == INVALID_HANDLE_VALUE)
     throw EOperationFailed{"ERROR: Unable to open ActiveSync file '" + src.string() + "'!!!"};
 
@@ -224,7 +223,7 @@ void condor2nav::CActiveSync::Write(const bfs::path &dest, const std::string &bu
                                                                          CREATE_ALWAYS,
                                                                          FILE_ATTRIBUTE_NORMAL,
                                                                          nullptr),
-                                                                         CRapiHandleDeleter(*_iface)};
+                                                    CRapiHandleDeleter{*_iface}};
   if(hDest.get() == INVALID_HANDLE_VALUE)
     throw EOperationFailed{"ERROR: Unable to open ActiveSync file '" + dest.string() + "'!!!"};
 
@@ -266,7 +265,7 @@ bool condor2nav::CActiveSync::FileExists(const bfs::path &path) const
                                                                          OPEN_EXISTING,
                                                                          FILE_ATTRIBUTE_NORMAL,
                                                                          nullptr),
-                                                    CRapiHandleDeleter(*_iface)};
+                                                    CRapiHandleDeleter{*_iface}};
   if(hDest.get() == INVALID_HANDLE_VALUE) {
     if(_iface->ceGetLastError() == ERROR_FILE_NOT_FOUND)
       return false;

@@ -48,7 +48,7 @@ namespace condor2nav {
    * of pairs (set "" for chapter name in that case).
    */
   class CFileParserINI : CNonCopyable {
-    typedef std::map<std::string, std::string> CValuesMap;	///< @brief The map of key=value pairs. 
+    using CValuesMap = std::map<std::string, std::string>;	///< @brief The map of key=value pairs. 
 
     /**
      * @brief INI file chapter data.
@@ -57,7 +57,7 @@ namespace condor2nav {
       std::string name;
       CValuesMap valuesMap;
     };
-    typedef std::deque<TChapter> CChaptersList;	      ///< @brief The list of INI file chapters.
+    using CChaptersList = std::deque<TChapter>;	      ///< @brief The list of INI file chapters.
 
     const bfs::path _filePath;                        ///< @brief Input file path.
     CValuesMap _valuesMap;	                          ///< @brief The map of plain key=value pairs. 
@@ -69,8 +69,8 @@ namespace condor2nav {
 
   public:
     explicit CFileParserINI(bfs::path filePath);
-    const bfs::path &Path() const { return _filePath; }
     CFileParserINI(const std::string &server, const bfs::path &url);
+    const bfs::path &Path() const { return _filePath; }
     const std::string &Value(const std::string &chapter, const std::string &key) const;
     void Value(const std::string &chapter, const std::string &key, std::string value);
     void Dump(const bfs::path &filePath = "") const;

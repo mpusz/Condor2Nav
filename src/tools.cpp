@@ -248,7 +248,7 @@ void condor2nav::DirectoryCreate(const bfs::path &dirName)
       }
       auto &activeSync = CActiveSync::Instance();
       std::for_each(dirs.crbegin(), dirs.crend(),
-        [&](const bfs::path &d){ activeSync.DirectoryCreate(d); });
+                    [&](const bfs::path &d){ activeSync.DirectoryCreate(d); });
     }
   }
 }
@@ -280,7 +280,22 @@ bool condor2nav::FileExists(const bfs::path &fileName)
 void condor2nav::Download(const std::string &server, const bfs::path &url, const bfs::path &fileName, unsigned timeout /* = 30 */)
 {
   DirectoryCreate(fileName.parent_path());
-  CIStream in{server, url.generic_string(), timeout};
   bfs::ofstream out{fileName, std::ios_base::out | std::ios_base::binary};
-  out << in.Buffer().rdbuf();
+  CIStream in{server, url.generic_string(), timeout};
+  out << in;
+}
+
+
+/**
+* @brief Returns file type.
+*
+* Determinates file type based on its name.
+*/
+condor2nav::TPathType condor2nav::PathType(const bfs::path &fileName)
+{
+  std::string str{fileName.string()};
+  if(str.size() > 2 && str[0] == '\\' && str[1] != '\\')
+    return TPathType::ACTIVE_SYNC;
+  else
+    return TPathType::LOCAL;
 }

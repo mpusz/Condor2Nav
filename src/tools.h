@@ -47,8 +47,10 @@ namespace condor2nav {
   using CLibraryRes = std::unique_ptr<HMODULE, CLibraryDeleter>;
 
   // conversions
-  template<class T> T Convert(const std::string &str);
-  template<class T> std::string Convert(const T &val);
+  template<class T>
+  T Convert(const std::string &str);
+  template<class T>
+  std::string Convert(const T &val);
 
   void Trim(std::string &str);
 
@@ -84,6 +86,15 @@ namespace condor2nav {
   bool FileExists(const bfs::path &fileName);
   void Download(const std::string &server, const bfs::path &url, const bfs::path &fileName, unsigned timeout = 30);
 
+  /*
+   * @brief Stream types
+   */
+  enum class TPathType {
+    LOCAL,                              ///< @brief Local path. 
+    ACTIVE_SYNC                         ///< @brief ActiveSync (remote device) path. 
+  };
+  TPathType PathType(const bfs::path &fileName);
+
 }
 
 
@@ -104,7 +115,7 @@ template<class T>
 T condor2nav::Convert(const std::string &str)
 {
   T value;
-  std::stringstream stream(str);
+  std::stringstream stream{str};
   stream >> value;
   if(stream.fail() && !stream.eof())
     throw EOperationFailed{"Cannot convert '" + str + "' to requested type!!!"};

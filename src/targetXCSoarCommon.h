@@ -57,7 +57,7 @@ namespace condor2nav {
       std::string comment;
       bool inTask;
     };
-    typedef std::vector<TWaypoint> CWaypointArray;
+    using CWaypointArray = std::vector<TWaypoint>;
 
     // outputs
     static const bfs::path OUTPUT_PROFILE_NAME;             ///< @brief The name of XCSoar profile file to generate. 

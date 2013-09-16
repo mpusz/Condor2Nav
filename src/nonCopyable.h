@@ -36,10 +36,10 @@ namespace condor2nav {
    * condor2nav::CStream class is a wrapper for different stream types.
    */
   class CNonCopyable {
-    CNonCopyable(const CNonCopyable &);                ///< @brief Disallowed. 
-    CNonCopyable &operator=(const CNonCopyable &);     ///< @brief Disallowed. 
   public:
-    CNonCopyable() {}
+    CNonCopyable() = default;
+    CNonCopyable(const CNonCopyable &) = delete;
+    CNonCopyable &operator =(const CNonCopyable &) = delete;
   };
 
 }

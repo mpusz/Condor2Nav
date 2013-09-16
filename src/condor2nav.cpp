@@ -53,7 +53,7 @@ void condor2nav::CCondor2Nav::OnStart(std::function<bool()> abort)
   if(_configParser.Value("Condor2Nav", "Target") == "LK8000" && _configParser.Value("LK8000", "CheckForMapUpdates") == "1") {
     LogHigh() << "LK8000 maps synchronization START" << std::endl;
     try {
-      CLKMapsDB db(*this);
+      CLKMapsDB db{*this};
       auto allTemplates = db.LKMTemplatesSync(abort);
       if(allTemplates.size()) {
         // new templates found - check if better maps can be used

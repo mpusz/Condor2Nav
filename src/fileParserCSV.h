@@ -46,8 +46,8 @@ namespace condor2nav {
    */
   class CFileParserCSV : CNonCopyable {
   public:
-    typedef std::vector<std::string> CStringArray; ///< @brief The array of strings.
-    typedef std::deque<CStringArray> CRowsList;	   ///< @brief The list of string arrays. 
+    using CStringArray = std::vector<std::string>; ///< @brief The array of strings.
+    using CRowsList = std::deque<CStringArray>;	   ///< @brief The list of string arrays. 
 
   private:
     const bfs::path _filePath;                     ///< @brief Input file path.

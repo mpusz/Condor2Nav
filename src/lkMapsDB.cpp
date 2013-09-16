@@ -67,7 +67,7 @@ condor2nav::CLKMapsDB::CLKMapsDB(const CCondor2Nav &app) :
 {
   // fill the list of Condor landscapes templates
   std::for_each(bfs::directory_iterator(CONDOR_TEMPLATES_DIR), bfs::directory_iterator(),
-    [this](const bfs::path &p) { _condor.emplace_back(p.filename().string().c_str()); });
+                [this](const bfs::path &p) { _condor.emplace_back(p.filename().string().c_str()); });
   DirectoryCreate(CONDOR2NAV_LK8000_TEMPLATES_DIR);
 }
 
@@ -77,7 +77,7 @@ auto condor2nav::CLKMapsDB::LKMTemplatesSync(const std::function<bool()> &abort)
   // fill the list of already downloaded LKMaps templates
   CNamesList lkLocal;
   std::for_each(bfs::directory_iterator(CONDOR2NAV_LK8000_TEMPLATES_DIR), bfs::directory_iterator(),
-    [&](const bfs::path &p) { lkLocal.emplace_back(p.filename().string().c_str()); });
+                [&](const bfs::path &p) { lkLocal.emplace_back(p.filename().string().c_str()); });
   sort(begin(lkLocal), end(lkLocal));
 
   // get the list of all LKMaps templates on LK8000 server
@@ -86,9 +86,9 @@ auto condor2nav::CLKMapsDB::LKMTemplatesSync(const std::function<bool()> &abort)
 
   // temporary solution - read from a fixed file
   CIStream templates{LKM_TEMPLATES_INDEX_SERVER, LKM_TEMPLATES_INDEX_URL};
-  while(templates.Buffer()) {
+  while(templates) {
     std::string line;
-    std::getline(templates.Buffer(), line);
+    templates.GetLine(line);
     Trim(line);
     if(!line.empty())
       lkRemote.emplace_back(line.c_str());

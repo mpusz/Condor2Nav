@@ -66,14 +66,12 @@ void condor2nav::gui::CCondor2NavGUI::CLogger::Trace(const std::string &str) con
  * @param hDlg  Handle of the dialog. 
  */
 condor2nav::gui::CCondor2NavGUI::CCondor2NavGUI(HINSTANCE hInst, HWND hDlg) :
-  _running{false},
-  _abort{false},
+  _condorPath{CCondor::InstallPath()},
   _normal{CLogger::TType::LOG_NORMAL, hDlg},
   _high{CLogger::TType::LOG_HIGH, hDlg},
   _warning{CLogger::TType::WARNING, hDlg},
   _error{CLogger::TType::ERROR, hDlg},
   _hDlg{hDlg},
-  _condorPath{CCondor::InstallPath()},
   _fplDefault{hDlg, IDC_FPL_DEFAULT_RADIO},
   _fplLastRace{hDlg, IDC_FPL_LAST_RACE_RADIO},
   _fplOther{hDlg, IDC_FPL_OTHER_RADIO},
@@ -272,8 +270,9 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
           _running = true;
           _translate.Disable();
 
-          CTranslator(*this, ConfigParser(), CCondor{_condorPath, _fplPath.String()},
-                      _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0).Run();
+          CTranslator translator{*this, ConfigParser(), CCondor{_condorPath, _fplPath.String()},
+                                 _aatOn.Selected() ? Convert<unsigned>(_aatTime.Selection()) : 0};
+          translator.Run();
 
           _running = false;
           if(TranslateValid())

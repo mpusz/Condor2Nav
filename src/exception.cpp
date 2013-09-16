@@ -32,8 +32,8 @@
  *
  * @param error The error string. 
  */
-condor2nav::Exception::Exception(const std::string &error) throw() :
-  _error{error}
+condor2nav::Exception::Exception(std::string error):
+  _error{std::move(error)}
 {
 }
 
@@ -43,7 +43,7 @@ condor2nav::Exception::Exception(const std::string &error) throw() :
  *
  * @return Exception description. 
  */
-const char *condor2nav::Exception::what() const throw()
+const char *condor2nav::Exception::what() const
 {
   return _error.c_str();
 }
