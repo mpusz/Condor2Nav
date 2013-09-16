@@ -115,7 +115,6 @@ copy /Y ..\data\LK8000\Waypoints\*.cup  ..\dist\$(Configuration)\condor2nav\data
     <ClCompile Include="istream.cpp" />
     <ClCompile Include="lkMapsDB.cpp" />
     <ClCompile Include="ostream.cpp" />
-    <ClCompile Include="stream.cpp" />
     <ClCompile Include="targetLK8000.cpp" />
     <ClCompile Include="targetXCSoar.cpp" />
     <ClCompile Include="targetXCSoar6.cpp" />
@@ -136,7 +135,6 @@ copy /Y ..\data\LK8000\Waypoints\*.cup  ..\dist\$(Configuration)\condor2nav\data
     <ClInclude Include="lkMapsDB.h" />
     <ClInclude Include="nonCopyable.h" />
     <ClInclude Include="ostream.h" />
-    <ClInclude Include="stream.h" />
     <ClInclude Include="targetLK8000.h" />
     <ClInclude Include="targetXCSoar.h" />
     <ClInclude Include="targetXCSoar6.h" />

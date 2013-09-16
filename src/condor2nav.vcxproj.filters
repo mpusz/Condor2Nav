@@ -35,9 +35,6 @@
     <ClCompile Include="ostream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="targetLK8000.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -86,9 +83,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ostream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetLK8000.h">
