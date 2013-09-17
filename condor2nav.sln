@@ -1,11 +1,15 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.20827.3
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "condor2nav-gui", "src\gui\condor2nav-gui.vcxproj", "{463F7C3A-F1E2-42A2-9EA8-CDDB11B0EC81}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "condor2nav", "src\condor2nav.vcxproj", "{1193780C-0BA4-4948-A77C-761E5E3C6E65}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "condor2nav-cli", "src\cli\condor2nav-cli.vcxproj", "{2B79B458-A7C4-4F90-8DCC-6373EFEA258B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{5D1FD523-5B3F-477A-BB6B-353AC7CBF9A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +29,10 @@ Global
 		{2B79B458-A7C4-4F90-8DCC-6373EFEA258B}.Debug|Win32.Build.0 = Debug|Win32
 		{2B79B458-A7C4-4F90-8DCC-6373EFEA258B}.Release|Win32.ActiveCfg = Release|Win32
 		{2B79B458-A7C4-4F90-8DCC-6373EFEA258B}.Release|Win32.Build.0 = Release|Win32
+		{5D1FD523-5B3F-477A-BB6B-353AC7CBF9A4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5D1FD523-5B3F-477A-BB6B-353AC7CBF9A4}.Debug|Win32.Build.0 = Debug|Win32
+		{5D1FD523-5B3F-477A-BB6B-353AC7CBF9A4}.Release|Win32.ActiveCfg = Release|Win32
+		{5D1FD523-5B3F-477A-BB6B-353AC7CBF9A4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
