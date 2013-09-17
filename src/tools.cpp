@@ -77,7 +77,7 @@ namespace {
     stream.setf(std::ios::fixed, std::ios::floatfield);
     stream.setf(std::ios::showpoint);
     stream.precision(3);
-    stream << deg << ":" << std::setfill('0') << std::setw(6) << min << coord.Sign();
+    stream << std::setfill('0') << std::setw(T::degStrLength) << deg << ":" << std::setw(6) << min << coord.Sign();
     return stream.str();
   }
 
@@ -183,9 +183,9 @@ bool condor2nav::InsideArea(TLongitude outerLonMin, TLongitude outerLonMax, TLat
  *
  * @return Converted speed.
  */
-unsigned condor2nav::KmH2MS(unsigned value)
+int condor2nav::KmH2MS(int value)
 {
-  return static_cast<unsigned>((value * 10.0 / 36) + 0.5);
+  return static_cast<int>((value * 10.0 / 36) + 0.5);
 }
 
 

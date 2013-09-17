@@ -55,17 +55,17 @@ namespace condor2nav {
   void Trim(std::string &str);
 
   struct TLongitude {
-    static const unsigned degStrLength = 3;
+    static const int degStrLength = 3;
     double value;
     explicit TLongitude(double v) : value{v} {}
-    char Sign() const { return value > 0 ? 'E' : 'W'; }
+    char Sign() const { return value < 0 ? 'W' : 'E'; }
   };
 
   struct TLatitude {
-    static const unsigned degStrLength = 2;
+    static const int degStrLength = 2;
     double value;
     explicit TLatitude(double v) : value{v} {}
-    char Sign() const { return value > 0 ? 'N' : 'S'; }
+    char Sign() const { return value < 0 ? 'S' : 'N'; }
   };
 
   std::string Coord2DDMMFF(TLongitude coord);
@@ -76,7 +76,7 @@ namespace condor2nav {
   bool InsideArea(TLongitude outerLonMin, TLongitude outerLonMax, TLatitude outerLatMin, TLatitude outerLatMax,
                   TLongitude innerLonMin, TLongitude innerLonMax, TLatitude innerLatMin, TLatitude innerLatMax);
 
-  unsigned KmH2MS(unsigned value);
+  int KmH2MS(int value);
 
   double Deg2Rad(double angle);
   double Rad2Deg(double angle);
