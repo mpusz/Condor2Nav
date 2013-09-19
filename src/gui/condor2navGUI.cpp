@@ -94,7 +94,7 @@ condor2nav::gui::CCondor2NavGUI::CCondor2NavGUI(HINSTANCE hInst, HWND hDlg) :
     _aatTime.Add(Convert(i * 15));
 
   // set default task
-  auto fplPath = CCondor::FPLPath(ConfigParser(), TFPLType::DEFAULT, _condorPath);
+  auto fplPath = condor::FPLPath(ConfigParser(), TFPLType::DEFAULT, _condorPath);
 
   try {
     AATCheck(CCondor{_condorPath, fplPath});
@@ -109,7 +109,7 @@ condor2nav::gui::CCondor2NavGUI::CCondor2NavGUI(HINSTANCE hInst, HWND hDlg) :
 
   // check if last result is available
   try {
-    fplPath = CCondor::FPLPath(ConfigParser(), TFPLType::RESULT, _condorPath);
+    fplPath = condor::FPLPath(ConfigParser(), TFPLType::RESULT, _condorPath);
   }
   catch(const Exception &) {
     _fplLastRace.Disable();
@@ -181,7 +181,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       _fplSelect.Disable();
 
       // create Condor FPL file path
-      const auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TFPLType::DEFAULT, _condorPath);
+      const auto fplPath = condor::FPLPath(ConfigParser(), CCondor2NavGUI::TFPLType::DEFAULT, _condorPath);
       _fplPath.String(fplPath.string());
 
       fplChanged = true;
@@ -193,7 +193,7 @@ void condor2nav::gui::CCondor2NavGUI::Command(HWND hwnd, int controlID, int comm
       _fplSelect.Disable();
 
       // create Condor FPL file path
-      const auto fplPath = CCondor::FPLPath(ConfigParser(), CCondor2NavGUI::TFPLType::RESULT, _condorPath);
+      const auto fplPath = condor::FPLPath(ConfigParser(), CCondor2NavGUI::TFPLType::RESULT, _condorPath);
       _fplPath.String(fplPath.string());
 
       fplChanged = true;

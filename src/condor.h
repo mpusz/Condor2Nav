@@ -46,14 +46,6 @@ namespace condor2nav {
   class CCondor : CNonCopyable {
   public:
     /**
-     * @brief The types of Condor sectors.
-     */
-    enum TSectorType {
-      SECTOR_CLASSIC,	    ///< @brief Line, FAI Sector or Circle.
-      SECTOR_WINDOW	        ///< @brief Window. 
-    };
-
-    /**
      * @brief Condor map coordinates converter.
      *
      * condor2nav::CCondor::CCoordConverter is responsible for
@@ -73,21 +65,31 @@ namespace condor2nav {
 
   private:
     static const unsigned CONDOR_VERSION_SUPPORTED = 1120;	  ///< @brief Supported Condor version.
-    static const bfs::path FLIGHT_PLANS_PATH;
-    static const bfs::path RACE_RESULTS_PATH;
     const CFileParserINI _taskParser;	           ///< @brief Condor task file parser. 
     const CCoordConverter _coordConverter;	       ///< @brief Condor map coordinates converter. 
 
   public:
-    static bfs::path InstallPath();
-    static bfs::path FPLPath(const CFileParserINI &configParser,
-                             CCondor2Nav::TFPLType fplType,
-                             const bfs::path &condorPath);
-
     CCondor(const bfs::path &condorPath, const bfs::path &fplPath);
     const CFileParserINI &TaskParser() const      { return _taskParser; }
     const CCoordConverter &CoordConverter() const { return _coordConverter; }
   };
+
+  namespace condor {
+
+    /**
+    * @brief The types of Condor sectors.
+    */
+    enum TSectorType {
+      SECTOR_CLASSIC,	    ///< @brief Line, FAI Sector or Circle.
+      SECTOR_WINDOW	        ///< @brief Window. 
+    };
+
+    bfs::path InstallPath();
+    bfs::path FPLPath(const CFileParserINI &configParser,
+                      CCondor2Nav::TFPLType fplType,
+                      const bfs::path &condorPath);
+
+  }
 
 }
 

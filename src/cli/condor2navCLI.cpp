@@ -219,11 +219,11 @@ int condor2nav::cli::CCondor2NavCLI::Run(int argc, const char *argv[]) const
   auto options = CLIParse(argc, argv);
   
   // obtain Condor installation path
-  auto condorPath = CCondor::InstallPath();
+  auto condorPath = condor::InstallPath();
   
   // create Condor FPL file path
   if(options.fplType != TFPLType::USER)
-    options.fplPath = CCondor::FPLPath(ConfigParser(), options.fplType, condorPath);
+    options.fplPath = condor::FPLPath(ConfigParser(), options.fplType, condorPath);
 
   // create Condor wrapper
   CCondor condor{condorPath, options.fplPath};

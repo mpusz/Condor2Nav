@@ -32,10 +32,10 @@
 #include <algorithm>
 #include <cmath>
 
-const bfs::path condor2nav::CCondor::FLIGHT_PLANS_PATH = "FlightPlans\\User";
-const bfs::path condor2nav::CCondor::RACE_RESULTS_PATH = "RaceResults";
-
 namespace {
+
+  const bfs::path FLIGHT_PLANS_PATH = "FlightPlans\\User";
+  const bfs::path RACE_RESULTS_PATH = "RaceResults";
 
   // NaviCon.dll interface
   using FNaviConInit = int(WINAPI*)(const char *trnFile);
@@ -156,6 +156,27 @@ condor2nav::TLatitude condor2nav::CCondor::CCoordConverter::Latitude(const std::
 
 /* ************************************* C O N D O R **************************************** */
 
+
+/**
+ * @brief Class constructor. 
+ *
+ * condor2nav::CCondor class constructor.
+ * 
+ * @param condorPath Full pathname of the Condor directory. 
+ * @param fplPath    Condor FPL file to convert path
+ *
+ * @exception std Thrown when not supported Condor version.
+ */
+condor2nav::CCondor::CCondor(const bfs::path &condorPath, const bfs::path &fplPath):
+_taskParser{fplPath},
+_coordConverter{condorPath, _taskParser.Value("Task", "Landscape")}
+{
+  if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) < CONDOR_VERSION_SUPPORTED)
+    throw EOperationFailed{"Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!"};
+}
+
+
+
 /**
 * @brief Returns a path to Condor: The Competition Soaring Simulator
 *
@@ -163,7 +184,7 @@ condor2nav::TLatitude condor2nav::CCondor::CCoordConverter::Latitude(const std::
 *
 * @return Path to Condor: The Competition Soaring Simulator
 */
-bfs::path condor2nav::CCondor::InstallPath()
+bfs::path condor2nav::condor::InstallPath()
 {
   HKEY hTestKey;
   if((RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Condor", 0, KEY_READ, &hTestKey)) == ERROR_SUCCESS) {
@@ -185,15 +206,15 @@ bfs::path condor2nav::CCondor::InstallPath()
 *
 * Method returns FPL file path.
 *
-* @param configParser     The INI file configuration parser. 
-* @param fplType          Type of the FPL file. 
-* @param condorPath       Full pathname of the Condor: The Competition Soaring Simulator. 
+* @param configParser     The INI file configuration parser.
+* @param fplType          Type of the FPL file.
+* @param condorPath       Full pathname of the Condor: The Competition Soaring Simulator.
 *
 * @exception std::runtime_error Thrown when FPL file cannot be found.
 *
-* @return Full pathname of the FPL file. 
- */
-bfs::path condor2nav::CCondor::FPLPath(const CFileParserINI &configParser,
+* @return Full pathname of the FPL file.
+*/
+bfs::path condor2nav::condor::FPLPath(const CFileParserINI &configParser,
                                        CCondor2Nav::TFPLType fplType,
                                        const bfs::path &condorPath)
 {
@@ -216,31 +237,11 @@ bfs::path condor2nav::CCondor::FPLPath(const CFileParserINI &configParser,
                  [](const bfs::path &f){ return CStringNoCase{f.extension().string().c_str()} == ".fpl"; });
     auto result = std::max_element(cbegin(results), cend(results),
                                    [](const bfs::path &f1, const bfs::path &f2)
-                                   { return bfs::last_write_time(f1) < bfs::last_write_time(f2); });
+    { return bfs::last_write_time(f1) < bfs::last_write_time(f2); });
     if(result != results.end())
       fplPath = result->string();
     else
       throw EOperationFailed{"ERROR: Cannot find last result FPL file in '" + fplPath.string() + "'(" + Convert(GetLastError()) + ")!!!"};
   }
   return fplPath;
-}
-
-
-
-/**
- * @brief Class constructor. 
- *
- * condor2nav::CCondor class constructor.
- * 
- * @param condorPath Full pathname of the Condor directory. 
- * @param fplPath    Condor FPL file to convert path
- *
- * @exception std Thrown when not supported Condor version.
- */
-condor2nav::CCondor::CCondor(const bfs::path &condorPath, const bfs::path &fplPath):
-_taskParser{fplPath},
-_coordConverter{condorPath, _taskParser.Value("Task", "Landscape")}
-{
-  if(Convert<unsigned>(_taskParser.Value("Version", "Condor version")) < CONDOR_VERSION_SUPPORTED)
-    throw EOperationFailed{"Condor vesion '" + _taskParser.Value("Version", "Condor version") + "' not supported!!!"};
 }

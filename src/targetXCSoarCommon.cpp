@@ -198,7 +198,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
     // dump Task File data
     const auto sectorTypeStr = taskParser.Value("Task", "TPSectorType" + tpIdxStr);
     const auto sectorType = Convert<unsigned>(sectorTypeStr);
-    if(sectorType == CCondor::SECTOR_CLASSIC) {
+    if(sectorType == condor::SECTOR_CLASSIC) {
       const auto radius = Convert<unsigned>(taskParser.Value("Task", "TPRadius" + tpIdxStr));
       const auto angle = Convert<unsigned>(taskParser.Value("Task", "TPAngle" + tpIdxStr));
 
@@ -314,7 +314,7 @@ void condor2nav::CTargetXCSoarCommon::TaskProcess(CFileParserINI &profileParser,
         }
       }
     }
-    else if(sectorType == CCondor::SECTOR_WINDOW)
+    else if(sectorType == condor::SECTOR_WINDOW)
       Translator().App().Warning() << "WARNING: " << name << ": " << Name() << " does not support window TP type. Circle TP will be used and you are responsible for reaching it on correct height and with correct heading." << std::endl;
     else
       Translator().App().Error() << "ERROR: Unsupported sector type '" << sectorTypeStr << "' specified for TP '" << name << "'!!!";
