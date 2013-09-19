@@ -103,6 +103,8 @@ condor2nav::CFileParserCSV::CFileParserCSV(bfs::path filePath) :
       continue;
     _rowsList.emplace_back(LineParseCSV(line));
   }
+  if(_rowsList.front().size() <= 1)
+    throw EOperationFailed{"ERROR: File '" + filePath.string() + "' does not look like a CSV File!!"};
 }
 
 

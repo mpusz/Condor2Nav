@@ -208,6 +208,8 @@ const std::string &condor2nav::CFileParserINI::Value(const std::string &chapter,
  */
 void condor2nav::CFileParserINI::Value(const std::string &chapter, const std::string &key, std::string value)
 {
+  if(key == "")
+    throw EOperationFailed{"ERROR: Cannot set value for empty key in INI file!!!"};
   CValuesMap &map = (chapter != "") ? Chapter(chapter).valuesMap : _valuesMap;
   map[key] = std::move(value);
 }
